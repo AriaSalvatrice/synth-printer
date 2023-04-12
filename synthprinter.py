@@ -17,8 +17,9 @@ _retainingNotchDepth = _panelThickness / 3
 
 _m3Diameter = 3.0
 _m3DiameterWithTolerance = _m3Diameter + _tolerance
+# More expansion with small screws
 _m2Diameter = 2.0
-_m2DiameterWithTolerance = _m2Diameter + _tolerance
+_m2DiameterWithTolerance = _m2Diameter + _tolerance * 1.5
 _ScrewNotchDistanceFromTop = 3.0
 _ScrewNotchDistanceFromBottom = 3.0
 _ScrewNotchDistanceFromSide = _m3DiameterWithTolerance * 1.5
@@ -49,10 +50,11 @@ _kosmoScrewNotchDistanceFromBottom = _ScrewNotchDistanceFromBottom
 ### Buttons and switches
 #######################################################################
 
+# Sanwas have little clips making them require more tolerance
 _sanwaOBSF24Button = 24  # FIXME: UNTESTED!!
-_sanwaOBSF24ButtonWithTolerance = _sanwaOBSF24Button + _tolerance
+_sanwaOBSF24ButtonWithTolerance = _sanwaOBSF24Button + _tolerance * 1.4
 _sanwaOBSF30Button = 30
-_sanwaOBSF30ButtonWithTolerance = _sanwaOBSF30Button + _tolerance
+_sanwaOBSF30ButtonWithTolerance = _sanwaOBSF30Button + _tolerance * 1.4
 _miniToggleSwitchWidth = 13.2
 _miniToggleSwitchLength = 7.9
 _miniToggleSwitchDiameter = 6
@@ -66,7 +68,7 @@ _miniToggleSwitchNotchDepth = _retainingNotchDepth
 ### Potentiometers and rotary encoders
 #######################################################################
 
-_potentiometerShaftDiameter = 6  # FIXME: I used to use 7.35!!
+_potentiometerShaftDiameter = 7
 _potentiometerShaftDiameterWithTolerance = _potentiometerShaftDiameter + _tolerance
 _potentiometerNotchDistanceFromCenter = 6.9
 _potentiometerNotchDiameter = 3.9
@@ -280,6 +282,12 @@ def arcadeButton24mmHole(panel, x: float, y: float):
 
 
 def miniToggleSwitch(panel, x: float, y: float, orientation: str = "horizontal"):
+    """Makes a hole for a mini toggle switch, with a retaining notch.
+
+    You can swap the orientation to vertical using the orientation="vertical" parameter.
+
+    This will fit the switches often sold as the "MTS-100" series by Aliexpress vendors.
+    """
     if orientation != "horizontal" and orientation != "vertical":
         raise Warning("Orientation must be either horizontal or vertical")
     if orientation == "horizontal":
@@ -307,6 +315,14 @@ def miniToggleSwitch(panel, x: float, y: float, orientation: str = "horizontal")
 
 
 def potentiometerHole(panel, x: float, y: float):
+    """Fits most types of panel-mount potentiometers with a 6mm shaft.
+
+    There will be four notches around the hole, allowing you to catch the
+    retaining tab of the potentiometer in the most convenient orientation
+    possible.
+
+    This won't fit rotary encoders!
+    """
     panel = makeHole(
         panel=panel, x=x, y=y, width=_potentiometerShaftDiameterWithTolerance
     )
@@ -338,6 +354,11 @@ def potentiometerHole(panel, x: float, y: float):
 
 
 def bigJackHole(panel, x: float, y: float):
+    """This fits panel mount 6.35mm jacks with a rectangular base, as used
+    in Kosmo builds.
+
+    There is a retaining notch the size of the base to help keep it in place.
+    """
     panel = makeHole(panel=panel, x=x, y=y, width=_bigJackDiameterWithTolerance)
     panel = (
         panel.faces(">Z")
