@@ -2,11 +2,31 @@
 
 **This is not ready for general use yet!**
 
-These are experiments with CadQuery to make 3D printed synth panels. 
-
 I don't really know python btw, I just did enough hacks with it to have kinda picked it up by accident. 
 
-If you wanna play with it, just load testpanel.py in CQ-editor.
+-----------------
+
+Hey kid, wanna extrude a synth?
+
+Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough).
+
+It's based around [CadQuery](https://github.com/CadQuery/cadquery), but provides a greatly simplified syntax focusing only on synth panels. It's meant to create panels that print right out of the box: they account for tolerances, and they provide footprints that match the kind of synth diy hardware you'll find in the wild.
+
+Due to its very limited audience, this system is very minimal and rough around the edges, but it shouldn't take you long to learn how to get it going, and I'm happy to help if it gives you trouble.
+
+To get started, you need a way to use CadQuery. I strongly recommend you simply use [Cq-Editor](https://github.com/CadQuery/CQ-editor) (grab a binary release).
+
+After that, [download this repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples. Use the **▶ Render** button (F5) to run the code. Rotate the viewport, as you'll be seeing the panel from the back by default. 
+
+You can edit code right from CQ-Editor, but if you find it limiting, you can enable autoreload in the preferences, and edit the files from an external editor. You can probably design a panel simply by modifying an example!
+
+_FIXME: there are no examples yet lol. just testpanel.py_
+
+Once you're ready to export your panel, select it in the viewport, and pick "Tools -> Export as STL"
+
+
+
+
 
 # Todo-List
 
