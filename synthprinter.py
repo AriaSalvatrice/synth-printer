@@ -1,11 +1,11 @@
 import cadquery as cq
-from decimal import Decimal
 
 #######################################################################
 ### Common Dimensions
+#######################################################################
 
 _tolerance = 0.4  # Default tolerance for most holes
-_panelHeight = 100.0
+_panelLength = 100.0
 _panelThickness = 4.0
 _hp = 5.08
 _retainingNotchDepth = _panelThickness / 3
@@ -13,16 +13,41 @@ _retainingNotchDepth = _panelThickness / 3
 
 #######################################################################
 ### Screws
+#######################################################################
 
 _m3Diameter = 3.0
 _m3DiameterWithTolerance = _m3Diameter + _tolerance
+_m2Diameter = 2.0
+_m2DiameterWithTolerance = _m2Diameter + _tolerance
 _ScrewNotchDistanceFromTop = 3.0
 _ScrewNotchDistanceFromBottom = 3.0
 _ScrewNotchDistanceFromSide = _m3DiameterWithTolerance * 1.5
 
 
 #######################################################################
+### Eurorack
+#######################################################################
+
+_eurorackLength = 128.5  # Modules are smaller than the full 3U
+_eurorackScrewNotchDistanceFromSide = _ScrewNotchDistanceFromSide
+_eurorackScrewNotchDistanceFromTop = _ScrewNotchDistanceFromTop
+_eurorackScrewNotchDistanceFromBottom = _ScrewNotchDistanceFromBottom
+_i1ULength = 39.65  # Itellijel 1U - for our purposes, normal Euro but 1U tall
+
+
+#######################################################################
+### Kosmo
+#######################################################################
+
+_kosmoLength = 200.0
+_kosmoScrewNotchDistanceFromSide = _ScrewNotchDistanceFromSide
+_kosmoScrewNotchDistanceFromTop = _ScrewNotchDistanceFromTop
+_kosmoScrewNotchDistanceFromBottom = _ScrewNotchDistanceFromBottom
+
+
+#######################################################################
 ### Buttons and switches
+#######################################################################
 
 _sanwaOBSF24Button = 24  # FIXME: UNTESTED!!
 _sanwaOBSF24ButtonWithTolerance = _sanwaOBSF24Button + _tolerance
@@ -39,6 +64,7 @@ _miniToggleSwitchNotchDepth = _retainingNotchDepth
 
 #######################################################################
 ### Potentiometers and rotary encoders
+#######################################################################
 
 _potentiometerShaftDiameter = 6  # FIXME: I used to use 7.35!!
 _potentiometerShaftDiameterWithTolerance = _potentiometerShaftDiameter + _tolerance
@@ -48,8 +74,10 @@ _potentiometerNotchDepth = _panelThickness / 1.5
 
 #######################################################################
 ### Jacks
+#######################################################################
+
 _bigJackDiameter = 10
-_bigJackDiameterWithTolerance = 10 + _tolerance
+_bigJackDiameterWithTolerance = _bigJackDiameter + _tolerance
 _bigJackWidth = 16
 _bigJackLength = _bigJackWidth
 _bigJackWidthWithTolerance = _bigJackWidth + _tolerance
@@ -58,30 +86,12 @@ _bigJackNotchDepth = _retainingNotchDepth
 
 #######################################################################
 ### Blinkenlichten
+#######################################################################
 
 _5mmLed = 5
 _5mmLedWithTolerance = _5mmLed + _tolerance
 _3mmLed = 3
 _3mmLedWithTolerance = _3mmLed + _tolerance  # FIXME: UNTESTED!!
-
-
-#######################################################################
-### Eurorack
-
-_eurorackHeight = 128.5  # Modules are smaller than the full 3U
-_eurorackScrewNotchDistanceFromSide = _ScrewNotchDistanceFromSide
-_eurorackScrewNotchDistanceFromTop = _ScrewNotchDistanceFromTop
-_eurorackScrewNotchDistanceFromBottom = _ScrewNotchDistanceFromBottom
-_i1UHeight = 39.65  # Itellijel 1U - for our purposes, normal Euro but 1U tall
-
-
-#######################################################################
-### Kosmo
-
-_kosmoHeight = 200.0
-_kosmoScrewNotchDistanceFromSide = _ScrewNotchDistanceFromSide
-_kosmoScrewNotchDistanceFromTop = _ScrewNotchDistanceFromTop
-_kosmoScrewNotchDistanceFromBottom = _ScrewNotchDistanceFromBottom
 
 
 #######################################################################
@@ -93,6 +103,7 @@ _kosmoScrewNotchDistanceFromBottom = _ScrewNotchDistanceFromBottom
 
 #######################################################################
 ### Helpers
+#######################################################################
 
 
 def hp(hp: int) -> float:
@@ -107,6 +118,7 @@ def hp(hp: int) -> float:
 
 
 def makeHole(panel, x: float, y: float, width: float = _5mmLedWithTolerance):
+    """Makes a hole through the entire panel"""
     panel = (
         panel.faces(">Z")
         .vertices("<XY")
@@ -119,11 +131,12 @@ def makeHole(panel, x: float, y: float, width: float = _5mmLedWithTolerance):
 
 #######################################################################
 ### Panels
+#######################################################################
 
 
 def panel(
-    width: float = _panelHeight,
-    height: float = _panelHeight,
+    width: float = _panelLength,
+    length: float = _panelLength,
     thickness: float = _panelThickness,
     screwNotchBottomLeft: bool = True,
     screwNotchBottomRight: bool = True,
@@ -133,7 +146,7 @@ def panel(
     screwNotchDistanceFromTop: float = _ScrewNotchDistanceFromTop,
     screwNotchDistanceFromBottom: float = _ScrewNotchDistanceFromBottom,
     screwNotchWidth: float = _m3DiameterWithTolerance * 2.5,
-    screwNotchHeight: float = _m3DiameterWithTolerance,
+    screwNotchLength: float = _m3DiameterWithTolerance,
 ):
     """Returns a rectangular panel of arbitrary dimensions.
 
@@ -141,7 +154,7 @@ def panel(
     in a DIY printed system.
     """
 
-    panel = cq.Workplane("XY").box(width, height, thickness)
+    panel = cq.Workplane("XY").box(width, length, thickness)
 
     screwPoints = []
     if screwNotchBottomLeft:
@@ -152,19 +165,19 @@ def panel(
         )
     if screwNotchTopLeft:
         screwPoints.append(
-            (screwNotchDistanceFromSide, height - screwNotchDistanceFromTop)
+            (screwNotchDistanceFromSide, length - screwNotchDistanceFromTop)
         )
     if screwNotchTopRight:
         screwPoints.append(
-            (width - screwNotchDistanceFromSide, height - screwNotchDistanceFromTop)
+            (width - screwNotchDistanceFromSide, length - screwNotchDistanceFromTop)
         )
 
     panel = (
         panel.faces(">Z")
         .workplane()
-        .center(-width / 2, -height / 2)
+        .center(-width / 2, -length / 2)
         .pushPoints(screwPoints)
-        .slot2D(screwNotchWidth, screwNotchHeight, 0)
+        .slot2D(screwNotchWidth, screwNotchLength, 0)
         .cutThruAll()
     )
 
@@ -173,7 +186,7 @@ def panel(
 
 def eurorackPanel(
     width: float = hp(2),
-    height: float = _eurorackHeight,
+    length: float = _eurorackLength,
     thickness: float = _panelThickness,
 ):
     """Returns a Eurorack panel with screw notches. Eurorack width must be defined in hp().
@@ -191,7 +204,7 @@ def eurorackPanel(
 
     return panel(
         width=width,
-        height=height,
+        length=length,
         thickness=thickness,
         screwNotchDistanceFromSide=_eurorackScrewNotchDistanceFromSide,
         screwNotchDistanceFromTop=_eurorackScrewNotchDistanceFromTop,
@@ -213,7 +226,7 @@ def i1UPanel(width: float = hp(8), thickness: float = _panelThickness):
 
     return eurorackPanel(
         width=width,
-        height=_i1UHeight,
+        length=_i1ULength,
     )
 
 
@@ -227,7 +240,7 @@ def kosmoPanel(width: float = 25, thickness: float = _panelThickness):
 
     return panel(
         width=width,
-        height=_kosmoHeight,
+        length=_kosmoLength,
         thickness=thickness,
         screwNotchDistanceFromSide=_kosmoScrewNotchDistanceFromSide,
         screwNotchDistanceFromTop=_kosmoScrewNotchDistanceFromTop,
@@ -236,19 +249,8 @@ def kosmoPanel(width: float = 25, thickness: float = _panelThickness):
 
 
 #######################################################################
-### LEDs
-
-
-def led5mmHole(panel, x: float, y: float):
-    return makeHole(panel, x, y, _5mmLedWithTolerance)
-
-
-def led3mmHole(panel, x: float, y: float):
-    return makeHole(panel, x, y, _3mmLedWithTolerance)
-
-
-#######################################################################
 ### Buttons and switches
+#######################################################################
 
 
 def arcadeButton30mmHole(panel, x: float, y: float):
@@ -301,6 +303,7 @@ def miniToggleSwitch(panel, x: float, y: float, orientation: str = "horizontal")
 
 #######################################################################
 ### Potentiometers and rotary encoders
+#######################################################################
 
 
 def potentiometerHole(panel, x: float, y: float):
@@ -326,8 +329,12 @@ def potentiometerHole(panel, x: float, y: float):
     return panel
 
 
+# TODO: Rotary encoders
+
+
 #######################################################################
 ### Jacks
+#######################################################################
 
 
 def bigJackHole(panel, x: float, y: float):
@@ -343,18 +350,134 @@ def bigJackHole(panel, x: float, y: float):
     return panel
 
 
+## TODO: Minijacks
+
+
+#######################################################################
+### Blinkenlichten
+#######################################################################
+
+
+def led5mmHole(panel, x: float, y: float):
+    """Creates a hole for a 5mm LED protruding entirely from the hole.
+
+    There is no mechanism to hold it in place, but hot glue will do the trick.
+    """
+    return makeHole(panel, x, y, _5mmLedWithTolerance)
+
+
+def led3mmHole(panel, x: float, y: float):
+    """Creates a hole for a 3mm LED protruding entirely from the hole.
+
+    There is no mechanism to hold it in place, but hot glue will do the trick.
+    """
+    return makeHole(panel, x, y, _3mmLedWithTolerance)
+
+
+def displayWindow(
+    panel,
+    x: float,
+    y: float,
+    windowWidth: float = 30,
+    windowLength: float = 15,
+    windowVerticalOffset: float = -5,
+    windowHorizontalOffset: float = 0,
+    screwsHorizontalDistance: float = 40,
+    screwsVerticalDistance: float = 40,
+):
+    """Creates a window for a rectangular display mounted with four screws in the corner.
+
+    Every single display available has different dimensions, especially the cheapo OLEDs
+    from Aliexpress. Even when the display size is the same, various boards differ by
+    a few millimeters.
+
+    The defaults offered here are for a non-existent model, for preview purposes.
+    Provide your own measurements instead!
+    """
+
+    # FIXME: This is the nastiest way possible to do a fillet
+    # but the only one that worked
+    bbox = panel.val().BoundingBox()
+    cutout = (
+        cq.Workplane("XY")
+        .box(
+            windowWidth + _panelThickness,
+            windowLength + _panelThickness,
+            _panelThickness,
+        )
+        .edges(">Z")
+        .fillet(_panelThickness * 0.99)
+        .translate(
+            (
+                -bbox.xlen / 2 + x + windowHorizontalOffset,
+                -bbox.ylen / 2 + y + windowVerticalOffset,
+                0,
+            )
+        )
+    )
+    panel = (
+        panel.faces(">Z")
+        .vertices("<XY")
+        .workplane(centerOption="CenterOfMass")
+        .cut(cutout)
+    )
+
+    # Next, the actual cutout
+    panel = (
+        panel.faces(">Z")
+        .vertices("<XY")
+        .workplane(centerOption="CenterOfMass")
+        .center(x + windowHorizontalOffset, y + windowVerticalOffset)
+        .rect(windowWidth, windowLength)
+        .cutThruAll()
+    )
+
+    # Now, the screws
+    panel = (
+        panel.faces(">Z")
+        .vertices("<XY")
+        .workplane(centerOption="CenterOfMass")
+        .center(x, y)
+        .rect(screwsHorizontalDistance, screwsVerticalDistance, forConstruction=True)
+        .vertices()
+        .circle(_m2DiameterWithTolerance / 2)
+        .cutThruAll()
+    )
+
+    return panel
+
+
+#######################################################################
+#######################################################################
+#######################################################################
+#######################################################################
+#######################################################################
+
+
 #######################################################################
 ### TEST CODE
-# CQ-Editor can't autoreload modules, so placing all test code here
+#######################################################################
+# CQ-Editor can't autoreload modules, so placing test code here
 # is simpler than figuring out a workaround.
 
-# panel = eurorackPanel(hp(8))
+# panel = eurorackPanel(hp(12))
 
 # panel = arcadeButton30mmHole(panel, 20, 20)
 # panel = led5mmHole(panel, 10, 40)
 # panel = led3mmHole(panel, 10, 48)
 # panel = potentiometerHole(panel, 30, 45)
-# panel = bigJackHole(panel, 20, 65)
-# panel = miniToggleSwitch(panel, 8, 85)
-# panel = miniToggleSwitch(panel, 20, 85, orientation="vertical")
-# panel = miniToggleSwitch(panel, 32, 85, orientation="horizontal")
+# panel = bigJackHole(panel, 15, 60)
+# panel = miniToggleSwitch(panel, 46, 15)
+# panel = miniToggleSwitch(panel, 46, 35, orientation="vertical")
+# panel = miniToggleSwitch(panel, 46, 55, orientation="horizontal")
+
+# panel = displayWindow(
+#     panel=panel,
+#     x=28,
+#     y=95,
+#     windowWidth=26.0,
+#     windowLength=14.5,
+#     windowVerticalOffset=-10,
+#     screwsHorizontalDistance=47.2,
+#     screwsVerticalDistance=47.2,
+# )
