@@ -18,7 +18,7 @@ panel = displayWindow(
     y=95,
     windowWidth=26.0,
     windowLength=14.5,
-    windowVerticalOffset=-10,
+    windowVerticalOffset=-4,
     screwsHorizontalDistance=47.2,
-    screwsVerticalDistance=47.2,
+    screwsVerticalDistance=29.14,
 )

@@ -14,7 +14,9 @@ It's based around [CadQuery](https://github.com/CadQuery/cadquery), but provides
 
 It's very much for the sort of DIY builds that use prototype boards, or PCBs mounted perpendicularly and wired to the panel. It's not really meant for the sort of DIY builds with sandwiched PCBs mounted in parllel. 
 
-Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks. How much this project will be updated very much depends whether other people use it at all.
+Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. It's really just A Bunch Of Helper Functions In A File.
+
+Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks. How much this project will be updated very much depends whether other people use it at all.
 
 To get started, you need a way to use CadQuery. I strongly recommend you simply use [Cq-Editor](https://github.com/CadQuery/CQ-editor) (grab a binary release).
 
@@ -29,13 +31,54 @@ _FIXME: there are no examples yet lol. just testpanel.py_
 Once you're ready to export your panel, select it in the viewport, and pick "Tools -> Export as STL"
 
 
-# How to print [TODO]
-- Print as exported, exposed face down
-- Well tuned printer is important
-- Use a non-textured bed, if it's glass flip it over
-- Using infills to achieve special effects (concentric + silk)
-- PLA vs PETG vs ABS (PLA is solid enough but can melt)
-- [Making knobs](https://www.thingiverse.com/sebajom/designs)
+# 3D printing advice for synth panels
+
+## Choosing the material
+
+Common options are PLA, PETG, and ABS. 
+
+| 🐶🎺 | PLA | PETG | ABS |
+|-------|-----|------|-----|
+| Cost | Cheap | Cheap | Affordable |
+| Bed adhesion | Easy | Easy | Requires adhesive (ABS slurry or glue) |
+| Ease of printing | Easiest | Easy | Hard, requires an enclosure |
+| Toxicity | Safe | Safe | Requires proper ventilation while printing |
+| Print visual quality | Good | Poor | Good, excellent after acetone vapor smoothing |
+| Heat resistance | Mediocre | Poor | Good |
+| UV resistance | Mediocre | Good | Poor |
+
+Personally, I use PLA. It looks great and is easy to print. But if I were to leave it in a hot car, my synth would be destroyed.
+
+## Solidity
+
+I picked the default thickness of 4mm for a reason! Even at 100% infill, it still bends a little when I unplug jacks. Still, it's solid enough.
+
+Let's review what goes into making a solid front plate:
+
+- Print orientation: 3D prints are weaker to shearing forces along their vertical layer lines. Not a problem for a panel printed flat, but that means the support lattice is particularly weak.
+- Shell thickness: Probably even more important than infill. You might want to have 5 of them.
+- Infill: Not every infill type is resistant to the same type of forces. I generally use 100% infill anyway, except for tranlucent filaments where I want to achieve a special texture when it's backlit.
+
+## Achieving the best texture
+
+### Printing the front as first layer (recommended)
+
+- You need to achieve a good first layer. There's no secret, it requires a properly tuned printer, a perfectly leveled bed (a depth probe really helps with this), and a perfectly dialed in Z-offset. 
+- Print on smooth glass if you can! If you have a textured glass bed, it's safe to flip it over and just print on the untextured side. This will tremendously improve the print quality. You might want to add just a touch of hair spray if heat isn't enough to hold things in place.
+- You can achieve neat light reflection tricks by using an interesting bottom fill pattern. I often use the concentric one. The effect is dramatic when used with a Silk filament!
+- Wanna use a beautiful but expensive specialty filament for your faceplates? Just swap filament after 3~4 layers! Do the visible layers with your fancy filament, and the rest with bargain bin stock. 
+- After the first layer, it's safe to use the highest layer height your printer supports, we don't care about vertical accuracy. 
+
+### Printing the front as last layer
+
+- Consider enabling ironing in your slicer settings! It takes a long while, but can achieve incredibly smooth results.
+- The recessed areas on the back will look visually nastier, but shouldn't require supports.
+- Of course, you can't add a lattice in the back with this orientation. 
+- With a poorly tuned or low quality printer, this orientation will probably yield better results.
+
+### Printing knobs
+
+I had good results with [Sebajom's OpenSCAD knob generators on thingiverse](https://www.thingiverse.com/sebajom/designs).
 
 
 # Todo-List
