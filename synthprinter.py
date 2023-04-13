@@ -151,6 +151,8 @@ class SynthPrinter:
         self.panel = cq.Workplane("XY")
         self.preview = cq.Workplane("XY")
 
+        self.panelAdded = False
+
     #######################################################################
     #######################################################################
     #######################################################################
@@ -160,17 +162,6 @@ class SynthPrinter:
     #######################################################################
     ### Helpers
     #######################################################################
-
-    def assemble(self):
-        """Prepares the models for display in CQ Editor"""
-        self.panelAssembly = cq.Assembly().add(
-            self.panel, color=self.config["panelColorRGBA"]
-        )
-        self.previewAssembly = cq.Assembly().add(
-            self.preview, color=self.config["previewColorRGBA"]
-        )
-        # FIXME: CQ-editor choke on exporting an assembly's STL!
-        # TODO: calling CQ-editor's show_object doesn't work from this scope! Can it be solved?
 
     def cutHole(self, x: float, y: float, diameter: float):
         """Makes a circular hole through the entire panel"""
@@ -183,6 +174,8 @@ class SynthPrinter:
         )
 
     def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
+        """Adds a cylinder for preview on the back of the panel.
+        It will be deeper by half the panel thickness."""
         self.preview = (
             self.preview.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -193,6 +186,8 @@ class SynthPrinter:
         )
 
     def previewCylinderOnFront(self, x: float, y: float, diameter: float, depth: float):
+        """Adds a cylinder for preview on the front of the panel.
+        It will be deeper by half the panel thickness."""
         self.preview = (
             self.preview.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -205,6 +200,8 @@ class SynthPrinter:
     def previewBoxOnBack(
         self, x: float, y: float, width: float, height: float, depth: float
     ):
+        """Adds a box for preview on the back of the panel.
+        It will be deeper by half the panel thickness."""
         self.preview = (
             self.preview.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -217,6 +214,8 @@ class SynthPrinter:
     def previewBoxOnFront(
         self, x: float, y: float, width: float, height: float, depth: float
     ):
+        """Adds a box for preview on the front of the panel.
+        It will be deeper by half the panel thickness."""
         self.preview = (
             self.preview.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -235,14 +234,19 @@ class SynthPrinter:
         screwNotches: str = "auto",
     ):
         """Adds a rectangular panel of arbitrary dimensions.
+        You can only add one.
 
         Screw notches in the corners provide better tolerances than holes
         in a DIY printed system. If the panel is too small for four notches,
         there will be only two by default.
 
-        screwNotches options are:
-        "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        :param screwNotches: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
+
+        if self.panelAdded == True:
+            raise Warning("Only one panel can be added")
+        else:
+            self.panelAdded = True
 
         self.panel = self.panel.box(
             self.config["panelWidth"],
@@ -374,8 +378,7 @@ class SynthPrinter:
         in a DIY printed system. If the panel is too small for four notches,
         there will be only two by default.
 
-        screwNotches options are:
-        "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        :param screwNotches: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
         self.config["panelWidth"] = self.config["hp"] * hp
         self.config["panelHeight"] = self.config["eurorackHeight"]
@@ -394,8 +397,7 @@ class SynthPrinter:
         in a DIY printed system. If the panel is too small for four notches,
         there will be only two by default.
 
-        screwNotches options are:
-        "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        :param screwNotches: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
         self.config["panelWidth"] = self.config["hp"] * hp
         self.config["panelHeight"] = self.config["i1UIJHeight"]
@@ -496,9 +498,9 @@ class SynthPrinter:
     def addMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
         """A mini toggle switch, with a retaining notch.
 
-        You can swap the orientation to vertical using the orientation="vertical" parameter.
-
         This will fit the switches often sold as the "MTS-100" series by Aliexpress vendors.
+
+        :param orientation: "horizontal" (default) or "vertical".
         """
 
         self.cutMiniToggleSwitch(x, y, orientation)
@@ -545,6 +547,8 @@ class SynthPrinter:
         possible.
 
         This won't fit rotary encoders!
+
+        If you want a knob, add it separately with addKnob()
         """
         self.cutPotentiometer(x, y)
         self.previewPotentiometer(x, y)
@@ -730,7 +734,7 @@ class SynthPrinter:
         from Aliexpress. Even when the display size is the same, various boards differ by
         a few millimeters.
 
-        The defaults offered here are for a non-existent model, for preview purposes.
+        The defaults offered are for a non-existent model, for preview purposes.
         Provide your own measurements instead!
         """
         self.cutDisplayWindow(
@@ -757,6 +761,14 @@ class SynthPrinter:
 
 
 def hp(hp: float):
+    """Converts Eurorack hp to millimeters (1hp = 0.2in = 5.08mm).
+    Useful to align things to the grid."""
+    return hp * 5.08
+
+
+def khp(khp: float):
+    """Converts khp (Kosmo HP) to millimeters (1khp = 25mm).
+    Useful to align things to the grid."""
     return hp * 5.08
 
 
@@ -768,37 +780,39 @@ def hp(hp: float):
 
 
 # Override any setting from the defaultConfig
-# sp = SynthPrinter(
-#     tolerance=0.4,
-#     panelColorRGBA=cq.Color(0.5, 0.9, 0.5, 0.9),
-#     miniToggleSwitchDiameter=6,
-# )
+sp = SynthPrinter(
+    tolerance=0.4,
+    panelColorRGBA=cq.Color(0.5, 0.9, 0.5, 0.9),
+    miniToggleSwitchDiameter=6,
+)
 
-# sp.addEurorackPanel(8)  # HP
+sp.addEurorackPanel(8)  # HP
 
-# sp.addLed5mm(hp(1), 10)
-# sp.addMiniToggleSwitch(hp(1), 20, "vertical")
-# sp.addLed3mm(hp(1), 30)
-# sp.addMiniToggleSwitch(hp(1), 40, "vertical")
-# sp.addMiniToggleSwitch(hp(4), 40)
+sp.addPanel()
 
-# sp.addPotentiometer(hp(4), 20)
-# sp.addKnob(hp(4), 20, 12, 16)
+sp.addLed5mm(hp(1), 10)
+sp.addMiniToggleSwitch(hp(1), 20, "vertical")
+sp.addLed3mm(hp(1), 30)
+sp.addMiniToggleSwitch(hp(1), 40, "vertical")
+sp.addMiniToggleSwitch(hp(4), 40)
 
-# sp.addLed5mm(32, 10)
-# sp.addLed5mm(37, 15)
-# sp.addLed5mm(32, 20)
-# sp.addLed5mm(37, 25)
-# sp.addLed5mm(32, 30)
-# sp.addLed5mm(37, 35)
-# sp.addLed5mm(32, 40)
-# sp.addLed5mm(37, 45)
+sp.addPotentiometer(hp(4), 20)
+sp.addKnob(hp(4), 20, 12, 16)
 
-# sp.addArcadeButton24mm(hp(4), 60)
-# sp.addMiniJack(hp(1) + 1.5, 83)
-# sp.addBigJack(hp(4), 83)
-# sp.addMiniJack(hp(7) - 1.5, 83)
-# sp.addArcadeButton30mm(hp(4), 108)
+sp.addLed5mm(32, 10)
+sp.addLed5mm(37, 15)
+sp.addLed5mm(32, 20)
+sp.addLed5mm(37, 25)
+sp.addLed5mm(32, 30)
+sp.addLed5mm(37, 35)
+sp.addLed5mm(32, 40)
+sp.addLed5mm(37, 45)
 
-# show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
-# show_object(sp.preview, name="preview", options={"alpha": 0.8, "color": (100, 30, 30)})
+sp.addArcadeButton24mm(hp(4), 60)
+sp.addMiniJack(hp(1) + 1.5, 83)
+sp.addBigJack(hp(4), 83)
+sp.addMiniJack(hp(7) - 1.5, 83)
+sp.addArcadeButton30mm(hp(4), 108)
+
+show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
+show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
