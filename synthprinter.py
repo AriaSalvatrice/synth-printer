@@ -64,13 +64,14 @@ class SynthPrinter:
         ###### Arcade
         # Sanwas have little clips making them require more tolerance
         # (or at least, my Aliexpress clones do - gotta check the real thing)
-        "sanwaOBSF24Button": 24,  # TODO: UNTESTED!! Waiting to receive them by mail
+        "sanwaOBSF24Button": 24,  # TODO: UNTESTED!! Waiting to receive them by mail. It fits screw-in types however.
         "sanwaOBSF24ButtonWithTolerance": lambda config: config["sanwaOBSF24Button"]
         + config["tolerance"] * 1.4,
         "sanwaOBSF30Button": 30,
         "sanwaOBSF30ButtonWithTolerance": lambda config: config["sanwaOBSF30Button"]
         + config["tolerance"] * 1.4,
         ###### Mini Toggle Switches
+        # FIXME: It works but you can't add the washers on the back. Do they matter anyway? It seems sturdy enough without.
         "miniToggleSwitchWidth": 13.2,
         "miniToggleSwitchLength": 7.9,
         "miniToggleSwitchDiameter": 6,
@@ -115,6 +116,7 @@ class SynthPrinter:
         "bigJackNotchDepth": lambda config: config["retainingNotchDepth"],
         ###### Mini
         # FIXME: Untested values!! Based on the drawing of the PJ398SM
+        # TODO: What are other common types?
         "miniJackDiameter": 6,
         "miniJackDiameterWithTolerance": lambda config: config["miniJackDiameter"]
         + config["tolerance"],
@@ -422,6 +424,9 @@ class SynthPrinter:
     # ### Buttons and switches
     # #######################################################################
 
+    # TODO: Support the screw-in seimitsu types too. I should have some in stock. Might also have some Happ somewhere.
+    # TODO: Other types of common buttons and switches.... Not sure what's super common.
+
     def cutArcadeButton30mm(self, x: float, y: float):
         self.cutHole(x, y, self.config["sanwaOBSF30ButtonWithTolerance"])
 
@@ -510,7 +515,7 @@ class SynthPrinter:
     # ### Potentiometers and rotary encoders
     # #######################################################################
 
-    # TODO: Let you configure the notches
+    # TODO: Let you configure the notches & orientation of the preview
     def cutPotentiometer(self, x: float, y: float):
         self.cutHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
         # Add the notches
@@ -593,7 +598,7 @@ class SynthPrinter:
         self.cutBigJack(x, y)
         self.previewBigJack(x, y)
 
-    # FIXME: MiniJacks are 100% untested
+    # FIXME: MiniJacks are untested with Thonk ones, but work with my stock of generic ones
     def cutMiniJack(self, x: float, y: float):
         self.cutHole(x, y, self.config["miniJackDiameterWithTolerance"])
         self.panel = (
@@ -629,7 +634,7 @@ class SynthPrinter:
         self.cutHole(x, y, self.config["5mmLedWithTolerance"])
 
     def previewLed5mm(self, x: float, y: float):
-        self.previewCylinderOnFront(x, y, 4.7, 3)  # FIXME: Check value
+        self.previewCylinderOnFront(x, y, 4.7, 3)
         self.previewBoxOnBack(x, y, 4, 1, 17)
 
     def addLed5mm(self, x: float, y: float):
@@ -644,7 +649,7 @@ class SynthPrinter:
         self.cutHole(x, y, self.config["3mmLedWithTolerance"])
 
     def previewLed3mm(self, x: float, y: float):
-        self.previewCylinderOnFront(x, y, 2.8, 1)  # FIXME: Check value
+        self.previewCylinderOnFront(x, y, 2.8, 1)
         self.previewBoxOnBack(x, y, 2.7, 1, 17)
 
     def addLed3mm(self, x: float, y: float):
@@ -777,40 +782,3 @@ def khp(khp: float):
 #######################################################################
 # CQ-Editor can't autoreload modules, so placing test code here
 # is simpler than figuring out a workaround.
-
-
-# Override any setting from the defaultConfig
-# sp = SynthPrinter(
-#     tolerance=0.4,
-#     panelColorRGBA=cq.Color(0.5, 0.9, 0.5, 0.9),
-#     miniToggleSwitchDiameter=6,
-# )
-
-# sp.addEurorackPanel(8)  # HP
-
-# sp.addLed5mm(hp(1), 10)
-# sp.addMiniToggleSwitch(hp(1), 20, "vertical")
-# sp.addLed3mm(hp(1), 30)
-# sp.addMiniToggleSwitch(hp(1), 40, "vertical")
-# sp.addMiniToggleSwitch(hp(4), 40)
-
-# sp.addPotentiometer(hp(4), 20)
-# sp.addKnob(hp(4), 20, 12, 16)
-
-# sp.addLed5mm(32, 10)
-# sp.addLed5mm(37, 15)
-# sp.addLed5mm(32, 20)
-# sp.addLed5mm(37, 25)
-# sp.addLed5mm(32, 30)
-# sp.addLed5mm(37, 35)
-# sp.addLed5mm(32, 40)
-# sp.addLed5mm(37, 45)
-
-# sp.addArcadeButton24mm(hp(4), 60)
-# sp.addMiniJack(hp(1) + 1.5, 83)
-# sp.addBigJack(hp(4), 83)
-# sp.addMiniJack(hp(7) - 1.5, 83)
-# sp.addArcadeButton30mm(hp(4), 108)
-
-# show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
-# show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
