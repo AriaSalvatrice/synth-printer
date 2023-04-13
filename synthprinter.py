@@ -113,6 +113,18 @@ class SynthPrinter:
         "bigJackHeightWithTolerance": lambda config: config["bigJackHeight"]
         + config["tolerance"],
         "bigJackNotchDepth": lambda config: config["retainingNotchDepth"],
+        ###### Mini
+        # FIXME: Untested values!! Based on the drawing of the PJ398SM
+        "miniJackDiameter": 6,
+        "miniJackDiameterWithTolerance": lambda config: config["miniJackDiameter"]
+        + config["tolerance"],
+        "miniJackWidth": 9,
+        "miniJackHeight": 9.5,
+        "miniJackWidthWithTolerance": lambda config: config["miniJackWidth"]
+        + config["tolerance"],
+        "miniJackHeightWithTolerance": lambda config: config["miniJackHeight"]
+        + config["tolerance"],
+        "miniJackNotchDepth": lambda config: config["retainingNotchDepth"],
         ###########################################################
         ### Blinkenlichten
         ###########################################################
@@ -157,6 +169,7 @@ class SynthPrinter:
         self.previewAssembly = cq.Assembly().add(
             self.preview, color=self.config["previewColorRGBA"]
         )
+        # FIXME: CQ-editor choke on exporting an assembly's STL!
         # TODO: calling CQ-editor's show_object doesn't work from this scope! Can it be solved?
 
     def cutHole(self, x: float, y: float, diameter: float):
@@ -573,6 +586,35 @@ class SynthPrinter:
         self.cutBigJack(x, y)
         self.previewBigJack(x, y)
 
+    # FIXME: MiniJacks are 100% untested
+    def cutMiniJack(self, x: float, y: float):
+        self.cutHole(x, y, self.config["miniJackDiameterWithTolerance"])
+        self.panel = (
+            self.panel.faces(">Z")
+            .vertices("<XY")
+            .workplane(centerOption="CenterOfMass")
+            .center(x, y)
+            .rect(
+                self.config["miniJackWidthWithTolerance"],
+                self.config["miniJackHeightWithTolerance"],
+            )
+            .cutBlind(-self.config["miniJackNotchDepth"])
+        )
+
+    def previewMiniJack(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 6, 5.5)
+        self.previewCylinderOnFront(x, y, 8, 2.2)
+        self.previewBoxOnBack(x, y, 9, 10.5, 12.5)
+
+    def addMiniJack(self, x: float, y: float):
+        """This fits panel mount 6.35mm jacks with a rectangular base, as used
+        in Kosmo builds.
+
+        There is a retaining notch the size of the base to help keep it in place.
+        """
+        self.cutMiniJack(x, y)
+        self.previewMiniJack(x, y)
+
     # ## TODO: Minijacks
 
     # #######################################################################
@@ -704,26 +746,40 @@ def hp(hp: float):
 # CQ-Editor can't autoreload modules, so placing test code here
 # is simpler than figuring out a workaround.
 
-# sp = SynthPrinter()
 
-# sp.addEurorackPanel(8)
+# You can override any setting from the defaultConfig
+# sp = SynthPrinter(
+#     tolerance=0.4,
+#     panelColorRGBA=cq.Color(0.5, 0.9, 0.5, 0.9),
+#     miniToggleSwitchDiameter=6,
+# )
+
+# sp.addEurorackPanel(8)  # HP
 
 # sp.addLed5mm(hp(1), 10)
 # sp.addMiniToggleSwitch(hp(1), 20, "vertical")
 # sp.addLed3mm(hp(1), 30)
+# sp.addMiniToggleSwitch(hp(1), 40, "vertical")
 
 # sp.addPotentiometer(hp(4), 20)
 
-# sp.addLed5mm(hp(7), 10)
-# sp.addLed5mm(hp(7), 20)
-# sp.addLed5mm(hp(7), 30)
-# sp.addLed5mm(hp(7), 40)
+# sp.addLed5mm(32, 10)
+# sp.addLed5mm(37, 15)
+# sp.addLed5mm(32, 20)
+# sp.addLed5mm(37, 25)
+# sp.addLed5mm(32, 30)
+# sp.addLed5mm(37, 35)
+# sp.addLed5mm(32, 40)
+# sp.addLed5mm(37, 45)
 
 # sp.addMiniToggleSwitch(hp(4), 40)
 
-
 # sp.addArcadeButton24mm(hp(4), 60)
+
+# sp.addMiniJack(hp(1) + 1.5, 83)
 # sp.addBigJack(hp(4), 83)
+# sp.addMiniJack(hp(7) - 1.5, 83)
+
 # sp.addArcadeButton30mm(hp(4), 108)
 
 
