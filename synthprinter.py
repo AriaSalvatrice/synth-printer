@@ -182,8 +182,6 @@ class SynthPrinter:
             .hole(diameter)
         )
 
-    # TODO: Move other common drill operations to helpers
-
     def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
         self.preview = (
             self.preview.moveTo(
@@ -511,7 +509,6 @@ class SynthPrinter:
     # #######################################################################
 
     # TODO: Let you configure the notches
-    # TODO: Make actual knobs
     def cutPotentiometer(self, x: float, y: float):
         self.cutHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
         # Add the notches
@@ -551,6 +548,12 @@ class SynthPrinter:
         """
         self.cutPotentiometer(x, y)
         self.previewPotentiometer(x, y)
+
+    def previewKnob(self, x: float, y: float, diameter: float, depth: float):
+        self.previewCylinderOnFront(x, y, diameter, depth + 5)
+
+    def addKnob(self, x: float, y: float, diameter: float, depth: float):
+        self.previewKnob(x, y, diameter, depth)
 
     # TODO: Rotary encoders
 
@@ -615,8 +618,6 @@ class SynthPrinter:
         self.cutMiniJack(x, y)
         self.previewMiniJack(x, y)
 
-    # ## TODO: Minijacks
-
     # #######################################################################
     # ### Blinkenlichten
     # #######################################################################
@@ -627,7 +628,6 @@ class SynthPrinter:
     def previewLed5mm(self, x: float, y: float):
         self.previewCylinderOnFront(x, y, 4.7, 3)  # FIXME: Check value
         self.previewBoxOnBack(x, y, 4, 1, 17)
-        return  # TODO:
 
     def addLed5mm(self, x: float, y: float):
         """Creates a hole for a 5mm LED protruding entirely from the hole.
@@ -664,16 +664,6 @@ class SynthPrinter:
         screwsHorizontalDistance: float = 40,
         screwsVerticalDistance: float = 40,
     ):
-        """Creates a window for a rectangular display mounted with four screws in the corner.
-
-        Every single display available has different dimensions, especially the cheapo OLEDs
-        from Aliexpress. Even when the display size is the same, various boards differ by
-        a few millimeters.
-
-        The defaults offered here are for a non-existent model, for preview purposes.
-        Provide your own measurements instead!
-        """
-
         # FIXME: This is the nastiest way possible to do a fillet
         # but the only one i could figure out
         cutout = (
@@ -724,6 +714,37 @@ class SynthPrinter:
             .cutThruAll()
         )
 
+    def addDisplayWindow(
+        self,
+        x: float,
+        y: float,
+        windowWidth: float = 30,
+        windowHeight: float = 15,
+        windowVerticalOffset: float = -5,
+        windowHorizontalOffset: float = 0,
+        screwsHorizontalDistance: float = 40,
+        screwsVerticalDistance: float = 40,
+    ):
+        """Creates a window for a rectangular display mounted with four screws in the corner.
+
+        Every single display available has different dimensions, especially the cheapo OLEDs
+        from Aliexpress. Even when the display size is the same, various boards differ by
+        a few millimeters.
+
+        The defaults offered here are for a non-existent model, for preview purposes.
+        Provide your own measurements instead!
+        """
+        self.cutDisplayWindow(
+            x,
+            y,
+            windowWidth,
+            windowHeight,
+            windowVerticalOffset,
+            windowHorizontalOffset,
+            screwsHorizontalDistance,
+            screwsVerticalDistance,
+        )
+
     #######################################################################
     #######################################################################
     #######################################################################
@@ -747,7 +768,7 @@ def hp(hp: float):
 # is simpler than figuring out a workaround.
 
 
-# You can override any setting from the defaultConfig
+# Override any setting from the defaultConfig
 # sp = SynthPrinter(
 #     tolerance=0.4,
 #     panelColorRGBA=cq.Color(0.5, 0.9, 0.5, 0.9),
@@ -760,8 +781,10 @@ def hp(hp: float):
 # sp.addMiniToggleSwitch(hp(1), 20, "vertical")
 # sp.addLed3mm(hp(1), 30)
 # sp.addMiniToggleSwitch(hp(1), 40, "vertical")
+# sp.addMiniToggleSwitch(hp(4), 40)
 
 # sp.addPotentiometer(hp(4), 20)
+# sp.addKnob(hp(4), 20, 12, 16)
 
 # sp.addLed5mm(32, 10)
 # sp.addLed5mm(37, 15)
@@ -772,17 +795,11 @@ def hp(hp: float):
 # sp.addLed5mm(32, 40)
 # sp.addLed5mm(37, 45)
 
-# sp.addMiniToggleSwitch(hp(4), 40)
-
 # sp.addArcadeButton24mm(hp(4), 60)
-
 # sp.addMiniJack(hp(1) + 1.5, 83)
 # sp.addBigJack(hp(4), 83)
 # sp.addMiniJack(hp(7) - 1.5, 83)
-
 # sp.addArcadeButton30mm(hp(4), 108)
 
-
-# sp.assemble()
-# show_object(sp.panelAssembly, "panel")
-# show_object(sp.previewAssembly, "preview")
+# show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
+# show_object(sp.preview, name="preview", options={"alpha": 0.8, "color": (100, 30, 30)})

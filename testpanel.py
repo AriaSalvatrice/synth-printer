@@ -14,8 +14,10 @@ sp.addLed5mm(hp(1), 10)
 sp.addMiniToggleSwitch(hp(1), 20, "vertical")
 sp.addLed3mm(hp(1), 30)
 sp.addMiniToggleSwitch(hp(1), 40, "vertical")
-sp.addPotentiometer(hp(4), 20)
 sp.addMiniToggleSwitch(hp(4), 40)
+
+sp.addPotentiometer(hp(4), 20)
+sp.addKnob(hp(4), 20, 12, 16)
 
 sp.addLed5mm(32, 10)
 sp.addLed5mm(37, 15)
