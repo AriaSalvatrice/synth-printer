@@ -18,7 +18,7 @@ class SynthPrinter:
         ### Visualization
         ###########################################################
         "panelColorRGBA": cq.Color(0, 0.7, 0.7, 0.9),
-        "previewColorRGBA": cq.Color(0.3, 0.2, 0.2, 0.5),
+        "previewColorRGBA": cq.Color(0.3, 0.2, 0.2, 0.2),
         ###########################################################
         ### Screws
         ###########################################################
@@ -355,6 +355,12 @@ class SynthPrinter:
     # #######################################################################
 
     def cutArcadeButton30mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config["sanwaOBSF30ButtonWithTolerance"])
+
+    def previewArcadeButton30mm(self, x: float, y: float):
+        return  # TODO:
+
+    def addArcadeButton30mm(self, x: float, y: float):
         """Uses the dimensions for the Sanwa OBSF-30 snap-in button.
 
         Sanwas have a hair trigger and a concave surface.
@@ -364,9 +370,16 @@ class SynthPrinter:
         30mm is the size of action buttons commonly seen in arcade cabinets.
         Smaller buttons like the start button are 24mm.
         """
-        self.cutHole(x, y, self.config["sanwaOBSF30ButtonWithTolerance"])
+        self.cutArcadeButton30mm(x, y)
+        self.previewArcadeButton30mm(x, y)
 
     def cutArcadeButton24mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config["sanwaOBSF24ButtonWithTolerance"])
+
+    def previewArcadeButton24mm(self, x: float, y: float):
+        return  # TODO:
+
+    def addArcadeButton24mm(self, x: float, y: float):
         """Uses the dimensions for the Sanwa OBSF-24 snap-in button.
 
         Sanwas have a hair trigger and a concave surface.
@@ -376,15 +389,10 @@ class SynthPrinter:
         24mm is the size of utility buttons (like the start button) commonly seen in arcade cabinets.
         Actual action buttons are 30mm.
         """
-        self.cutHole(x, y, self.config["sanwaOBSF24ButtonWithTolerance"])
+        self.cutArcadeButton24mm(x, y)
+        self.previewArcadeButton24mm(x, y)
 
     def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
-        """Makes a hole for a mini toggle switch, with a retaining notch.
-
-        You can swap the orientation to vertical using the orientation="vertical" parameter.
-
-        This will fit the switches often sold as the "MTS-100" series by Aliexpress vendors.
-        """
         if orientation != "horizontal" and orientation != "vertical":
             raise Warning("Orientation must be either horizontal or vertical")
         if orientation == "horizontal":
@@ -404,19 +412,26 @@ class SynthPrinter:
             .cutBlind(-self.config["miniToggleSwitchNotchDepth"])
         )
 
+    def previewMiniToggleSwitch(
+        self, x: float, y: float, orientation: str = "horizontal"
+    ):
+        return  # TODO:
+
+    def addMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
+        """A mini toggle switch, with a retaining notch.
+
+        You can swap the orientation to vertical using the orientation="vertical" parameter.
+
+        This will fit the switches often sold as the "MTS-100" series by Aliexpress vendors.
+        """
+        self.cutMiniToggleSwitch(x, y, orientation)
+        self.previewMiniToggleSwitch(x, y, orientation)
+
     # #######################################################################
     # ### Potentiometers and rotary encoders
     # #######################################################################
 
     def cutPotentiometer(self, x: float, y: float):
-        """Fits most types of panel-mount potentiometers with a 6mm shaft.
-
-        There will be four notches around the hole, allowing you to catch the
-        retaining tab of the potentiometer in the most convenient orientation
-        possible.
-
-        This won't fit rotary encoders!
-        """
         self.cutHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
         # Add the notches
         self.panel = (
@@ -438,6 +453,21 @@ class SynthPrinter:
             )
         )
 
+    def previewPotentiometer(self, x: float, y: float):
+        return  # TODO:
+
+    def addPotentiometer(self, x: float, y: float):
+        """Fits most types of panel-mount potentiometers with a 6mm shaft.
+
+        There will be four notches around the hole, allowing you to catch the
+        retaining tab of the potentiometer in the most convenient orientation
+        possible.
+
+        This won't fit rotary encoders!
+        """
+        self.cutPotentiometer(x, y)
+        self.previewPotentiometer(x, y)
+
     # TODO: Rotary encoders
 
     # #######################################################################
@@ -445,11 +475,6 @@ class SynthPrinter:
     # #######################################################################
 
     def cutBigJack(self, x: float, y: float):
-        """This fits panel mount 6.35mm jacks with a rectangular base, as used
-        in Kosmo builds.
-
-        There is a retaining notch the size of the base to help keep it in place.
-        """
         self.cutHole(x, y, self.config["bigJackDiameterWithTolerance"])
         self.panel = (
             self.panel.faces(">Z")
@@ -463,6 +488,18 @@ class SynthPrinter:
             .cutBlind(-self.config["bigJackNotchDepth"])
         )
 
+    def previewBigJack(self, x: float, y: float):
+        return  # TODO:
+
+    def addBigJack(self, x: float, y: float):
+        """This fits panel mount 6.35mm jacks with a rectangular base, as used
+        in Kosmo builds.
+
+        There is a retaining notch the size of the base to help keep it in place.
+        """
+        self.cutBigJack(x, y)
+        self.previewBigJack(x, y)
+
     # ## TODO: Minijacks
 
     # #######################################################################
@@ -470,19 +507,34 @@ class SynthPrinter:
     # #######################################################################
 
     def cutLed5mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config["5mmLedWithTolerance"])
+
+    def previewLed5mm(self, x: float, y: float):
+        return  # TODO:
+
+    def addLed5mm(self, x: float, y: float):
         """Creates a hole for a 5mm LED protruding entirely from the hole.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
         """
-        self.cutHole(x, y, self.config["5mmLedWithTolerance"])
+        self.cutLed5mm(x, y)
+        self.previewLed5mm(x, y)
 
     def cutLed3mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config["3mmLedWithTolerance"])
+
+    def previewLed3mm(self, x: float, y: float):
+        return  # TODO:
+
+    def addLed3mm(self, x: float, y: float):
         """Creates a hole for a 3mm LED protruding entirely from the hole.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
         """
-        self.cutHole(x, y, self.config["3mmLedWithTolerance"])
+        self.cutLed3mm(x, y)
+        self.previewLed3mm(x, y)
 
+    # TODO: How to handle footprints without a matching preview?
     def cutDisplayWindow(
         self,
         x: float,
@@ -581,15 +633,14 @@ def display(sp):
 
 # sp = SynthPrinter()
 
-# sp.addKosmoPanel(25, screwNotches="center")
-# sp.cutArcadeButton30mm(20, 20)
-# sp.cutArcadeButton24mm(40, 40)
-# sp.cutMiniToggleSwitch(60, 60)
-# sp.cutPotentiometer(20, 80)
-# sp.cutPotentiometer(20, 80)
-# sp.cutBigJack(70, 20)
-# sp.cutLed5mm(100, 40)
-# sp.cutLed3mm(100, 60)
+# sp.addKosmoPanel(150, screwNotches="auto")
+# sp.addArcadeButton30mm(20, 20)
+# sp.addArcadeButton24mm(40, 40)
+# sp.addMiniToggleSwitch(60, 60)
+# sp.addPotentiometer(20, 80)
+# sp.addBigJack(70, 20)
+# sp.addLed5mm(100, 40)
+# sp.addLed3mm(100, 60)
 # sp.cutDisplayWindow(120, 120)
 
 # sp.preview = sp.preview.box(70, 70, 70)
@@ -597,12 +648,3 @@ def display(sp):
 # sp.assemble()
 # show_object(sp.panelAssembly, "panel")
 # show_object(sp.previewAssembly, "preview")
-
-
-####
-
-# panelAssembly = cq.Assembly().add(panel, color=cq.Color(0, 0.7, 0.7, 0.9))
-# previewAssembly = cq.Assembly().add(preview, color=cq.Color(0.3, 0.2, 0.2, 0.5))
-
-# show_object(panelAssembly, name="Panel")
-# show_object(previewAssembly, name="Preview")
