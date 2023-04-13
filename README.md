@@ -22,7 +22,7 @@ After that, [download this repository](https://github.com/AriaSalvatrice/synth-p
 
 You can edit code right from CQ-Editor, but if you find it limiting, you can enable autoreload in the preferences, and edit the files from an external editor. You can probably design a panel simply by modifying an example!
 
-If stuff won't fit, you can modify the values in synthprinter.py, or use it as an inspiration to create your own functions.
+If stuff won't fit, you can override any default setting in the constructor, the examples will show you how.
 
 _FIXME: there are no examples yet lol. just testpanel.py_
 
@@ -37,14 +37,14 @@ Common options are PLA, PETG, and ABS.
 
 | 🐶🎺 | PLA | PETG | ABS |
 |-------|-----|------|-----|
-| Cost | Cheap | Cheap | Affordable |
-| Bed adhesion | Easy | Easy | Requires adhesive (ABS slurry or glue) |
-| Ease of printing | Easiest | Easy | Hard, requires an enclosure |
-| Toxicity | Safe | Safe | Requires proper ventilation while printing |
-| Print visual quality | Good | Poor | Good, excellent after acetone vapor smoothing |
-| Strength | Good | Good | Excellent |
-| Heat resistance | Mediocre | Poor | Good |
-| UV resistance | Mediocre | Good | Poor |
+| **Cost** | Cheap | Cheap | Affordable |
+| **Bed adhesion** | Easy | Easy | Requires adhesive (ABS slurry or glue) |
+| **Ease of printing** | Easiest | Easy | Hard, requires an enclosure |
+| **Toxicity** | Safe | Safe | Requires proper ventilation while printing |
+| **Print visual quality** | Good | Poor | Good, excellent after acetone vapor smoothing |
+| **Strength** | Good | Good | Excellent |
+| **Heat resistance** | Mediocre | Poor | Good |
+| **UV resistance** | Mediocre | Good | Poor |
 
 Personally, I use PLA. It looks great and is easy to print. But if I were to leave it in a hot car, my synth would be destroyed.
 
@@ -75,7 +75,7 @@ Let's review what goes into making a solid front plate:
 - Of course, you can't add a lattice in the back with this orientation. 
 - With a poorly tuned or low quality printer, this orientation will probably yield better results.
 
-### Printing knobs
+## Printing knobs
 
 I had good results with [Sebajom's OpenSCAD knob generators on thingiverse](https://www.thingiverse.com/sebajom/designs).
 
@@ -99,14 +99,16 @@ You can help by:
 - [ ] Remake all my existing footprints
   - Remade a bunch already
 - [ ] Make the footprints I expect to need
-- [ ] More consistent nomenclature in code
+- [x] More consistent nomenclature in code
 - [ ] Have little previews of the expected footprint of elements (nothing fancy, just cylinders and cubes)
-  - Should i use assemblies? 
+  - Should i use assemblies? -> Yes but two separate ones for ease of exporting. Lets you color stuff.
 - [ ] Integrate the support lattice properly. Maybe remake it? Also cache it, it takes too long to generate.
 - [x] Figure out how to make fillets/chamfers for big windows not suck ass and require Blender touch-ups
 - [ ] Documentation!! This is the most important part. I need to explain all it takes to get good results.
+  - Good progress on that
+- [ ] Good API documentation, there's already docstrings so i can prolly automate it to an extent.
 - [ ] A jupyter browser thing? Sounds daunting but people would really prefer not to have to install anything.
 - [ ] Do people want to add text labels? They will be very disappointed with quality though. 
-- [ ] Good documentation of the available functions, there's already docstrings so i can prolly automate it
+  - If I can't offer quality I don't want to offer it at all, and you will NOT get quality at eurorack sizes. Maybe at Kosmo sizes, but even then it will look nasty.
 - [ ] SVG Export, document a process to print on transparencies, mention toner transfer
 - [ ] Figure out more how to make it useful for DXF / CNC processes
