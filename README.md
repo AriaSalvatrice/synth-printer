@@ -14,7 +14,7 @@ It's based around [CadQuery](https://github.com/CadQuery/cadquery), but provides
 
 It's very much for the sort of DIY builds that use prototype boards, or PCBs mounted perpendicularly and wired to the panel. For the sort of DIY builds with sandwiched PCBs mounted in parllel, there's no guarantee the footprints will fit.
 
-Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. It's really just A Bunch Of Helper Functions In A File. Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks.
+Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks.
 
 To get started, you need a way to use CadQuery. I strongly recommend you simply use [Cq-Editor](https://github.com/CadQuery/CQ-editor) (grab a binary release).
 
@@ -92,8 +92,10 @@ You can help by:
 
 # Todo-List
 
-- [ ] Figure out a decent "architecture" that's simple & close to natural language
+- [x] Figure out a decent "architecture" that's simple & close to natural language
   - Just going with a collection of functions, but maybe i can integrate it to CadQuery's fluent API?
+  - Need to move with an architecture where you have default settings you override
+  - Just have an object hold it all, having to specify the panel every time is dirty.
 - [ ] Remake all my existing footprints
   - Remade a bunch already
 - [ ] Make the footprints I expect to need
