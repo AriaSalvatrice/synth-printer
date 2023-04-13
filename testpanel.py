@@ -2,11 +2,11 @@ import cadquery as cq
 import synthprinter
 
 sp = synthprinter.SynthPrinter(
-    # tolerance=3,
-    panelWidth=200,
+    panelWidth=18,
     panelHeight=200,
 )
-sp.addPanel()
+
+sp.addKosmoPanel(25, screwNotches="center")
 sp.cutArcadeButton30mm(20, 20)
 sp.cutArcadeButton24mm(40, 40)
 sp.cutMiniToggleSwitch(60, 60)

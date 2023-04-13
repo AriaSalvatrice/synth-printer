@@ -1,5 +1,7 @@
 import cadquery as cq
 
+# TODO: For Eurorack and 1U, shave off some width off the edges - without messing up the measurements
+
 
 class SynthPrinter:
     defaultConfig = {
@@ -30,20 +32,18 @@ class SynthPrinter:
         "m2DiameterWithTolerance": lambda config: config["m2Diameter"]
         + config["tolerance"] * 1.5,  # More expansion with small screws
         ###########################################################
-        ### Eurorack
+        ### Panels
         ###########################################################
-        # eurorackHeight = 128.5  # Modules are smaller than the full 3U
-        # eurorackScrewNotchDistanceFromSide = ScrewNotchDistanceFromSide
-        # eurorackScrewNotchDistanceFromTop = ScrewNotchDistanceFromTop
-        # eurorackScrewNotchDistanceFromBottom = ScrewNotchDistanceFromBottom
-        # i1UHeight = 39.65  # Itellijel 1U - for our purposes, normal Euro but 1U tall
-        ###########################################################
-        ### Kosmo
-        ###########################################################
-        # kosmoHeight = 200.0
-        # kosmoScrewNotchDistanceFromSide = ScrewNotchDistanceFromSide
-        # kosmoScrewNotchDistanceFromTop = ScrewNotchDistanceFromTop
-        # kosmoScrewNotchDistanceFromBottom = ScrewNotchDistanceFromBottom
+        "eurorackHeight": 128.5,  # Modules are smaller than the full 3U
+        "eurorackWidthTolerance": lambda config: config[
+            "tolerance"
+        ],  # TODO: Test & implement
+        "i1UIJHeight": 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
+        "i1UIJWidthTolerance": lambda config: config[
+            "tolerance"
+        ],  # TODO: Test & implement
+        "kosmoHeight": 200.0,
+        "kosmoWidthTolerance": 0,  # Kosmo needs no additional tolerance due to fitting HP rails
         ###########################################################
         ### Buttons and switches
         ###########################################################
@@ -120,8 +120,6 @@ class SynthPrinter:
         self.panel = cq.Workplane("XY")
         self.preview = cq.Workplane("XY")
 
-    # ######################################################################
-
     #######################################################################
     #######################################################################
     #######################################################################
@@ -131,16 +129,6 @@ class SynthPrinter:
     #######################################################################
     ### Helpers
     #######################################################################
-
-    # def hp(hp: int) -> float:
-    #     """Converts Horizontal Pitch to millimeters.
-
-    #     1 HP == 0.2 inches == 5.08 millimeters
-
-    #     Eurorack sizes are generally an even number of hp, such as 4hp.
-    #     3hp and 5hp are the only odd number sizes commonly seen in commercial hardware.
-    #     """
-    #     return hp * _hp
 
     def cutHole(self, x: float, y: float, diameter: float):
         """Makes a circular hole through the entire panel"""
@@ -160,16 +148,16 @@ class SynthPrinter:
 
     def addPanel(
         self,
-        screwNotches: str = "auto",  # FIXME: Use this instead
-        screwNotchBottomLeft: bool = True,  # FIXME: Remove
-        screwNotchBottomRight: bool = True,  # FIXME: Remove
-        screwNotchTopLeft: bool = True,  # FIXME: Remove
-        screwNotchTopRight: bool = True,  # FIXME: Remove
+        screwNotches: str = "auto",
     ):
         """Adds a rectangular panel of arbitrary dimensions.
 
         Screw notches in the corners provide better tolerances than holes
-        in a DIY printed system.
+        in a DIY printed system. If the panel is too small for four notches,
+        there will be only two by default.
+
+        screwNotches options are:
+        "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
 
         self.panel = self.panel.box(
@@ -178,28 +166,67 @@ class SynthPrinter:
             self.config["panelThickness"],
         )
 
-        # FIXME: Determine here whether to add screw notches instead!
+        # Do we add screw slots?
+        # default to "none" configuration
+        screwNotchTopLeft = False
+        screwNotchTopCenter = False
+        screwNotchTopRight = False
+        screwNotchBottomLeft = False
+        screwNotchBottomCenter = False
+        screwNotchBottomRight = False
+        if (  # If too small for 4 notches
+            self.config["m3ScrewNotchWidth"] * 2
+            + (
+                self.config["m3ScrewNotchDistanceFromSide"]
+                - self.config["m3ScrewNotchWidth"] / 2
+            )
+            * 2
+        ) > self.config["panelWidth"]:
+            if screwNotches == "auto":
+                screwNotches = "tlbr"
+            if screwNotches == "auto-tlbr":
+                screwNotches = "tlbr"
+            if screwNotches == "auto-trbl":
+                screwNotches = "trbl"
+            if screwNotches == "auto-center":
+                screwNotches = "center"
+        else:  # Large enough for 4 notches
+            if screwNotches == "auto":
+                screwNotches = "all"
+            if screwNotches == "auto-tlbr":
+                screwNotches = "all"
+            if screwNotches == "auto-trbl":
+                screwNotches = "all"
+            if screwNotches == "auto-center":
+                screwNotches = "all"
+        if screwNotches == "tlbr":
+            screwNotchTopLeft = True
+            screwNotchBottomRight = True
+        if screwNotches == "trbl":
+            screwNotchTopRight = True
+            screwNotchBottomLeft = True
+        if screwNotches == "center":
+            screwNotchTopCenter = True
+            screwNotchBottomCenter = True
+        if screwNotches == "all":
+            screwNotchTopLeft = True
+            screwNotchTopRight = True
+            screwNotchBottomLeft = True
+            screwNotchBottomRight = True
 
         screwPoints = []
-        if screwNotchBottomLeft:
-            screwPoints.append(
-                (
-                    self.config["m3ScrewNotchDistanceFromSide"],
-                    self.config["m3ScrewNotchDistanceFromBottom"],
-                )
-            )
-        if screwNotchBottomRight:
-            screwPoints.append(
-                (
-                    self.config["panelWidth"]
-                    - self.config["m3ScrewNotchDistanceFromSide"],
-                    self.config["m3ScrewNotchDistanceFromBottom"],
-                )
-            )
         if screwNotchTopLeft:
             screwPoints.append(
                 (
                     self.config["m3ScrewNotchDistanceFromSide"],
+                    self.config["panelHeight"]
+                    - self.config["m3ScrewNotchDistanceFromTop"],
+                )
+            )
+        if screwNotchTopCenter:
+            screwPoints.append(
+                (
+                    self.config["panelWidth"] / 2,
                     self.config["panelHeight"]
                     - self.config["m3ScrewNotchDistanceFromTop"],
                 )
@@ -213,80 +240,99 @@ class SynthPrinter:
                     - self.config["m3ScrewNotchDistanceFromTop"],
                 )
             )
-
-        self.panel = (
-            self.panel.faces(">Z")
-            .workplane()
-            .center(-self.config["panelWidth"] / 2, -self.config["panelHeight"] / 2)
-            .pushPoints(screwPoints)
-            .slot2D(
-                self.config["m3ScrewNotchWidth"], self.config["m3ScrewNotchHeight"], 0
+        if screwNotchBottomLeft:
+            screwPoints.append(
+                (
+                    self.config["m3ScrewNotchDistanceFromSide"],
+                    self.config["m3ScrewNotchDistanceFromBottom"],
+                )
             )
-            .cutThruAll()
-        )
+        if screwNotchBottomCenter:
+            screwPoints.append(
+                (
+                    self.config["panelWidth"] / 2,
+                    self.config["m3ScrewNotchDistanceFromBottom"],
+                )
+            )
+        if screwNotchBottomRight:
+            screwPoints.append(
+                (
+                    self.config["panelWidth"]
+                    - self.config["m3ScrewNotchDistanceFromSide"],
+                    self.config["m3ScrewNotchDistanceFromBottom"],
+                )
+            )
+        if screwPoints != []:
+            self.panel = (
+                self.panel.faces(">Z")
+                .workplane()
+                .center(-self.config["panelWidth"] / 2, -self.config["panelHeight"] / 2)
+                .pushPoints(screwPoints)
+                .slot2D(
+                    self.config["m3ScrewNotchWidth"],
+                    self.config["m3ScrewNotchHeight"],
+                    0,
+                )
+                .cutThruAll()
+            )
 
     # FIXME: Make those helper functions instead?
 
-    # def eurorackPanel(
-    #     width: float = hp(2),
-    #     height: float = _eurorackHeight,
-    #     thickness: float = _panelThickness,
-    # ):
-    #     """Returns a Eurorack panel with screw notches. Eurorack width must be defined in hp().
+    def addEurorackPanel(
+        self,
+        hp: int,
+        screwNotches="auto",
+    ):
+        """Adds a Eurorack panel with screw notches. Eurorack width is defined in hp().
 
-    #     A thickness of 4mm minimum is recommended for solidity."""
+        Eurorack sizes are generally an even number of hp, such as 4hp or 8hp.
+        3hp and 5hp are the only odd number sizes commonly seen in commercial hardware.
 
-    #     if width < hp(2):
-    #         raise Warning("Eurorack panels should be at least 2hp wide")
+        Screw notches in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four notches,
+        there will be only two by default.
 
-    #     # Skip two notches if the panel is too small
-    #     if width >= hp(4):
-    #         addAllScrewNotches = True
-    #     else:
-    #         addAllScrewNotches = False
+        screwNotches options are:
+        "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        """
+        self.config["panelWidth"] = self.config["hp"] * hp
+        self.config["panelHeight"] = self.config["eurorackHeight"]
+        self.addPanel(screwNotches)
 
-    #     return panel(
-    #         width=width,
-    #         height=height,
-    #         thickness=thickness,
-    #         screwNotchDistanceFromSide=_eurorackScrewNotchDistanceFromSide,
-    #         screwNotchDistanceFromTop=_eurorackScrewNotchDistanceFromTop,
-    #         screwNotchDistanceFromBottom=_eurorackScrewNotchDistanceFromBottom,
-    #         screwNotchBottomLeft=addAllScrewNotches,
-    #         screwNotchBottomRight=True,
-    #         screwNotchTopLeft=True,
-    #         screwNotchTopRight=addAllScrewNotches,
-    #     )
+    def add1UIJPanel(
+        self,
+        hp: int,
+        screwNotches="auto",
+    ):
+        """Adds a 1U Tile (Intellijel size) panel with screw notches. Eurorack width is defined in hp().
 
-    # def i1UPanel(width: float = hp(8), thickness: float = _panelThickness):
-    #     """Returns a 1U Tile (Intellijel size) panel with screw notches. Eurorack 1U tile width must be defined in hp().
+        Note that there are two incompatible 1U tile standards: Intellijel and PulpLogic.
 
-    #     A thickness of 4mm minimum is recommended for solidity."""
+        Screw notches in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four notches,
+        there will be only two by default.
 
-    #     if width < hp(2):
-    #         raise Warning("1U tiles (Intellijel size) should be at least 2hp wide")
+        screwNotches options are:
+        "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        """
+        self.config["panelWidth"] = self.config["hp"] * hp
+        self.config["panelHeight"] = self.config["i1UIJHeight"]
+        self.addPanel(screwNotches)
 
-    #     return eurorackPanel(
-    #         width=width,
-    #         height=_i1UHeight,
-    #     )
+    def addKosmoPanel(
+        self,
+        width: int,
+        screwNotches="auto",
+    ):
+        """Adds a Kosmo panel with screw notches. Kosmo widths must be multiples of 25mm.
 
-    # def kosmoPanel(width: float = 25, thickness: float = _panelThickness):
-    #     """Returns a Kosmo (Metric 5U) panel with screw notches. Kosmo widths must be multiples of 25.
-
-    #     A thickness of 4mm minimum is recommended for solidity."""
-
-    #     if width % 25 != 0:
-    #         raise Warning("Kosmo panels should be multiples of 25mm")
-
-    #     return panel(
-    #         width=width,
-    #         height=_kosmoHeight,
-    #         thickness=thickness,
-    #         screwNotchDistanceFromSide=_kosmoScrewNotchDistanceFromSide,
-    #         screwNotchDistanceFromTop=_kosmoScrewNotchDistanceFromTop,
-    #         screwNotchDistanceFromBottom=_kosmoScrewNotchDistanceFromBottom,
-    #     )
+        Kosmo Panels, also known as Metric 5U, are a format compatible with Eurorack
+        popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
+        """
+        # Kosmo panels are always large enough for four notches
+        self.config["panelWidth"] = width
+        self.config["panelHeight"] = self.config["kosmoHeight"]
+        self.addPanel(screwNotches)
 
     # #######################################################################
     # ### Buttons and switches
@@ -506,11 +552,11 @@ class SynthPrinter:
 # is simpler than figuring out a workaround.
 
 # sp = SynthPrinter(
-#     # tolerance=3,
-#     panelWidth=200,
+#     panelWidth=18,
 #     panelHeight=200,
 # )
-# sp.addPanel()
+
+# sp.addKosmoPanel(25, screwNotches="center")
 # sp.cutArcadeButton30mm(20, 20)
 # sp.cutArcadeButton24mm(40, 40)
 # sp.cutMiniToggleSwitch(60, 60)
@@ -523,36 +569,7 @@ class SynthPrinter:
 
 # show_object(sp.panel, name="Panel")
 
-
-# panel = eurorackPanel(hp(12))
-# preview = previewLayer()
-
-
-# panel = arcadeButton30mmHole(panel, 20, 20)
-
-# panel = led5mmHole(panel, 10, 40)
-# panel = led3mmHole(panel, 10, 48)
-
-# panel = potentiometerHole(panel, 30, 45)
-
-# panel = bigJackHole(panel, 15, 60)
-
-# panel = miniToggleSwitchHole(panel, 46, 15)
-# panel = miniToggleSwitchHole(panel, 46, 35, orientation="vertical")
-# panel = miniToggleSwitchHole(panel, 46, 55, orientation="horizontal")
-
-# panel = displayWindow(
-#     panel=panel,
-#     x=28,
-#     y=95,
-#     windowWidth=26.0,
-#     windowHeight=14.5,
-#     windowVerticalOffset=-10,
-#     screwsHorizontalDistance=47.2,
-#     screwsVerticalDistance=47.2,
-# )
-
-# preview = preview.box(24, 24, 24)
+####
 
 # panelAssembly = cq.Assembly().add(panel, color=cq.Color(0, 0.7, 0.7, 0.9))
 # previewAssembly = cq.Assembly().add(preview, color=cq.Color(0.3, 0.2, 0.2, 0.5))
