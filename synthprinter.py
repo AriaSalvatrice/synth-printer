@@ -610,8 +610,7 @@ class SynthPrinter:
         self.previewBoxOnBack(x, y, 9, 10.5, 12.5)
 
     def addMiniJack(self, x: float, y: float):
-        """This fits panel mount 6.35mm jacks with a rectangular base, as used
-        in Kosmo builds.
+        """This fits 3.5mm PJ398SM "Thonkiconn" 3.5mm jacks. UNTESTED FOOTPRINT!
 
         There is a retaining notch the size of the base to help keep it in place.
         """

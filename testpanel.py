@@ -35,4 +35,4 @@ sp.addMiniJack(hp(7) - 1.5, 83)
 sp.addArcadeButton30mm(hp(4), 108)
 
 show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
-show_object(sp.preview, name="preview", options={"alpha": 0.8, "color": (100, 30, 30)})
+show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
