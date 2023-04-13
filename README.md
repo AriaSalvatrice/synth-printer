@@ -14,7 +14,7 @@ Synth Printer is a very very lightweight system letting you create faceplates fo
 
 It's based on [CadQuery](https://github.com/CadQuery/cadquery), but provides a greatly simplified syntax focusing only on synth panels. It's meant to create panels that print right out of the box: they account for tolerances, and they provide footprints that match the kind of synth diy hardware you'll find in the wild. I've made a lot of panels using this system already. My goal is to make it so things will fit on your first attempt.
 
-It's very much for the sort of DIY builds that use prototype boards, or PCBs mounted perpendicularly and wired to the panel. For the sort of DIY builds with sandwiched PCBs mounted in parllel, there's no guarantee the footprints will fit.
+It's very much for the sort of DIY builds that use prototype boards, or PCBs mounted perpendicularly and wired to the panel. For the sort of DIY builds with sandwiched PCBs mounted in parallel, there's no guarantee the footprints will fit.
 
 Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks.
 
@@ -28,7 +28,7 @@ If stuff won't fit, you can override any default setting in the constructor, the
 
 _Note: there is only one example for now—more soon!_
 
-Once you're ready to export your panel, select it in the viewport, and pick "Tools -> Export as STL"
+Once you're ready to export your panel, select it in the viewport, and pick "Tools➔Export as STL"
 
 
 # 3D printing advice for synth panels
@@ -84,7 +84,7 @@ I had good results with [Sebajom's OpenSCAD knob generators on thingiverse](http
 
 # Contributing
 
-How much this project will be updated very much depends whether other people use it at all. If you make anything with it, be sure to show me!
+How much this project will be updated very much depends whether other people use it at all. 
 
 You can help by: 
 
@@ -92,6 +92,17 @@ You can help by:
 - Contributing footprints that worked out for you 
 - Making the code less bad (but let's keep it simple)
 
+## Contact
+
+I insist to see whatever you make with this system! You can send me pics of your contraptions and dog gifs at [woof@aria.dog](mailto:woof@aria.dog). I'm also on the Fediverse (Mastodon-compatible): [@woof@aria.dog](https://fedi.aria.dog/woof).
+
+toodles, 
+
+![Aria Salvatrice](https://github.com/AriaSalvatrice/synth-protoboard/blob/master/Images/signature.png?raw=true)
+
+
+
+---------
 
 # Todo-List
 
