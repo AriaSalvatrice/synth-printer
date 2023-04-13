@@ -424,7 +424,6 @@ class SynthPrinter:
     # ### Buttons and switches
     # #######################################################################
 
-    # TODO: Support the screw-in seimitsu types too. I should have some in stock. Might also have some Happ somewhere.
     # TODO: Other types of common buttons and switches.... Not sure what's super common.
 
     def cutArcadeButton30mm(self, x: float, y: float):
@@ -434,16 +433,22 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, 32.3, 3.4)
         self.previewCylinderOnFront(x, y, 24, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)
+        self.previewCylinderOnBack(x, y, 34.8, 6.5)
 
     def addArcadeButton30mm(self, x: float, y: float):
-        """Uses the dimensions for the Sanwa OBSF-30 snap-in button.
-
-        Sanwas have a hair trigger and a concave surface.
-
-        Dimensions work well with cheaper reproductions of it from Aliexpress.
+        """Should work with all major types of 30mm arcade buttons.
 
         30mm is the size of action buttons commonly seen in arcade cabinets.
         Smaller buttons like the start button are 24mm.
+
+        Tested with the Sanwa OBSF-30 snap-in button.
+        Sanwas have a hair trigger and a concave surface.
+
+        Also tested with an unidentified screw-in type. The preview includes its retaining ring.
+
+        Also tested with an unidentified Happ type.
+        Happ buttons are concave are more commonly seen on American games.
+        They are much deeper than on the preview.
         """
         self.cutArcadeButton30mm(x, y)
         self.previewArcadeButton30mm(x, y)
@@ -456,16 +461,18 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, 27, 3.4)
         self.previewCylinderOnFront(x, y, 22, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)
+        self.previewCylinderOnBack(x, y, 28, 6)
 
     def addArcadeButton24mm(self, x: float, y: float):
-        """Uses the dimensions for the Sanwa OBSF-24 snap-in button.
-
-        Sanwas have a hair trigger and a concave surface.
-
-        Dimensions work well with cheaper reproductions of it from Aliexpress.
+        """Should work with all major types of 24mm arcade buttons.
 
         24mm is the size of utility buttons (like the start button) commonly seen in arcade cabinets.
         Actual action buttons are 30mm.
+
+        Uses the dimensions for the Sanwa OBSF-24 snap-in button.
+        Sanwas have a hair trigger and a concave surface.
+
+        Also tested with an unidentified screw-in type. The preview includes its retaining ring.
         """
         self.cutArcadeButton24mm(x, y)
         self.previewArcadeButton24mm(x, y)
@@ -503,10 +510,14 @@ class SynthPrinter:
     def addMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
         """A mini toggle switch, with a retaining notch.
 
-        This will fit the switches often sold as the "MTS-100" series by Aliexpress vendors.
+        This will fit the switches often sold as the "MTS-100" series by Aliexpress vendors that have only a single row of pins.
+
+        It will not fit DPDT switches that have two rows of pins, those are bigger.
 
         :param orientation: "horizontal" (default) or "vertical".
         """
+
+        # TODO: DPDT
 
         self.cutMiniToggleSwitch(x, y, orientation)
         self.previewMiniToggleSwitch(x, y, orientation)
@@ -660,7 +671,6 @@ class SynthPrinter:
         self.cutLed3mm(x, y)
         self.previewLed3mm(x, y)
 
-    # TODO: How to handle footprints without a matching preview?
     def cutDisplayWindow(
         self,
         x: float,
@@ -774,7 +784,7 @@ def hp(hp: float):
 def khp(khp: float):
     """Converts khp (Kosmo HP) to millimeters (1khp = 25mm).
     Useful to align things to the grid."""
-    return hp * 5.08
+    return hp * 25
 
 
 #######################################################################
@@ -782,3 +792,38 @@ def khp(khp: float):
 #######################################################################
 # CQ-Editor can't autoreload modules, so placing test code here
 # is simpler than figuring out a workaround.
+
+sp = SynthPrinter(
+    tolerance=0.4,
+    panelColorRGBA=cq.Color(0.5, 0.9, 0.5, 0.9),
+    miniToggleSwitchDiameter=6,
+)
+
+sp.addEurorackPanel(8)  # HP
+
+sp.addLed5mm(hp(1), 10)
+sp.addMiniToggleSwitch(hp(1), 20, "vertical")
+sp.addLed3mm(hp(1), 30)
+sp.addMiniToggleSwitch(hp(1), 40, "vertical")
+sp.addMiniToggleSwitch(hp(4), 40)
+
+sp.addPotentiometer(hp(4), 20)
+sp.addKnob(hp(4), 20, 12, 16)
+
+sp.addLed5mm(32, 10)
+sp.addLed5mm(37, 15)
+sp.addLed5mm(32, 20)
+sp.addLed5mm(37, 25)
+sp.addLed5mm(32, 30)
+sp.addLed5mm(37, 35)
+sp.addLed5mm(32, 40)
+sp.addLed5mm(37, 45)
+
+sp.addArcadeButton24mm(hp(4), 60)
+sp.addMiniJack(hp(1) + 1.5, 83)
+sp.addBigJack(hp(4), 83)
+sp.addMiniJack(hp(7) - 1.5, 83)
+sp.addArcadeButton30mm(hp(4), 108)
+
+show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
+show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
