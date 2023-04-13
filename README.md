@@ -12,11 +12,9 @@ Synth Printer is a very very lightweight system letting you create faceplates fo
 
 It's based around [CadQuery](https://github.com/CadQuery/cadquery), but provides a greatly simplified syntax focusing only on synth panels. It's meant to create panels that print right out of the box: they account for tolerances, and they provide footprints that match the kind of synth diy hardware you'll find in the wild. I've made a lot of panels using this system already. My goal is to make it so things will fit on your first attempt.
 
-It's very much for the sort of DIY builds that use prototype boards, or PCBs mounted perpendicularly and wired to the panel. It's not really meant for the sort of DIY builds with sandwiched PCBs mounted in parllel. 
+It's very much for the sort of DIY builds that use prototype boards, or PCBs mounted perpendicularly and wired to the panel. For the sort of DIY builds with sandwiched PCBs mounted in parllel, there's no guarantee the footprints will fit.
 
-Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. It's really just A Bunch Of Helper Functions In A File.
-
-Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks. How much this project will be updated very much depends whether other people use it at all.
+Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. It's really just A Bunch Of Helper Functions In A File. Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks.
 
 To get started, you need a way to use CadQuery. I strongly recommend you simply use [Cq-Editor](https://github.com/CadQuery/CQ-editor) (grab a binary release).
 
@@ -44,6 +42,7 @@ Common options are PLA, PETG, and ABS.
 | Ease of printing | Easiest | Easy | Hard, requires an enclosure |
 | Toxicity | Safe | Safe | Requires proper ventilation while printing |
 | Print visual quality | Good | Poor | Good, excellent after acetone vapor smoothing |
+| Strength | Good | Good | Excellent |
 | Heat resistance | Mediocre | Poor | Good |
 | UV resistance | Mediocre | Good | Poor |
 
@@ -79,6 +78,16 @@ Let's review what goes into making a solid front plate:
 ### Printing knobs
 
 I had good results with [Sebajom's OpenSCAD knob generators on thingiverse](https://www.thingiverse.com/sebajom/designs).
+
+# Contributing
+
+How much this project will be updated very much depends whether other people use it at all. If you make anything with it, be sure to show me!
+
+You can help by: 
+
+- Reporting your successes and failures
+- Contributing footprints that worked out for you 
+- Making the code less bad (but let's keep it simple)
 
 
 # Todo-List
