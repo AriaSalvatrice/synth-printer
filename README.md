@@ -105,3 +105,6 @@ You can help by:
 - [ ] Documentation!! This is the most important part. I need to explain all it takes to get good results.
 - [ ] A jupyter browser thing? Sounds daunting but people would really prefer not to have to install anything.
 - [ ] Do people want to add text labels? They will be very disappointed with quality though. 
+- [ ] Good documentation of the available functions, there's already docstrings so i can prolly automate it
+- [ ] SVG Export, document a process to print on transparencies, mention toner transfer
+- [ ] Figure out more how to make it useful for DXF / CNC processes
