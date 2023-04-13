@@ -1,6 +1,6 @@
-# Synth Printer: WIP Experiment with CadQuery
+# Synth Printer
 
-**This is not ready for general use yet!**
+**This is pre-alpha quality software! Expect the API to change like every hour or so. You can get usable results from it already, but only use it to play around and make one-offs you don't mind never being able to edit further.**
 
 I don't really know python btw, I just did enough hacks with it to have kinda picked it up by accident. 
 
@@ -69,6 +69,7 @@ Let's review what goes into making a solid front plate:
 - You can achieve neat light reflection tricks by using an interesting bottom fill pattern. I often use the concentric one. The effect is dramatic when used with a Silk filament!
 - Wanna use a beautiful but expensive specialty filament for your faceplates? Just swap filament after 3~4 layers! Do the visible layers with your fancy filament, and the rest with bargain bin stock. 
 - After the first layer, it's safe to use the highest layer height your printer supports, we don't care about vertical accuracy. 
+- After the first few layers, it's also safe to bump up your printing speed, up to the maximum you know your rig can handle. 
 
 ### Printing the front as last layer
 
