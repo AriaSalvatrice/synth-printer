@@ -1,10 +1,21 @@
 import cadquery as cq
 
 # TODO: For Eurorack and 1U, shave off some width off the edges - without messing up the measurements
+# TODO: Multiple color layers?
+# TODO: Prevent adding multiple panels
+# TODO: Grid systems
 
 
 class SynthPrinter:
     defaultConfig = {
+        ###########################################################
+        #
+        # You can override any of those settings by passing them as
+        # a parameter to the constructor - see examples.
+        #
+        # Preview objects have their sizes hardcoded to keep
+        # the size of the config in check.
+        #
         ###########################################################
         ### Common Dimensions
         ###########################################################
@@ -18,7 +29,7 @@ class SynthPrinter:
         ### Visualization
         ###########################################################
         "panelColorRGBA": cq.Color(0, 0.7, 0.7, 0.9),
-        "previewColorRGBA": cq.Color(0.3, 0.2, 0.2, 0.2),
+        "previewColorRGBA": cq.Color(0.7, 0.2, 0.2, 0.4),
         ###########################################################
         ### Screws
         ###########################################################
@@ -63,14 +74,14 @@ class SynthPrinter:
         + config["tolerance"] * 1.4,
         ###### Mini Toggle Switches
         "miniToggleSwitchWidth": 13.2,
-        "miniToggleSwitchHeight": 7.9,
+        "miniToggleSwitchLength": 7.9,
         "miniToggleSwitchDiameter": 6,
         "miniToggleSwitchWidthWithTolerance": lambda config: config[
             "miniToggleSwitchWidth"
         ]
         + config["tolerance"],
-        "miniToggleSwitchHeightWithTolerance": lambda config: config[
-            "miniToggleSwitchHeight"
+        "miniToggleSwitchLengthWithTolerance": lambda config: config[
+            "miniToggleSwitchLength"
         ]
         + config["tolerance"],
         "miniToggleSwitchDiameterWithTolerance": lambda config: config[
@@ -94,7 +105,7 @@ class SynthPrinter:
         ### Jacks
         ###########################################################
         ###### Big
-        "bigJackDiameter": 10,
+        "bigJackDiameter": 9,
         "bigJackDiameterWithTolerance": lambda config: config["bigJackDiameter"]
         + config["tolerance"],
         "bigJackWidth": 16,
@@ -107,10 +118,11 @@ class SynthPrinter:
         ###########################################################
         ### Blinkenlichten
         ###########################################################
-        "5mmLed": 5,
+        "5mmLed": 4.9,
         "5mmLedWithTolerance": lambda config: config["5mmLed"] + config["tolerance"],
-        "3mmLed": 3,
-        "3mmLedWithTolerance": lambda config: config["3mmLed"] + config["tolerance"],
+        "3mmLed": 2.9,
+        "3mmLedWithTolerance": lambda config: config["3mmLed"]
+        + config["tolerance"] * 1.5,
     }
 
     def __init__(self, **kwargs):
@@ -140,13 +152,14 @@ class SynthPrinter:
     #######################################################################
 
     def assemble(self):
+        """Prepares the models for display in CQ Editor"""
         self.panelAssembly = cq.Assembly().add(
             self.panel, color=self.config["panelColorRGBA"]
         )
         self.previewAssembly = cq.Assembly().add(
             self.preview, color=self.config["previewColorRGBA"]
         )
-        # TODO: calling show_object doesn't work from this scope! Why?
+        # TODO: calling CQ-editor's show_object doesn't work from this scope! Can it be solved?
 
     def cutHole(self, x: float, y: float, diameter: float):
         """Makes a circular hole through the entire panel"""
@@ -159,6 +172,50 @@ class SynthPrinter:
         )
 
     # TODO: Move other common drill operations to helpers
+
+    def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
+        self.preview = (
+            self.preview.moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(depth + self.config["panelThickness"] / 2)
+        )
+
+    def previewCylinderOnFront(self, x: float, y: float, diameter: float, depth: float):
+        self.preview = (
+            self.preview.moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(-depth - self.config["panelThickness"] / 2)
+        )
+
+    def previewBoxOnBack(
+        self, x: float, y: float, width: float, height: float, depth: float
+    ):
+        self.preview = (
+            self.preview.moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(depth + self.config["panelThickness"] / 2)
+        )
+
+    def previewBoxOnFront(
+        self, x: float, y: float, width: float, height: float, depth: float
+    ):
+        self.preview = (
+            self.preview.moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(-depth - self.config["panelThickness"] / 2)
+        )
 
     # #######################################################################
     # ### Panels
@@ -358,7 +415,9 @@ class SynthPrinter:
         self.cutHole(x, y, self.config["sanwaOBSF30ButtonWithTolerance"])
 
     def previewArcadeButton30mm(self, x: float, y: float):
-        return  # TODO:
+        self.previewCylinderOnFront(x, y, 32.3, 3.4)
+        self.previewCylinderOnFront(x, y, 24, 7)
+        self.previewCylinderOnBack(x, y, 24, 24.4)
 
     def addArcadeButton30mm(self, x: float, y: float):
         """Uses the dimensions for the Sanwa OBSF-30 snap-in button.
@@ -377,7 +436,10 @@ class SynthPrinter:
         self.cutHole(x, y, self.config["sanwaOBSF24ButtonWithTolerance"])
 
     def previewArcadeButton24mm(self, x: float, y: float):
-        return  # TODO:
+        # FIXME: Untested guessed values! I will only receive them in a while.
+        self.previewCylinderOnFront(x, y, 27, 3.4)
+        self.previewCylinderOnFront(x, y, 22, 7)
+        self.previewCylinderOnBack(x, y, 24, 24.4)
 
     def addArcadeButton24mm(self, x: float, y: float):
         """Uses the dimensions for the Sanwa OBSF-24 snap-in button.
@@ -393,14 +455,12 @@ class SynthPrinter:
         self.previewArcadeButton24mm(x, y)
 
     def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
-        if orientation != "horizontal" and orientation != "vertical":
-            raise Warning("Orientation must be either horizontal or vertical")
         if orientation == "horizontal":
             width = self.config["miniToggleSwitchWidthWithTolerance"]
-            height = self.config["miniToggleSwitchHeightWithTolerance"]
+            length = self.config["miniToggleSwitchLengthWithTolerance"]
         else:
-            width = self.config["miniToggleSwitchHeightWithTolerance"]
-            height = self.config["miniToggleSwitchWidthWithTolerance"]
+            width = self.config["miniToggleSwitchLengthWithTolerance"]
+            length = self.config["miniToggleSwitchWidthWithTolerance"]
 
         self.cutHole(x, y, self.config["miniToggleSwitchDiameterWithTolerance"])
         self.panel = (
@@ -408,14 +468,21 @@ class SynthPrinter:
             .vertices("<XY")
             .workplane(centerOption="CenterOfMass")
             .center(x, y)
-            .rect(width, height)
+            .rect(width, length)
             .cutBlind(-self.config["miniToggleSwitchNotchDepth"])
         )
 
     def previewMiniToggleSwitch(
         self, x: float, y: float, orientation: str = "horizontal"
     ):
-        return  # TODO:
+        if orientation == "horizontal":
+            width = self.config["miniToggleSwitchWidth"]
+            length = self.config["miniToggleSwitchLength"]
+        else:
+            width = self.config["miniToggleSwitchLength"]
+            length = self.config["miniToggleSwitchWidth"]
+        self.previewBoxOnBack(x, y, width, length, 13.6)
+        self.previewCylinderOnFront(x, y, self.config["miniToggleSwitchDiameter"], 19)
 
     def addMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
         """A mini toggle switch, with a retaining notch.
@@ -424,6 +491,7 @@ class SynthPrinter:
 
         This will fit the switches often sold as the "MTS-100" series by Aliexpress vendors.
         """
+
         self.cutMiniToggleSwitch(x, y, orientation)
         self.previewMiniToggleSwitch(x, y, orientation)
 
@@ -431,6 +499,8 @@ class SynthPrinter:
     # ### Potentiometers and rotary encoders
     # #######################################################################
 
+    # TODO: Let you configure the notches
+    # TODO: Make actual knobs
     def cutPotentiometer(self, x: float, y: float):
         self.cutHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
         # Add the notches
@@ -454,7 +524,10 @@ class SynthPrinter:
         )
 
     def previewPotentiometer(self, x: float, y: float):
-        return  # TODO:
+        self.previewCylinderOnFront(x, y, 6, 21)
+        self.previewCylinderOnFront(x, y, 9.6, 1.6)
+        self.previewCylinderOnBack(x, y, 16, 8)
+        self.previewBoxOnBack(x, y + 8, 15, 14, 2.4)
 
     def addPotentiometer(self, x: float, y: float):
         """Fits most types of panel-mount potentiometers with a 6mm shaft.
@@ -489,7 +562,9 @@ class SynthPrinter:
         )
 
     def previewBigJack(self, x: float, y: float):
-        return  # TODO:
+        self.previewCylinderOnFront(x, y, 8.5, 7)
+        self.previewCylinderOnFront(x, y, 12.6, 2.2)
+        self.previewBoxOnBack(x, y, 16, 16, 27)
 
     def addBigJack(self, x: float, y: float):
         """This fits panel mount 6.35mm jacks with a rectangular base, as used
@@ -510,6 +585,8 @@ class SynthPrinter:
         self.cutHole(x, y, self.config["5mmLedWithTolerance"])
 
     def previewLed5mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 4.7, 3)  # FIXME: Check value
+        self.previewBoxOnBack(x, y, 4, 1, 17)
         return  # TODO:
 
     def addLed5mm(self, x: float, y: float):
@@ -524,7 +601,8 @@ class SynthPrinter:
         self.cutHole(x, y, self.config["3mmLedWithTolerance"])
 
     def previewLed3mm(self, x: float, y: float):
-        return  # TODO:
+        self.previewCylinderOnFront(x, y, 2.8, 1)  # FIXME: Check value
+        self.previewBoxOnBack(x, y, 2.7, 1, 17)
 
     def addLed3mm(self, x: float, y: float):
         """Creates a hole for a 3mm LED protruding entirely from the hole.
@@ -613,16 +691,13 @@ class SynthPrinter:
     #######################################################################
 
 
-def display(sp):
-    panelAssembly = cq.Assembly().add(sp.panel, color=sp.config["panelColorRGBA"])
-    previewAssembly = cq.Assembly().add(sp.preview, color=sp.config["previewColorRGBA"])
+#######################################################################
+### Helpers
+#######################################################################
 
-    # FIXME: Doesn't work from this scope!
-    try:  # Function only present in CQ-Editor
-        show_object(panelAssembly, name="Panel")
-        show_object(previewAssembly, name="Preview")
-    except NameError:
-        print("Cannot display a preview in this environment")
+
+def hp(hp: float):
+    return hp * 5.08
 
 
 #######################################################################
@@ -633,17 +708,26 @@ def display(sp):
 
 # sp = SynthPrinter()
 
-# sp.addKosmoPanel(150, screwNotches="auto")
-# sp.addArcadeButton30mm(20, 20)
-# sp.addArcadeButton24mm(40, 40)
-# sp.addMiniToggleSwitch(60, 60)
-# sp.addPotentiometer(20, 80)
-# sp.addBigJack(70, 20)
-# sp.addLed5mm(100, 40)
-# sp.addLed3mm(100, 60)
-# sp.cutDisplayWindow(120, 120)
+# sp.addEurorackPanel(8)
 
-# sp.preview = sp.preview.box(70, 70, 70)
+# sp.addLed5mm(hp(1), 10)
+# sp.addMiniToggleSwitch(hp(1), 20, "vertical")
+# sp.addLed3mm(hp(1), 30)
+
+# sp.addPotentiometer(hp(4), 20)
+
+# sp.addLed5mm(hp(7), 10)
+# sp.addLed5mm(hp(7), 20)
+# sp.addLed5mm(hp(7), 30)
+# sp.addLed5mm(hp(7), 40)
+
+# sp.addMiniToggleSwitch(hp(4), 40)
+
+
+# sp.addArcadeButton24mm(hp(4), 60)
+# sp.addBigJack(hp(4), 83)
+# sp.addArcadeButton30mm(hp(4), 108)
+
 
 # sp.assemble()
 # show_object(sp.panelAssembly, "panel")
