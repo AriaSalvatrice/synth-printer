@@ -1,9 +1,7 @@
 import cadquery as cq
 
 # TODO: For Eurorack and 1U, shave off some width off the edges - without messing up the measurements
-# TODO: Multiple color layers?
 # TODO: Prevent adding multiple panels
-# TODO: Grid systems
 
 
 class SynthPrinter:
