@@ -10,7 +10,9 @@ Hey kid, wanna extrude a synth?
 
 Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough).
 
-It's based around [CadQuery](https://github.com/CadQuery/cadquery), but provides a greatly simplified syntax focusing only on synth panels. It's meant to create panels that print right out of the box: they account for tolerances, and they provide footprints that match the kind of synth diy hardware you'll find in the wild. I've made a lot of panels using this system already. My goal is to make it so things will fit on your first attempt.
+![](https://fedi.aria.dog/media/17aa8fdb1c6e1ff602ecce3bd5c93f53bb3def0051daa0c2cb5326c0f390e5c5.png)
+
+It's based on [CadQuery](https://github.com/CadQuery/cadquery), but provides a greatly simplified syntax focusing only on synth panels. It's meant to create panels that print right out of the box: they account for tolerances, and they provide footprints that match the kind of synth diy hardware you'll find in the wild. I've made a lot of panels using this system already. My goal is to make it so things will fit on your first attempt.
 
 It's very much for the sort of DIY builds that use prototype boards, or PCBs mounted perpendicularly and wired to the panel. For the sort of DIY builds with sandwiched PCBs mounted in parllel, there's no guarantee the footprints will fit.
 
@@ -96,18 +98,21 @@ You can help by:
   - Just going with a collection of functions, but maybe i can integrate it to CadQuery's fluent API?
   - Need to move with an architecture where you have default settings you override
   - Just have an object hold it all, having to specify the panel every time is dirty.
-- [ ] Remake all my existing footprints
-  - Remade a bunch already
+- [x] Remake all my existing footprints
 - [ ] Make the footprints I expect to need
 - [x] More consistent nomenclature in code
-- [ ] Have little previews of the expected footprint of elements (nothing fancy, just cylinders and cubes)
-  - Should i use assemblies? -> Yes but two separate ones for ease of exporting. Lets you color stuff.
+- [x] Have little previews of the expected footprint of elements (nothing fancy, just cylinders and cubes)
+- [ ] Additional colors for previews could be useful
 - [ ] Integrate the support lattice properly. Maybe remake it? Also cache it, it takes too long to generate.
+- [ ] Make it easy to make your own footprints
+- [ ] Provide examples
 - [x] Figure out how to make fillets/chamfers for big windows not suck ass and require Blender touch-ups
 - [ ] Documentation!! This is the most important part. I need to explain all it takes to get good results.
   - Good progress on that
+- [ ] Grid system? I'm already building my own Kosmo stuff to my own grid so why not add in a helper for that.
 - [ ] Good API documentation, there's already docstrings so i can prolly automate it to an extent.
 - [ ] A jupyter browser thing? Sounds daunting but people would really prefer not to have to install anything.
+- [ ] Test every footprint with real-life hardware
 - [ ] Do people want to add text labels? They will be very disappointed with quality though. 
   - If I can't offer quality I don't want to offer it at all, and you will NOT get quality at eurorack sizes. Maybe at Kosmo sizes, but even then it will look nasty.
 - [ ] SVG Export, document a process to print on transparencies, mention toner transfer
