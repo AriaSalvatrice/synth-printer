@@ -15,9 +15,14 @@ class SynthPrinter:
         "hp": 5.08,  # 0.2 inches
         "retainingNotchDepth": lambda config: config["panelThickness"] / 3,
         ###########################################################
+        ### Visualization
+        ###########################################################
+        "panelColorRGBA": cq.Color(0, 0.7, 0.7, 0.9),
+        "previewColorRGBA": cq.Color(0.3, 0.2, 0.2, 0.5),
+        ###########################################################
         ### Screws
         ###########################################################
-        ## M3
+        ###### M3
         "m3Diameter": 3.0,
         "m3DiameterWithTolerance": lambda config: config["m3Diameter"]
         + config["tolerance"],
@@ -27,7 +32,7 @@ class SynthPrinter:
         "m3ScrewNotchDistanceFromBottom": 3.0,
         "m3ScrewNotchDistanceFromSide": lambda config: config["m3DiameterWithTolerance"]
         * 1.5,
-        ## M2
+        ###### M2
         "m2Diameter": 2.0,
         "m2DiameterWithTolerance": lambda config: config["m2Diameter"]
         + config["tolerance"] * 1.5,  # More expansion with small screws
@@ -47,6 +52,7 @@ class SynthPrinter:
         ###########################################################
         ### Buttons and switches
         ###########################################################
+        ###### Arcade
         # Sanwas have little clips making them require more tolerance
         # (or at least, my Aliexpress clones do - gotta check the real thing)
         "sanwaOBSF24Button": 24,  # TODO: UNTESTED!! Waiting to receive them by mail
@@ -55,6 +61,7 @@ class SynthPrinter:
         "sanwaOBSF30Button": 30,
         "sanwaOBSF30ButtonWithTolerance": lambda config: config["sanwaOBSF30Button"]
         + config["tolerance"] * 1.4,
+        ###### Mini Toggle Switches
         "miniToggleSwitchWidth": 13.2,
         "miniToggleSwitchHeight": 7.9,
         "miniToggleSwitchDiameter": 6,
@@ -74,6 +81,7 @@ class SynthPrinter:
         ###########################################################
         ### Potentiometers and rotary encoders
         ###########################################################
+        ###### Pots
         "potentiometerHoleDiameter": 7,
         "potentiometerHoleDiameterWithTolerance": lambda config: config[
             "potentiometerHoleDiameter"
@@ -85,6 +93,7 @@ class SynthPrinter:
         ###########################################################
         ### Jacks
         ###########################################################
+        ###### Big
         "bigJackDiameter": 10,
         "bigJackDiameterWithTolerance": lambda config: config["bigJackDiameter"]
         + config["tolerance"],
@@ -129,6 +138,15 @@ class SynthPrinter:
     #######################################################################
     ### Helpers
     #######################################################################
+
+    def assemble(self):
+        self.panelAssembly = cq.Assembly().add(
+            self.panel, color=self.config["panelColorRGBA"]
+        )
+        self.previewAssembly = cq.Assembly().add(
+            self.preview, color=self.config["previewColorRGBA"]
+        )
+        # TODO: calling show_object doesn't work from this scope! Why?
 
     def cutHole(self, x: float, y: float, diameter: float):
         """Makes a circular hole through the entire panel"""
@@ -275,8 +293,6 @@ class SynthPrinter:
                 )
                 .cutThruAll()
             )
-
-    # FIXME: Make those helper functions instead?
 
     def addEurorackPanel(
         self,
@@ -489,7 +505,7 @@ class SynthPrinter:
         """
 
         # FIXME: This is the nastiest way possible to do a fillet
-        # but the only one that worked
+        # but the only one i could figure out
         cutout = (
             cq.Workplane("XY")
             .box(
@@ -545,16 +561,25 @@ class SynthPrinter:
     #######################################################################
 
 
+def display(sp):
+    panelAssembly = cq.Assembly().add(sp.panel, color=sp.config["panelColorRGBA"])
+    previewAssembly = cq.Assembly().add(sp.preview, color=sp.config["previewColorRGBA"])
+
+    # FIXME: Doesn't work from this scope!
+    try:  # Function only present in CQ-Editor
+        show_object(panelAssembly, name="Panel")
+        show_object(previewAssembly, name="Preview")
+    except NameError:
+        print("Cannot display a preview in this environment")
+
+
 #######################################################################
 ### TEST CODE
 #######################################################################
 # CQ-Editor can't autoreload modules, so placing test code here
 # is simpler than figuring out a workaround.
 
-# sp = SynthPrinter(
-#     panelWidth=18,
-#     panelHeight=200,
-# )
+# sp = SynthPrinter()
 
 # sp.addKosmoPanel(25, screwNotches="center")
 # sp.cutArcadeButton30mm(20, 20)
@@ -567,7 +592,12 @@ class SynthPrinter:
 # sp.cutLed3mm(100, 60)
 # sp.cutDisplayWindow(120, 120)
 
-# show_object(sp.panel, name="Panel")
+# sp.preview = sp.preview.box(70, 70, 70)
+
+# sp.assemble()
+# show_object(sp.panelAssembly, "panel")
+# show_object(sp.previewAssembly, "preview")
+
 
 ####
 
