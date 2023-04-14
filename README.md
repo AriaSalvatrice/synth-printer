@@ -3,7 +3,7 @@
 
 Hey kid, wanna extrude a synth?
 
-Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough). 
+Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough). You don't need to install a complex Python environment either.
 
 Try it out! In just a few minutes, you'll get a STL file ready to print, and your components will fit just right, without having to bust out the calipers. With live visualization as you edit the code, and realistic previews of the size of the elements, it's much less fiddly than using CAD software, and much easier to get clearances right.
 
@@ -17,7 +17,7 @@ It's very much for the sort of DIY builds that use prototype boards, or PCBs mou
 
 Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks.
 
-To get started, you need a way to use CadQuery. I strongly recommend you simply use a [Cq-Editor binary release](https://github.com/CadQuery/CQ-editor/releases).
+To get started, you need a way to use CadQuery. I strongly recommend you simply use a [Cq-Editor binary release](https://github.com/CadQuery/CQ-editor/releases). It bundles all you need, there's nothing else to install.
 
 After that, [download this repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples in that editor. Use the **▶ Render** button (F5) to run the code. Rotate the viewport, as you'll be seeing the panel from the back by default. You can toggle the preview layer in the outliner to see the panel better.
 
