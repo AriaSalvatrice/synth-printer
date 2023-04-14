@@ -19,13 +19,13 @@ Due to its very limited audience, this system is very minimal, hacky, and rough 
 
 To get started, you need a way to use CadQuery. I strongly recommend you simply use a [Cq-Editor binary release](https://github.com/CadQuery/CQ-editor/releases).
 
-After that, [download this repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples in that editor. Use the **▶ Render** button (F5) to run the code. Rotate the viewport, as you'll be seeing the panel from the back by default. 
+After that, [download this repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples in that editor. Use the **▶ Render** button (F5) to run the code. Rotate the viewport, as you'll be seeing the panel from the back by default. You can toggle the preview layer in the outliner to see the panel better.
 
 You can edit code right from CQ-Editor, but if you find it limiting, you can enable autoreload in the preferences, and edit the files from an external editor. You can  design a panel simply by modifying an example, but take a look at synthprinter.py: the functions are full of useful comments, telling you which hardware they fit, and why some values were chosen.
 
 My goal is to provide default settings that fit in mosts cases. But if stuff won't fit, you can override any default setting in the constructor, the examples will show you how.
 
-Once you're ready to export your panel, select it in the viewport, and pick "Tools➔Export as STL"
+Once you're ready to export your panel, select it in the viewport, and pick "Tools➔Export as STL". Make sure not to also export the preview layer!
 
 
 # 3D printing advice for synth panels
@@ -57,10 +57,12 @@ Let's review what goes into making a solid front plate:
 - Shell thickness: Probably even more important than infill. You might want to have 5 of them.
 - Infill: Not every infill type is resistant to the same type of forces. I generally use 100% infill anyway, except for translucent filaments where I want to achieve a special texture when it's backlit.
 
-## Achieving the best texture
+## Choosing the best orientation
 
-### Printing the front as first layer (recommended)
+### Printing the front as first layer, upside-down
 
+- This is my preferred way of printing panels.
+- By printing in this orientation, you can add supports for the PCB on the back. I often use a support lattice to which I secure the PCBs with self-locking ties. Note that Synth Printer has no built-in support for them yet, but it's planned. You can just add a support mesh in your slicer, for now.
 - You need to achieve a good first layer. There's no secret, it requires a properly tuned printer, a perfectly leveled bed (a depth probe really helps with this), and a perfectly dialed in Z-offset. 
 - Print on smooth glass if you can! If you have a textured glass bed, it's safe to flip it over and just print on the untextured side. This will tremendously improve the print quality. You might want to add just a touch of hair spray if heat isn't enough to hold things in place.
 - You can achieve neat light reflection tricks by using an interesting bottom fill pattern. I often use the concentric one. The effect is dramatic when used with a Silk filament!
@@ -70,10 +72,11 @@ Let's review what goes into making a solid front plate:
 
 ### Printing the front as last layer
 
-- Consider enabling ironing in your slicer settings! It takes a long while, but can achieve incredibly smooth results.
-- The recessed areas on the back will look visually nastier, but shouldn't require supports.
-- Of course, you can't add a lattice in the back with this orientation. 
-- With a poorly tuned or low quality printer, this orientation will probably yield better results.
+- With a poorly tuned or low quality printer, this orientation will yield better results.
+- Consider enabling ironing in your slicer settings! It takes a long while, but can achieve an incredibly smooth surface. It's particularly good if you want to decorate your panel with acrylic paint (POSCA markers are a favorite for this).
+- You can add decorations in relief, and change filaments to have labels! But note that at Eurorack sizes, it's almost impossible to have text labels that look any decent. Synth Printer has no support for embossings yet, so you'll have to edit the STL with other software.
+- The recessed areas on the back will look visually nastier, and be less deep, but shouldn't require supports.
+- Of course, you can't add supports in the back with this orientation. 
 
 ## Printing knobs
 
