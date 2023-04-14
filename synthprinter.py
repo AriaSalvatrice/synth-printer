@@ -18,11 +18,14 @@ class SynthPrinter:
         ### Common Dimensions
         ###########################################################
         "tolerance": 0.4,
-        "panelWidth": lambda config: 20 + 120,  # <- How it's done
+        "panelWidth": 100.0,
         "panelHeight": 100.0,
         "panelThickness": 4.0,
         "hp": 5.08,  # 0.2 inches
-        "retainingNotchDepth": lambda config: config["panelThickness"] / 3,
+        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
+        # it hollows out 5 layers instead of 4. This helps making the notches
+        # better at keeping things in place.
+        "retainingNotchDepth": lambda config: config["panelThickness"] / 3.9,
         ###########################################################
         ### Visualization
         ###########################################################
@@ -58,6 +61,13 @@ class SynthPrinter:
         ],  # TODO: Test & implement
         "kosmoHeight": 200.0,
         "kosmoWidthTolerance": 0,  # Kosmo needs no additional tolerance due to fitting HP rails
+        ###########################################################
+        ### Panel engravings
+        ###########################################################
+        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
+        # it engraves 5 layers instead of 4. This greatly helps with color
+        # changes, with fewer layers, the first color might be a bit translucent.
+        "panelEngravingDepth": lambda config: config["panelThickness"] / 3.9,
         ###########################################################
         ### Buttons and switches
         ###########################################################
@@ -153,7 +163,7 @@ class SynthPrinter:
         self.panel = cq.Workplane("XY")
         self.preview = cq.Workplane("XY")
 
-        self.panelAdded = False
+        self.panelAdded = False  # We can only have one or horrible things happen
 
     #######################################################################
     #######################################################################
@@ -227,9 +237,9 @@ class SynthPrinter:
             .extrude(-depth - self.config["panelThickness"] / 2)
         )
 
-    # #######################################################################
-    # ### Panels
-    # #######################################################################
+    #######################################################################
+    ### Panels
+    #######################################################################
 
     def addPanel(
         self,
@@ -420,9 +430,57 @@ class SynthPrinter:
         self.config["panelHeight"] = self.config["kosmoHeight"]
         self.addPanel(screwNotches)
 
-    # #######################################################################
-    # ### Buttons and switches
-    # #######################################################################
+    #######################################################################
+    ### Panel engravings
+    #######################################################################
+
+    # TODO: engraveLineTo that takes toX toY
+
+    def engraveLine(
+        self,
+        fromX: float,
+        fromY: float,
+        angle: float,
+        length: float,
+        width: float,
+        depth: float = 0,
+    ):
+        """Engraves a line on the front of the panel.
+
+        If the depth parameter is omitted or 0, the default depth is used.
+
+        Be sure to inspect both sides of the print to make sure there aren't
+        any sections that are too thin!
+        """
+        if depth == 0:
+            depth = self.config["panelEngravingDepth"]
+        cutout = (
+            cq.Workplane("XY")
+            .lineTo(-width / 2, 0)
+            .lineTo(-width / 2, -length)
+            .lineTo(width / 2, -length)
+            .lineTo(width / 2, 0)
+            .close()
+            .extrude(depth)
+            .rotate((0, 0, 0), (0, 0, 1), angle)
+            .translate(
+                (
+                    -self.config["panelWidth"] / 2 + fromX,
+                    -self.config["panelHeight"] / 2 + fromY,
+                    -self.config["panelThickness"] / 2,
+                )
+            )
+        )
+        self.panel = (
+            self.panel.faces(">Z")
+            .vertices("<XY")
+            .workplane(centerOption="CenterOfMass")
+            .cut(cutout)
+        )
+
+    #######################################################################
+    ### Buttons and switches
+    #######################################################################
 
     # TODO: Other types of common buttons and switches.... Not sure what's super common.
 
@@ -522,9 +580,9 @@ class SynthPrinter:
         self.cutMiniToggleSwitch(x, y, orientation)
         self.previewMiniToggleSwitch(x, y, orientation)
 
-    # #######################################################################
-    # ### Potentiometers and rotary encoders
-    # #######################################################################
+    #######################################################################
+    ### Potentiometers and rotary encoders
+    #######################################################################
 
     def cutPotentiometer(
         self,
@@ -608,9 +666,9 @@ class SynthPrinter:
 
     # TODO: Rotary encoders
 
-    # #######################################################################
-    # ### Jacks
-    # #######################################################################
+    #######################################################################
+    ### Jacks
+    #######################################################################
 
     def cutBigJack(self, x: float, y: float):
         self.cutHole(x, y, self.config["bigJackDiameterWithTolerance"])
@@ -668,9 +726,9 @@ class SynthPrinter:
         self.cutMiniJack(x, y)
         self.previewMiniJack(x, y)
 
-    # #######################################################################
-    # ### Blinkenlichten
-    # #######################################################################
+    #######################################################################
+    ### Blinkenlichten
+    #######################################################################
 
     def cutLed5mm(self, x: float, y: float):
         self.cutHole(x, y, self.config["5mmLedWithTolerance"])
@@ -815,7 +873,7 @@ def hp(hp: float):
 def khp(khp: float):
     """Converts khp (Kosmo HP) to millimeters (1khp = 25mm).
     Useful to align things to the grid."""
-    return hp * 25
+    return khp * 25
 
 
 def kcol(kcol: float):
@@ -824,8 +882,8 @@ def kcol(kcol: float):
 
 
 def krow(krow: float):
-    """Custom Kosmo grid system: each krow is 30mm, first starts 15mm from top"""
-    return (krow - 1) * 25 + 25
+    """Custom Kosmo grid system: each krow is 25mm, first starts 25mm from top"""
+    return (krow) * 25
 
 
 #######################################################################
@@ -833,22 +891,3 @@ def krow(krow: float):
 #######################################################################
 # CQ-Editor can't autoreload modules, so placing test code here
 # is simpler than figuring out a workaround.
-
-# sp = SynthPrinter(
-#     tolerance=0.4,
-#     panelColorRGBA=cq.Color(0.5, 0.9, 0.5, 0.9),
-#     miniToggleSwitchDiameter=6,
-# )
-
-# sp.addKosmoPanel(50)
-
-# sp.addPotentiometer(kcol(2), krow(1), "left", "top")
-# sp.addPotentiometer(kcol(2), krow(2), "bottom", "left")
-# sp.addPotentiometer(kcol(2), krow(3), "top", "right")
-# sp.addPotentiometer(kcol(2), krow(4), "right", "bottom")
-# sp.addPotentiometer(kcol(2), krow(5), "none", "none")
-# sp.addPotentiometer(kcol(2), krow(6), "all", "all")
-# sp.addPotentiometer(kcol(2), krow(7), "all", "none")
-
-# show_object(sp.panel, name="panel", options={"alpha": 0.3, "color": (0, 180, 200)})
-# show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
