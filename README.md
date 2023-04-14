@@ -3,9 +3,9 @@
 
 Hey kid, wanna extrude a synth?
 
-Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough).
+Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough). 
 
-Try it out! In a few minutes, you'll get a STL file ready to print, and your components will fit just right, without having to bust out the calipers.
+Try it out! In just a few minutes, you'll get a STL file ready to print, and your components will fit just right, without having to bust out the calipers. With live previews as you edit the code, it's much less fiddly than using CAD software.
 
 ![](https://fedi.aria.dog/media/c4884ecad3a1700363192ba8b7769008bfdbd071679a2cdc40e2fe0c17a83720.jpg)
 
