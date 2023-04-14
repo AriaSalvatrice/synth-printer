@@ -66,7 +66,7 @@ Let's review what goes into making a solid front plate:
 - You need to achieve a good first layer. There's no secret, it requires a properly tuned printer, a perfectly leveled bed (a depth probe really helps with this), and a perfectly dialed in Z-offset. 
 - Print on smooth glass if you can! If you have a textured glass bed, it's safe to flip it over and just print on the untextured side. This will tremendously improve the print quality. You might want to add just a touch of hair spray if heat isn't enough to hold things in place.
 - You can achieve neat light reflection tricks by using an interesting bottom fill pattern. I often use the concentric one. The effect is dramatic when used with a Silk filament!
-- Wanna use a beautiful but expensive specialty filament for your faceplates? Just swap filament after 3~4 layers! Do the visible layers with your fancy filament, and the rest with bargain bin stock. 
+- Wanna use a beautiful but expensive specialty filament for your faceplates? Just swap filament after 5~6 layers! Do the visible layers with your fancy filament, and the rest with bargain bin stock. 
 - After the first layer, it's safe to use the highest layer height your printer supports, we don't care about vertical accuracy. 
 - After the first few layers, it's also safe to bump up your printing speed, up to the maximum you know your rig can handle. 
 
