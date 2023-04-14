@@ -3,13 +3,9 @@ from synthprinter import *
 
 sp = SynthPrinter()
 
-# Normally, Synth Printer decides for you how
-# many screwNotches to add, but you can force the matter.
 # 1U panel are following the Intellijel dimensions.
 sp.add1UIJPanel(8, screwNotches="center")
 
-
-# sp.addArcadeButton30mm(25, 25)
 sp.addLed5mm(hp(1.5), 14)
 
 # sp.addPotentiometer(x, y, notchOrientation, lugsOrientation)

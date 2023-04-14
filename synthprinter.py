@@ -426,7 +426,7 @@ class SynthPrinter:
 
         Kosmo, also known as Metric 5U, is a format compatible with Eurorack
         popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
-        It has a vertical pitch of 25mm (called khp in Synth Printer for simplicity)
+        It has a horizontal pitch of 25mm (called khp in Synth Printer for simplicity)
         """
         # Kosmo panels are always large enough for four notches
         self.addPanel(
