@@ -53,7 +53,7 @@ I picked the default thickness of 4mm for a reason! Even at 100% infill, it stil
 
 Let's review what goes into making a solid front plate:
 
-- Print orientation: 3D prints are weaker to shearing forces along their vertical layer lines. Not a problem for a panel printed flat, but that means the support lattice is particularly weak.
+- Print orientation: 3D prints are weaker to shearing forces along their vertical layer lines. Not a problem for a panel printed flat, but that means any vertical supports added in the back will be particularly weak.
 - Shell thickness: Probably even more important than infill. You might want to have 5 of them.
 - Infill: Not every infill type is resistant to the same type of forces. I generally use 100% infill anyway, except for translucent filaments where I want to achieve a special texture when it's backlit.
 
