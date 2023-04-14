@@ -749,7 +749,7 @@ class SynthPrinter:
         self.previewBoxOnBack(x, y, 4, 1, 17)
 
     def addLed5mm(self, x: float, y: float):
-        """Creates a hole for a 5mm LED protruding entirely from the hole.
+        """Creates a hole for a 5mm LED protruding from the hole.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
         """
@@ -764,7 +764,7 @@ class SynthPrinter:
         self.previewBoxOnBack(x, y, 2.7, 1, 17)
 
     def addLed3mm(self, x: float, y: float):
-        """Creates a hole for a 3mm LED protruding entirely from the hole.
+        """Creates a hole for a 3mm LED fitting inside the hole.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
         """
@@ -851,6 +851,8 @@ class SynthPrinter:
 
         The defaults offered are for a non-existent model, for preview purposes.
         Provide your own measurements instead!
+
+        There is no preview widget for this footprint.
         """
         self.cutDisplayWindow(
             x,

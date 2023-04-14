@@ -82,6 +82,10 @@ Let's review what goes into making a solid front plate:
 
 I had good results with [Sebajom's OpenSCAD knob generators on thingiverse](https://www.thingiverse.com/sebajom/designs).
 
+# Gallery
+
+![](https://fedi.aria.dog/media/48111bbf4051e198cf090cd38726a9b97886c05f6974ec72be4ca06e06b9a480.jpg) ![](https://fedi.aria.dog/media/958b5eb5111a63c637f5c32a8a06463c2148161ee46ddcce65a444be3fb37278.jpg)
+
 # Contributing
 
 How much this project will be updated very much depends whether other people use it at all. 
