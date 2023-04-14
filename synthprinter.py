@@ -664,7 +664,7 @@ class SynthPrinter:
         type of potentiometer! If in doubt, just leave it to "all" to add 4 notches.
 
         The preview size for the lugs doesn't account for the possibility of bending them,
-        so it's probably safe to have potentiometers overlap a little.
+        so it might be safe to have this area overlap other stuff a little.
         """
         self.cutPotentiometer(x, y, notchOrientation)
         self.previewPotentiometer(x, y, lugsOrientation)
