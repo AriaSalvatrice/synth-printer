@@ -412,7 +412,7 @@ class SynthPrinter:
     ):
         """Adds a Kosmo panel with screw notches. Kosmo widths must be multiples of 25mm.
 
-        Kosmo Panels, also known as Metric 5U, are a format compatible with Eurorack
+        Kosmo, also known as Metric 5U, is a format compatible with Eurorack
         popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
         """
         # Kosmo panels are always large enough for four notches
@@ -526,36 +526,58 @@ class SynthPrinter:
     # ### Potentiometers and rotary encoders
     # #######################################################################
 
-    # TODO: Let you configure the notches & orientation of the preview
-    def cutPotentiometer(self, x: float, y: float):
+    def cutPotentiometer(
+        self,
+        x: float,
+        y: float,
+        notchOrientation: str = "all",
+    ):
         self.cutHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
         # Add the notches
+
+        # default to "none" configuration
+        points = []
+        if notchOrientation == "top" or notchOrientation == "all":
+            points.append((0, -self.config["potentiometerNotchDistanceFromCenter"]))
+        if notchOrientation == "right" or notchOrientation == "all":
+            points.append((self.config["potentiometerNotchDistanceFromCenter"], 0))
+        if notchOrientation == "bottom" or notchOrientation == "all":
+            points.append((0, self.config["potentiometerNotchDistanceFromCenter"]))
+        if notchOrientation == "left" or notchOrientation == "all":
+            points.append((-self.config["potentiometerNotchDistanceFromCenter"], 0))
+
         self.panel = (
             self.panel.faces(">Z")
             .vertices("<XY")
             .workplane(centerOption="CenterOfMass")
             .center(x, y)
-            .pushPoints(
-                [
-                    (self.config["potentiometerNotchDistanceFromCenter"], 0),
-                    (0, self.config["potentiometerNotchDistanceFromCenter"]),
-                    (-self.config["potentiometerNotchDistanceFromCenter"], 0),
-                    (0, -self.config["potentiometerNotchDistanceFromCenter"]),
-                ]
-            )
+            .pushPoints(points)
             .hole(
                 self.config["potentiometerNotchDiameter"],
                 self.config["potentiometerNotchDepth"],
             )
         )
 
-    def previewPotentiometer(self, x: float, y: float):
+    def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = "all"):
         self.previewCylinderOnFront(x, y, 6, 21)
         self.previewCylinderOnFront(x, y, 9.6, 1.6)
         self.previewCylinderOnBack(x, y, 16, 8)
-        self.previewBoxOnBack(x, y + 8, 15, 14, 2.4)
+        if lugsOrientation == "all" or lugsOrientation == "bottom":
+            self.previewBoxOnBack(x, y + 10, 15, 18, 2.4)
+        if lugsOrientation == "top":
+            self.previewBoxOnBack(x, y - 10, 15, 18, 2.4)
+        if lugsOrientation == "left":
+            self.previewBoxOnBack(x - 10, y, 18, 15, 2.4)
+        if lugsOrientation == "right":
+            self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)
 
-    def addPotentiometer(self, x: float, y: float):
+    def addPotentiometer(
+        self,
+        x: float,
+        y: float,
+        notchOrientation: str = "all",
+        lugsOrientation: str = "all",
+    ):
         """Fits most types of panel-mount potentiometers with a 6mm shaft.
 
         There will be four notches around the hole, allowing you to catch the
@@ -565,9 +587,18 @@ class SynthPrinter:
         This won't fit rotary encoders!
 
         If you want a knob, add it separately with addKnob()
+
+        The orientation parameters are seen from the front, and are:
+        "all", "none", "top", "left", "right", "bottom".
+
+        The retaining notches aren't always on the same side, depending on the
+        type of potentiometer! If in doubt, just leave it to "all" to add 4 notches.
+
+        The preview size for the lugs doesn't account for the possibility of bending them,
+        so it's probably safe to have potentiometers overlap a little.
         """
-        self.cutPotentiometer(x, y)
-        self.previewPotentiometer(x, y)
+        self.cutPotentiometer(x, y, notchOrientation)
+        self.previewPotentiometer(x, y, lugsOrientation)
 
     def previewKnob(self, x: float, y: float, diameter: float, depth: float):
         self.previewCylinderOnFront(x, y, diameter, depth + 5)
@@ -787,6 +818,16 @@ def khp(khp: float):
     return hp * 25
 
 
+def kcol(kcol: float):
+    """Custom Kosmo grid system: each kcol is at the center of a 25mm section"""
+    return (kcol - 1) * 25 + 12.5
+
+
+def krow(krow: float):
+    """Custom Kosmo grid system: each krow is 30mm, first starts 15mm from top"""
+    return (krow - 1) * 25 + 25
+
+
 #######################################################################
 ### TEST CODE
 #######################################################################
@@ -799,31 +840,15 @@ def khp(khp: float):
 #     miniToggleSwitchDiameter=6,
 # )
 
-# sp.addEurorackPanel(8)  # HP
+# sp.addKosmoPanel(50)
 
-# sp.addLed5mm(hp(1), 10)
-# sp.addMiniToggleSwitch(hp(1), 20, "vertical")
-# sp.addLed3mm(hp(1), 30)
-# sp.addMiniToggleSwitch(hp(1), 40, "vertical")
-# sp.addMiniToggleSwitch(hp(4), 40)
+# sp.addPotentiometer(kcol(2), krow(1), "left", "top")
+# sp.addPotentiometer(kcol(2), krow(2), "bottom", "left")
+# sp.addPotentiometer(kcol(2), krow(3), "top", "right")
+# sp.addPotentiometer(kcol(2), krow(4), "right", "bottom")
+# sp.addPotentiometer(kcol(2), krow(5), "none", "none")
+# sp.addPotentiometer(kcol(2), krow(6), "all", "all")
+# sp.addPotentiometer(kcol(2), krow(7), "all", "none")
 
-# sp.addPotentiometer(hp(4), 20)
-# sp.addKnob(hp(4), 20, 12, 16)
-
-# sp.addLed5mm(32, 10)
-# sp.addLed5mm(37, 15)
-# sp.addLed5mm(32, 20)
-# sp.addLed5mm(37, 25)
-# sp.addLed5mm(32, 30)
-# sp.addLed5mm(37, 35)
-# sp.addLed5mm(32, 40)
-# sp.addLed5mm(37, 45)
-
-# sp.addArcadeButton24mm(hp(4), 60)
-# sp.addMiniJack(hp(1) + 1.5, 83)
-# sp.addBigJack(hp(4), 83)
-# sp.addMiniJack(hp(7) - 1.5, 83)
-# sp.addArcadeButton30mm(hp(4), 108)
-
-# show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
+# show_object(sp.panel, name="panel", options={"alpha": 0.3, "color": (0, 180, 200)})
 # show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
