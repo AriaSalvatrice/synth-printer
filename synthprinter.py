@@ -19,6 +19,7 @@ class SynthPrinter:
         "panelHeight": 100.0,
         "panelThickness": 4.0,
         "hp": 5.08,  # 0.2 inches
+        "khp": 25,  # Kosmo horizontal pitch
         # default depth of 1.02mm, to ensure that at 0.20mm print settings,
         # it hollows out 5 layers instead of 4. This helps making the notches
         # better at keeping things in place.
@@ -66,12 +67,17 @@ class SynthPrinter:
         ###########################################################
         ###### Arcade
         # Sanwas have little clips making them require more tolerance
-        # (or at least, my Aliexpress clones do - gotta check the real thing)
-        "sanwaOBSF24Button": 24,
-        "sanwaOBSF24ButtonWithTolerance": lambda config: config["sanwaOBSF24Button"]
+        # and the 24mm one require a thinner panel than the default
+        # to snap in properly
+        "arcade24mmButton": 24,
+        "arcade24mmButtonWithTolerance": lambda config: config["arcade24mmButton"]
         + config["tolerance"] * 1.4,
-        "sanwaOBSF30Button": 30,
-        "sanwaOBSF30ButtonWithTolerance": lambda config: config["sanwaOBSF30Button"]
+        "arcade24mmButtonAdditionalClearanceDiameter": 27,
+        "arcade24mmButtonAdditionalClearanceDepth": lambda config: config[
+            "retainingNotchDepth"
+        ],
+        "arcade30mmButton": 30,
+        "arcade30mmButtonWithTolerance": lambda config: config["arcade30mmButton"]
         + config["tolerance"] * 1.4,
         ###### Mini Toggle Switches
         # FIXME: It works but you can't add the washers on the back. Do they matter anyway? It seems sturdy enough without.
@@ -168,14 +174,14 @@ class SynthPrinter:
     ### Helpers
     #######################################################################
 
-    def cutHole(self, x: float, y: float, diameter: float):
-        """Makes a circular hole through the entire panel"""
+    def cutHole(self, x: float, y: float, diameter: float, depth: float = None):
+        """Makes a circular hole, default depth is through the entire panel"""
         self.panel = (
             self.panel.faces(">Z")
             .vertices("<XY")
             .workplane(centerOption="CenterOfMass")
             .center(x, y)
-            .hole(diameter)
+            .hole(diameter, depth)
         )
 
     def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
@@ -236,6 +242,8 @@ class SynthPrinter:
 
     def addPanel(
         self,
+        width: float,
+        height: float,
         screwNotches: str = "auto",
     ):
         """Adds a rectangular panel of arbitrary dimensions.
@@ -252,6 +260,9 @@ class SynthPrinter:
             raise Warning("Only one panel can be added")
         else:
             self.panelAdded = True
+
+        self.config["panelWidth"] = width
+        self.config["panelHeight"] = height
 
         self.panel = self.panel.box(
             self.config["panelWidth"],
@@ -385,9 +396,9 @@ class SynthPrinter:
 
         :param screwNotches: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
-        self.config["panelWidth"] = self.config["hp"] * hp
-        self.config["panelHeight"] = self.config["eurorackHeight"]
-        self.addPanel(screwNotches)
+        self.addPanel(
+            self.config["hp"] * hp, self.config["eurorackHeight"], screwNotches
+        )
 
     def add1UIJPanel(
         self,
@@ -404,24 +415,25 @@ class SynthPrinter:
 
         :param screwNotches: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
-        self.config["panelWidth"] = self.config["hp"] * hp
-        self.config["panelHeight"] = self.config["i1UIJHeight"]
-        self.addPanel(screwNotches)
+        self.addPanel(self.config["hp"] * hp, self.config["i1UIJHeight"], screwNotches)
 
     def addKosmoPanel(
         self,
-        width: int,
+        khp: int,
         screwNotches="auto",
     ):
-        """Adds a Kosmo panel with screw notches. Kosmo widths must be multiples of 25mm.
+        """Adds a Kosmo panel with screw notches. khp argument is the amount of 25mm columns.
 
         Kosmo, also known as Metric 5U, is a format compatible with Eurorack
         popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
+        It has a vertical pitch of 25mm (called khp in Synth Printer for simplicity)
         """
         # Kosmo panels are always large enough for four notches
-        self.config["panelWidth"] = width
-        self.config["panelHeight"] = self.config["kosmoHeight"]
-        self.addPanel(screwNotches)
+        self.addPanel(
+            self.config["hp"] * khp,
+            self.config["kosmoHeight"],
+            screwNotches=screwNotches,
+        )
 
     #######################################################################
     ### Panel engravings
@@ -478,7 +490,7 @@ class SynthPrinter:
     # TODO: Other types of common buttons and switches.... Not sure what's super common.
 
     def cutArcadeButton30mm(self, x: float, y: float):
-        self.cutHole(x, y, self.config["sanwaOBSF30ButtonWithTolerance"])
+        self.cutHole(x, y, self.config["arcade30mmButtonWithTolerance"])
 
     def previewArcadeButton30mm(self, x: float, y: float):
         self.previewCylinderOnFront(x, y, 32.3, 3.4)
@@ -504,9 +516,15 @@ class SynthPrinter:
         self.cutArcadeButton30mm(x, y)
         self.previewArcadeButton30mm(x, y)
 
-    # FIXME: snap-in 24mm Sanwas need more clearance on the back to snap due to panel depth.
+    # FIXME: untested footprint revision!!
     def cutArcadeButton24mm(self, x: float, y: float):
-        self.cutHole(x, y, self.config["sanwaOBSF24ButtonWithTolerance"])
+        self.cutHole(x, y, self.config["arcade24mmButtonWithTolerance"])
+        self.cutHole(
+            x,
+            y,
+            self.config["arcade24mmButtonAdditionalClearanceDiameter"],
+            self.config["arcade24mmButtonAdditionalClearanceDepth"],
+        )
 
     def previewArcadeButton24mm(self, x: float, y: float):
         self.previewCylinderOnFront(x, y, 27, 3.4)

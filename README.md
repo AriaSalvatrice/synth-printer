@@ -23,7 +23,7 @@ You can edit code right from CQ-Editor, but if you find it limiting, you can ena
 
 If stuff won't fit, you can override any default setting in the constructor, the examples will show you how.
 
-_Note: there is only one example for now—more soon!_
+_Note: there are only a few examples for now—more soon!_
 
 Once you're ready to export your panel, select it in the viewport, and pick "Tools➔Export as STL"
 
