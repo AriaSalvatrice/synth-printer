@@ -1,8 +1,5 @@
 import cadquery as cq
 
-# TODO: For Eurorack and 1U, shave off some width off the edges - without messing up the measurements
-# TODO: Prevent adding multiple panels
-
 
 class SynthPrinter:
     defaultConfig = {
@@ -52,13 +49,9 @@ class SynthPrinter:
         ### Panels
         ###########################################################
         "eurorackHeight": 128.5,  # Modules are smaller than the full 3U
-        "eurorackWidthTolerance": lambda config: config[
-            "tolerance"
-        ],  # TODO: Test & implement
+        "eurorackWidthTolerance": lambda config: config["tolerance"],
         "i1UIJHeight": 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
-        "i1UIJWidthTolerance": lambda config: config[
-            "tolerance"
-        ],  # TODO: Test & implement
+        "i1UIJWidthTolerance": lambda config: config["tolerance"],
         "kosmoHeight": 200.0,
         "kosmoWidthTolerance": 0,  # Kosmo needs no additional tolerance due to fitting HP rails
         ###########################################################
@@ -74,7 +67,7 @@ class SynthPrinter:
         ###### Arcade
         # Sanwas have little clips making them require more tolerance
         # (or at least, my Aliexpress clones do - gotta check the real thing)
-        "sanwaOBSF24Button": 24,  # TODO: UNTESTED!! Waiting to receive them by mail. It fits screw-in types however.
+        "sanwaOBSF24Button": 24,
         "sanwaOBSF24ButtonWithTolerance": lambda config: config["sanwaOBSF24Button"]
         + config["tolerance"] * 1.4,
         "sanwaOBSF30Button": 30,
@@ -511,11 +504,11 @@ class SynthPrinter:
         self.cutArcadeButton30mm(x, y)
         self.previewArcadeButton30mm(x, y)
 
+    # FIXME: snap-in 24mm Sanwas need more clearance on the back to snap due to panel depth.
     def cutArcadeButton24mm(self, x: float, y: float):
         self.cutHole(x, y, self.config["sanwaOBSF24ButtonWithTolerance"])
 
     def previewArcadeButton24mm(self, x: float, y: float):
-        # FIXME: Untested guessed values! I will only receive them in a while.
         self.previewCylinderOnFront(x, y, 27, 3.4)
         self.previewCylinderOnFront(x, y, 22, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)

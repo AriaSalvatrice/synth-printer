@@ -1,16 +1,13 @@
 # Synth Printer
 
-**This is pre-alpha quality software! Expect the API to change like every hour or so. You can get usable results from it already, but only use it to play around and make one-offs you don't mind never being able to edit further.**
-
-I don't really know python btw, I just did enough hacks with it to have kinda picked it up by accident. 
-
------------------
 
 Hey kid, wanna extrude a synth?
 
 Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough).
 
 ![](https://fedi.aria.dog/media/c4884ecad3a1700363192ba8b7769008bfdbd071679a2cdc40e2fe0c17a83720.jpg)
+
+**This is alpha quality software! Expect the API to change and break existing projects. You can get great results from this system, but only use it for one-offs you don't mind never being able to edit with future versions of Synth Printer.**
 
 It's based on [CadQuery](https://github.com/CadQuery/cadquery), but provides a greatly simplified syntax focusing only on synth panels. It's meant to create panels that print right out of the box: they account for tolerances, and they provide footprints that match the kind of synth diy hardware you'll find in the wild. I've made a lot of panels using this system already. My goal is to make it so things will fit on your first attempt.
 
@@ -92,7 +89,7 @@ You can help by:
 - Contributing footprints that worked out for you 
 - Making the code less bad (but let's keep it simple)
 
-## Contact
+# Contact
 
 I insist to see whatever you make with this system! You can send me pics of your contraptions and dog gifs at [woof@aria.dog](mailto:woof@aria.dog). I'm also on the Fediverse (Mastodon-compatible): [@woof@aria.dog](https://fedi.aria.dog/woof).
 
@@ -101,31 +98,3 @@ toodles,
 ![Aria Salvatrice](https://github.com/AriaSalvatrice/synth-protoboard/blob/master/Images/signature.png?raw=true)
 
 
-
----------
-
-# Todo-List
-
-- [x] Figure out a decent "architecture" that's simple & close to natural language
-  - Just going with a collection of functions, but maybe i can integrate it to CadQuery's fluent API?
-  - Need to move with an architecture where you have default settings you override
-  - Just have an object hold it all, having to specify the panel every time is dirty.
-- [x] Remake all my existing footprints
-- [ ] Make the footprints I expect to need
-- [x] More consistent nomenclature in code
-- [x] Have little previews of the expected footprint of elements (nothing fancy, just cylinders and cubes)
-- [ ] Additional colors for previews could be useful
-- [ ] Integrate the support lattice properly. Maybe remake it? Also cache it, it takes too long to generate.
-- [ ] Make it easy to make your own footprints
-- [ ] Provide examples
-- [x] Figure out how to make fillets/chamfers for big windows not suck ass and require Blender touch-ups
-- [ ] Documentation!! This is the most important part. I need to explain all it takes to get good results.
-  - Good progress on that
-- [ ] Grid system? I'm already building my own Kosmo stuff to my own grid so why not add in a helper for that.
-- [ ] Good API documentation, there's already docstrings so i can prolly automate it to an extent.
-- [ ] A jupyter browser thing? Sounds daunting but people would really prefer not to have to install anything.
-- [ ] Test every footprint with real-life hardware
-- [ ] Do people want to add text labels? They will be very disappointed with quality though. 
-  - If I can't offer quality I don't want to offer it at all, and you will NOT get quality at eurorack sizes. Maybe at Kosmo sizes, but even then it will look nasty.
-- [ ] SVG Export, document a process to print on transparencies, mention toner transfer
-- [ ] Figure out more how to make it useful for DXF / CNC processes
