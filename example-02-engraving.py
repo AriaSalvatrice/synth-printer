@@ -1,15 +1,6 @@
 import cadquery as cq
 from synthprinter import *
 
-# This one is for a Quad VCA in Kosmo format.
-#
-# khp, kcol and krow are helpers to align to a 25mm grid.
-#
-# engraveLine has a default depth of 1.02mm, to ensure that at
-# 0.20mm print settings, it has 5 layers instead of 4. This
-# greatly helps with color changes, with fewer layers, the
-# first color might be a bit translucent.
-
 sp = SynthPrinter()
 
 # width in kosmo horizontal pitch of 25mm
@@ -26,8 +17,15 @@ sp.addKnob(kcol(1.5), krow(1), 21, 16)
 sp.addBigJack(kcol(1), krow(4.5))
 sp.addBigJack(kcol(1), krow(6))
 sp.addBigJack(kcol(1), krow(7))
+# khp, kcol and krow are helpers to align to a 25mm grid.
+
 
 # sp.engraveLine(FromX, FromY, Angle, Distance, Width)
+#
+# engraveLine has a default depth of 1.02mm, to ensure that at
+# 0.20mm print settings, it has 5 layers instead of 4. This
+# greatly helps with color changes, with fewer layers, the
+# first color might be a bit translucent.
 sp.engraveLine(kcol(1.5), khp(1), 180 + 45, 18.3, 2)
 sp.engraveLine(kcol(1), khp(1.5) - 0.1, 180, khp(5.5), 2)
 
