@@ -161,8 +161,17 @@ class SynthPrinter:
 
         self.panel = cq.Workplane("XY")
         self.preview = cq.Workplane("XY")
+        self.supports = cq.Workplane("XY")
 
         self.panelAdded = False  # We can only have one or horrible things happen
+
+    def render(self):
+        """You must call this before displaying or exporting your panel
+        to post-process it properly"""
+        # Move the supports where they belong
+        self.supports = self.supports.translate(
+            (0, 0, self.config["panelThickness"] / 2)
+        )
 
     #######################################################################
     #######################################################################
@@ -175,7 +184,9 @@ class SynthPrinter:
     #######################################################################
 
     def cutHole(self, x: float, y: float, diameter: float, depth: float = None):
-        """Makes a circular hole, default depth is through the entire panel"""
+        """Makes a circular hole, default depth is through the entire panel
+
+        x, y define the center."""
         self.panel = (
             self.panel.faces(">Z")
             .vertices("<XY")
@@ -186,7 +197,9 @@ class SynthPrinter:
 
     def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
         """Adds a cylinder for preview on the back of the panel.
-        It will be deeper by half the panel thickness."""
+        It will be deeper by half the panel thickness.
+
+        x, y define the center."""
         self.preview = (
             self.preview.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -198,7 +211,9 @@ class SynthPrinter:
 
     def previewCylinderOnFront(self, x: float, y: float, diameter: float, depth: float):
         """Adds a cylinder for preview on the front of the panel.
-        It will be deeper by half the panel thickness."""
+        It will be deeper by half the panel thickness.
+
+        x, y define the center."""
         self.preview = (
             self.preview.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -212,7 +227,9 @@ class SynthPrinter:
         self, x: float, y: float, width: float, height: float, depth: float
     ):
         """Adds a box for preview on the back of the panel.
-        It will be deeper by half the panel thickness."""
+        It will be deeper by half the panel thickness.
+
+        x, y define the center."""
         self.preview = (
             self.preview.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -226,7 +243,10 @@ class SynthPrinter:
         self, x: float, y: float, width: float, height: float, depth: float
     ):
         """Adds a box for preview on the front of the panel.
-        It will be deeper by half the panel thickness."""
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.
+        """
         self.preview = (
             self.preview.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -430,7 +450,7 @@ class SynthPrinter:
         """
         # Kosmo panels are always large enough for four notches
         self.addPanel(
-            self.config["hp"] * khp,
+            self.config["khp"] * khp,
             self.config["kosmoHeight"],
             screwNotches=screwNotches,
         )
@@ -481,6 +501,28 @@ class SynthPrinter:
             .vertices("<XY")
             .workplane(centerOption="CenterOfMass")
             .cut(cutout)
+        )
+
+    #######################################################################
+    ### Support structures
+    #######################################################################
+
+    # Everything on the supports layer has addSupport at the start
+
+    def addSupportBar(
+        self, x: float, y: float, width: float, height: float, depth: float
+    ):
+        """Adds a box on the supports layer.
+
+        x, y define the top-left of the box as seen from the front
+        """
+        self.supports = (
+            self.supports.moveTo(
+                -self.config["panelWidth"] / 2 + x + width / 2,
+                -self.config["panelHeight"] / 2 + y + height / 2,
+            )
+            .rect(width, height)
+            .extrude(depth)
         )
 
     #######################################################################

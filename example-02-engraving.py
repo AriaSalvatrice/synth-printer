@@ -54,5 +54,7 @@ sp.addBigJack(kcol(4), krow(7))
 sp.engraveLine(kcol(3.5), khp(2.75), 180 - 45, 18.3, 2)
 sp.engraveLine(kcol(4), khp(3.24) - 0.1, 180, khp(3.75), 2)
 
+sp.render()
+
 show_object(sp.panel, name="panel", options={"alpha": 0, "color": (0, 180, 230)})
 show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
