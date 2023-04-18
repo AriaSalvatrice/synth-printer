@@ -65,6 +65,7 @@ Let's review what goes into making a solid front plate:
 - By printing in this orientation, you can add supports for the PCB on the back. I often use a support lattice to which I secure the PCBs with self-locking ties. Note that Synth Printer has no built-in support for them yet, but it's planned. You can just add a support mesh in your slicer, for now.
 - You need to achieve a good first layer. There's no secret, it requires a properly tuned printer, a perfectly leveled bed (a depth probe really helps with this), and a perfectly dialed in Z-offset. 
 - Print on smooth glass if you can! If you have a textured glass bed, it's safe to flip it over and just print on the untextured side. This will tremendously improve the print quality. You might want to add just a touch of hair spray if heat isn't enough to hold things in place.
+- You almost certainly want to print with a brim. It's easy to remove and reduces the risk of warping. 
 - You can achieve neat light reflection tricks by using an interesting bottom fill pattern. I often use the concentric one. The effect is dramatic when used with a Silk filament!
 - Wanna use a beautiful but expensive specialty filament for your faceplates? Just swap filament after 5~6 layers! Do the visible layers with your fancy filament, and the rest with bargain bin stock. 
 - After the first layer, it's safe to use the highest layer height your printer supports, we don't care about vertical accuracy. 
@@ -84,7 +85,7 @@ I had good results with [Sebajom's OpenSCAD knob generators on thingiverse](http
 
 # Gallery
 
-![](https://fedi.aria.dog/media/48111bbf4051e198cf090cd38726a9b97886c05f6974ec72be4ca06e06b9a480.jpg) ![](https://fedi.aria.dog/media/958b5eb5111a63c637f5c32a8a06463c2148161ee46ddcce65a444be3fb37278.jpg)
+![](https://fedi.aria.dog/media/7f176ba747050b16907f8c820e80e98f991ba55869ed22306ef2c44cf733ac3f.jpg) ![](https://fedi.aria.dog/media/48111bbf4051e198cf090cd38726a9b97886c05f6974ec72be4ca06e06b9a480.jpg) ![](https://fedi.aria.dog/media/958b5eb5111a63c637f5c32a8a06463c2148161ee46ddcce65a444be3fb37278.jpg)
 
 # Contributing
 
