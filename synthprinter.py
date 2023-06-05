@@ -195,6 +195,42 @@ class SynthPrinter:
             .hole(diameter, depth)
         )
 
+    def cutBox(
+        self,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        depth: float = 0,
+    ):
+        """Cuts a rectangular shape through the panel.
+
+        x, y define the top-left."""
+
+        # TODO: Rounding corners
+
+        if depth == 0:
+            depth = self.config["panelThickness"]
+
+        cutout = (
+            cq.Workplane("XY")
+            .box(width, height, depth)
+            .translate(
+                (
+                    -self.config["panelWidth"] / 2 + x,
+                    -self.config["panelHeight"] / 2 + y,
+                    0,
+                )
+            )
+        )
+
+        self.panel = (
+            self.panel.faces(">Z")
+            .vertices("<XY")
+            .workplane(centerOption="CenterOfMass")
+            .cut(cutout)
+        )
+
     def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
         """Adds a cylinder for preview on the back of the panel.
         It will be deeper by half the panel thickness.
@@ -823,6 +859,7 @@ class SynthPrinter:
         windowHorizontalOffset: float = 0,
         screwsHorizontalDistance: float = 40,
         screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
     ):
         # FIXME: This is the nastiest way possible to do a fillet
         # but the only one i could figure out
@@ -861,18 +898,21 @@ class SynthPrinter:
         )
 
         # Now, the screws
-        self.panel = (
-            self.panel.faces(">Z")
-            .vertices("<XY")
-            .workplane(centerOption="CenterOfMass")
-            .center(x, y)
-            .rect(
-                screwsHorizontalDistance, screwsVerticalDistance, forConstruction=True
+        if addScrews:
+            self.panel = (
+                self.panel.faces(">Z")
+                .vertices("<XY")
+                .workplane(centerOption="CenterOfMass")
+                .center(x, y)
+                .rect(
+                    screwsHorizontalDistance,
+                    screwsVerticalDistance,
+                    forConstruction=True,
+                )
+                .vertices()
+                .circle(self.config["m2DiameterWithTolerance"] / 2)
+                .cutThruAll()
             )
-            .vertices()
-            .circle(self.config["m2DiameterWithTolerance"] / 2)
-            .cutThruAll()
-        )
 
     def addDisplayWindow(
         self,
@@ -884,6 +924,7 @@ class SynthPrinter:
         windowHorizontalOffset: float = 0,
         screwsHorizontalDistance: float = 40,
         screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
     ):
         """Creates a window for a rectangular display mounted with four screws in the corner.
 
@@ -905,6 +946,7 @@ class SynthPrinter:
             windowHorizontalOffset,
             screwsHorizontalDistance,
             screwsVerticalDistance,
+            addScrews,
         )
 
     #######################################################################
