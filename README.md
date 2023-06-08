@@ -9,7 +9,7 @@ Try it out! In just a few minutes, you'll get a STL file ready to print, and you
 
 ![](https://fedi.aria.dog/media/c4884ecad3a1700363192ba8b7769008bfdbd071679a2cdc40e2fe0c17a83720.jpg)
 
-**This is alpha quality software! Expect the API to change and break existing projects. You can get great results from this system, but only use it for one-offs you don't mind never being able to edit with future versions of Synth Printer.**
+**This is alpha quality software! Until I release a version 1, expect the default values to change, and the name of functions to change. You can get great results from Synth Printer today, but only use it for projects you don't mind not being able to edit further in the future.**
 
 It's based on [CadQuery](https://github.com/CadQuery/cadquery), but provides a greatly simplified syntax focusing only on synth panels. It's meant to create panels that print right out of the box: they account for tolerances, and they provide footprints that match the kind of synth diy hardware you'll find in the wild. I've made a lot of panels using this system already. My goal is to make it so things will fit on your first attempt.
 
@@ -26,6 +26,10 @@ You can edit code right from CQ-Editor, but if you find it limiting, you can ena
 My goal is to provide default settings that fit in mosts cases. But if stuff won't fit, you can override any default setting in the constructor, the examples will show you how.
 
 Once you're ready to export your panel, select it in the viewport, and pick "Tools➔Export as STL". Make sure not to also export the preview layer!
+
+# Gallery
+
+![](images/full-system.jpeg) ![](images/example-02-quad-vca.jpg) ![](images/example-07A-europi-eurorack.jpg)
 
 
 # 3D printing advice for synth panels
@@ -83,9 +87,6 @@ Let's review what goes into making a solid front plate:
 
 I had good results with [Sebajom's OpenSCAD knob generators on thingiverse](https://www.thingiverse.com/sebajom/designs).
 
-# Gallery
-
-![](https://fedi.aria.dog/media/7f176ba747050b16907f8c820e80e98f991ba55869ed22306ef2c44cf733ac3f.jpg) ![](https://fedi.aria.dog/media/48111bbf4051e198cf090cd38726a9b97886c05f6974ec72be4ca06e06b9a480.jpg) ![](https://fedi.aria.dog/media/958b5eb5111a63c637f5c32a8a06463c2148161ee46ddcce65a444be3fb37278.jpg)
 
 # Contributing
 

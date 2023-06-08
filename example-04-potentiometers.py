@@ -3,7 +3,7 @@ from synthprinter import *
 
 sp = SynthPrinter()
 
-# 1U panel are following the Intellijel dimensions.
+# 1U panels are following the Intellijel dimensions.
 sp.add1UIJPanel(8, screwNotches="center")
 
 sp.addLed5mm(hp(1.5), 14)

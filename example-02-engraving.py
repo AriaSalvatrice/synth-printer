@@ -1,6 +1,13 @@
 import cadquery as cq
 from synthprinter import *
 
+# This is a faceplate for the North Coast Synthesis MSK 006,
+# an exponential VCA made out of discrete components:
+# https://northcoastsynthesis.com/synth-diy-projects/
+#
+# This project was built successfully:
+# see ./images/example-02-quad-vca.jpg
+
 # The panel engraving depth is increased from the default to achieve
 # a more pronounced visual effect, but this weakens the panel, so
 # pot notches in the way of the engravings are removed on the back,

@@ -1,7 +1,8 @@
 import cadquery as cq
 from synthprinter import *
 
-# This is the print you can see at the top of the documentation!
+# This is the test print you can see at the top of the documentation!
+# Obviously, it's not a real module, it's just meant as a demo.
 
 # Start by creating a SynthPrinter object
 # You can override any setting from the defaultConfig

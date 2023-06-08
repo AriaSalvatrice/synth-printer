@@ -125,6 +125,7 @@ class SynthPrinter:
         "bigJackNotchDepth": lambda config: config["retainingNotchDepth"],
         ###### Mini
         # FIXME: Untested values!! Based on the drawing of the PJ398SM
+        # FIXME: Tweaked back tolerance up a little, need another test print
         # TODO: What are other common types?
         "miniJackDiameter": 6,
         "miniJackDiameterWithTolerance": lambda config: config["miniJackDiameter"]
@@ -132,9 +133,9 @@ class SynthPrinter:
         "miniJackWidth": 9,
         "miniJackHeight": 9.5,
         "miniJackWidthWithTolerance": lambda config: config["miniJackWidth"]
-        + config["tolerance"],
+        + config["tolerance"] * 2,
         "miniJackHeightWithTolerance": lambda config: config["miniJackHeight"]
-        + config["tolerance"],
+        + config["tolerance"] * 2,
         "miniJackNotchDepth": lambda config: config["retainingNotchDepth"],
         ###########################################################
         ### Blinkenlichten
@@ -843,6 +844,8 @@ class SynthPrinter:
 
     def addLed3mm(self, x: float, y: float):
         """Creates a hole for a 3mm LED fitting inside the hole.
+        On default settings, it will not protrude past the hole, and might
+        diffuse a bit of light in the surrounding plastic.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
         """
