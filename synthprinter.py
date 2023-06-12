@@ -109,6 +109,7 @@ class SynthPrinter:
         "potentiometerNotchDistanceFromCenter": 6.9,
         "potentiometerNotchDiameter": 3.9,
         "potentiometerNotchDepth": lambda config: config["panelThickness"] / 1.5,
+        "sliderNotchDepth": lambda config: config["retainingNotchDepth"],
         ###########################################################
         ### Jacks
         ###########################################################
@@ -794,7 +795,7 @@ class SynthPrinter:
         self.previewMiniToggleSwitch(x, y, orientation)
 
     #######################################################################
-    ### Potentiometers and rotary encoders
+    ### Potentiometers, rotary encoders, sliders
     #######################################################################
 
     def cutPotentiometer(
@@ -881,6 +882,60 @@ class SynthPrinter:
 
     def addKnob(self, x: float, y: float, diameter: float, depth: float):
         self.previewKnob(x, y, diameter, depth)
+
+    def cutSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        self.panel = (
+            self.panel.faces(">Z")
+            .vertices("<XY")
+            .workplane(centerOption="CenterOfMass")
+            .center(x, y)
+            .rect(
+                sliderWidth,
+                sliderHeight,
+            )
+            .cutBlind(-self.config["sliderNotchDepth"])
+        )
+        self.cutBox(
+            x,
+            y,
+            slotWidth,
+            slotHeight,
+        )
+
+    def previewSlider(
+        self, x: float, y: float, sliderWidth: float, sliderHeight: float
+    ):
+        self.previewCylinderOnFront(x, y, 15, 10)
+        self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)
+        # self.previewCylinderOnFront(x, y, 9.6, 1.6)
+
+    def addSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        """For slide potentiomenters. Multiple sizes are common, so you have to
+        specify yours.
+
+        No special provision are made to hold them in place, it's assumed you
+        have a PCB or are will add some glue or something similarly nasty.
+
+        x, y: center
+        """
+        self.cutSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
+        self.previewSlider(x, y, sliderWidth, sliderHeight)
 
     # TODO: Rotary encoders
 
