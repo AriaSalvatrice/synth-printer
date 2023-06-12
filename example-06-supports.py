@@ -14,10 +14,10 @@ sp.addBigJack(30, 30)
 # in both directions, to increase stiffness.
 # You could even do it for a panel the default thickness, but I don't find
 # it necessary.
-sp.addSupportBar(0, 10, 200, 5, 6)
-sp.addSupportBar(0, 190, 200, 5, 6)
-sp.addSupportBar(10, 10, 5, 180, 6)
-sp.addSupportBar(190, 10, 5, 180, 6)
+sp.supportBar(0, 10, 200, 5, 6)
+sp.supportBar(0, 190, 200, 5, 6)
+sp.supportBar(10, 10, 5, 180, 6)
+sp.supportBar(190, 10, 5, 180, 6)
 
 sp.render()
 

@@ -145,6 +145,12 @@ class SynthPrinter:
         "3mmLed": 2.9,
         "3mmLedWithTolerance": lambda config: config["3mmLed"]
         + config["tolerance"] * 1.5,
+        ###########################################################
+        ### Drill Template
+        ###########################################################
+        "DrillTemplateMarkLength": 10,
+        "DrillTemplateMarkThickness": 0.2,
+        "DrillTemplateDistance": -80,
     }
 
     def __init__(self, **kwargs):
@@ -160,9 +166,11 @@ class SynthPrinter:
             if callable(value):
                 self.config[key] = value(self.config)
 
+        # Create layers
         self.panel = cq.Workplane("XY")
         self.preview = cq.Workplane("XY")
         self.supports = cq.Workplane("XY")
+        self.drillTemplate = cq.Workplane("XY")
 
         self.panelAdded = False  # We can only have one or horrible things happen
 
@@ -173,6 +181,11 @@ class SynthPrinter:
         self.supports = self.supports.translate(
             (0, 0, self.config["panelThickness"] / 2)
         )
+        # Move the drill template above the panel
+        self.drillTemplate = self.drillTemplate.translate(
+            (0, 0, self.config["DrillTemplateDistance"])
+        )
+        # TODO: Rotate for viewing? Still need to export as oriented.
 
     #######################################################################
     #######################################################################
@@ -181,7 +194,7 @@ class SynthPrinter:
     #######################################################################
 
     #######################################################################
-    ### Helpers
+    ### Basic operations
     #######################################################################
 
     def cutHole(self, x: float, y: float, diameter: float, depth: float = None):
@@ -321,11 +334,15 @@ class SynthPrinter:
         self.config["panelWidth"] = width
         self.config["panelHeight"] = height
 
+        # Make the main panel shape
         self.panel = self.panel.box(
             self.config["panelWidth"],
             self.config["panelHeight"],
             self.config["panelThickness"],
         )
+
+        # Initialize the drill template
+        self.markOutline()
 
         # Do we add screw slots?
         # default to "none" configuration
@@ -544,11 +561,10 @@ class SynthPrinter:
     ### Support structures
     #######################################################################
 
-    # Everything on the supports layer has addSupport at the start
+    # Every function adding to the supports layer has support at the
+    # start of the name.
 
-    def addSupportBar(
-        self, x: float, y: float, width: float, height: float, depth: float
-    ):
+    def supportBar(self, x: float, y: float, width: float, height: float, depth: float):
         """Adds a box on the supports layer.
 
         x, y define the top-left of the box as seen from the front
@@ -561,6 +577,113 @@ class SynthPrinter:
             .rect(width, height)
             .extrude(depth)
         )
+
+    #######################################################################
+    ### Drill template marks
+    #######################################################################
+
+    # Drill template marks are simple cross shapes that will more or less
+    # look like crosses when exported at typical sizes.
+    # Every function adding to the drillTemplate layer has mark at the
+    # start of the name
+
+    def markOutline(self):
+        """Add an outline to the drill template layer. This ensures proper
+        SVG export. This is automatically done when adding a panel."""
+
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(  # Top
+                0,
+                -self.config["panelHeight"] / 2
+                + self.config["DrillTemplateMarkThickness"] / 2,
+            )
+            .rect(
+                self.config["panelWidth"],
+                self.config["DrillTemplateMarkThickness"],
+            )
+            .extrude(self.config["DrillTemplateMarkThickness"])
+            .moveTo(  # Bottom
+                0,
+                self.config["panelHeight"] / 2
+                - self.config["DrillTemplateMarkThickness"] / 2,
+            )
+            .rect(
+                self.config["panelWidth"],
+                self.config["DrillTemplateMarkThickness"],
+            )
+            .extrude(self.config["DrillTemplateMarkThickness"])
+            .moveTo(  # Left
+                -self.config["panelWidth"] / 2
+                + self.config["DrillTemplateMarkThickness"] / 2,
+                0,
+            )
+            .rect(
+                self.config["DrillTemplateMarkThickness"],
+                self.config["panelHeight"],
+            )
+            .extrude(self.config["DrillTemplateMarkThickness"])
+            .moveTo(  # Right
+                self.config["panelWidth"] / 2
+                - self.config["DrillTemplateMarkThickness"] / 2,
+                0,
+            )
+            .rect(
+                self.config["DrillTemplateMarkThickness"],
+                self.config["panelHeight"],
+            )
+            .extrude(self.config["DrillTemplateMarkThickness"])
+        )
+
+    def markCross(self, x: float, y: float):
+        """Adds a mark on the drill template layer. At typical synth panel
+        sizes, it will show up as a cross the perfect size for printing out and
+        using as a drill template.
+
+        x, y define the center of the mark as seen from the front.
+        """
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .rect(
+                self.config["DrillTemplateMarkLength"],
+                self.config["DrillTemplateMarkThickness"],
+            )
+            .extrude(self.config["DrillTemplateMarkThickness"])
+            .moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .rect(
+                self.config["DrillTemplateMarkThickness"],
+                self.config["DrillTemplateMarkLength"],
+            )
+            .extrude(self.config["DrillTemplateMarkThickness"])
+        )
+
+    def markHole(self, x: float, y: float, diameter: float):
+        """Marks a circular hole on the drill template.
+
+        x, y define the center."""
+        # FIXME: Nasty, and requires marking circles before crosses
+        self.drillTemplate = (
+            self.drillTemplate
+            # .center(x, y)
+            .moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(1)
+            .moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .circle(diameter / 2 - self.config["DrillTemplateMarkThickness"])
+            .cutThruAll()
+        )
+        return
 
     #######################################################################
     ### Buttons and switches
@@ -719,6 +842,10 @@ class SynthPrinter:
         if lugsOrientation == "right":
             self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)
 
+    def markPotentiometer(self, x: float, y: float):
+        self.markHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
+        self.markCross(x, y)
+
     def addPotentiometer(
         self,
         x: float,
@@ -747,6 +874,7 @@ class SynthPrinter:
         """
         self.cutPotentiometer(x, y, notchOrientation)
         self.previewPotentiometer(x, y, lugsOrientation)
+        self.markPotentiometer(x, y)
 
     def previewKnob(self, x: float, y: float, diameter: float, depth: float):
         self.previewCylinderOnFront(x, y, diameter, depth + 5)

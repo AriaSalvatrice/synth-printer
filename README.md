@@ -23,7 +23,7 @@ After that, [download this repository](https://github.com/AriaSalvatrice/synth-p
 
 You can edit code right from CQ-Editor, but if you find it limiting, you can enable autoreload in the preferences, and edit the files from an external editor. You can  design a panel simply by modifying an example, but take a look at synthprinter.py: the functions are full of useful comments, telling you which hardware they fit, and why some values were chosen.
 
-My goal is to provide default settings that fit in mosts cases. But if stuff won't fit, you can override any default setting in the constructor, the examples will show you how.
+My goal is to provide default settings that fit in most cases. But if stuff won't fit, you can override any default setting in the constructor, the examples will show you how.
 
 Once you're ready to export your panel, select it in the viewport, and pick "Tools➔Export as STL". Make sure not to also export the preview layer!
 
