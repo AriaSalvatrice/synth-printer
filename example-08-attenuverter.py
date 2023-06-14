@@ -2,6 +2,7 @@ import cadquery as cq
 from synthprinter import *
 
 # This project was built successfully.
+# https://fedi.aria.dog/media/71dd4bd2ba8773d143337a12ba7a4d5b9e01c9e783cacab8c24a8f35734db232.jpg
 
 sp.addKosmoPanel(3)
 

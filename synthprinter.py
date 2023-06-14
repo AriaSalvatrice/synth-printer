@@ -36,11 +36,11 @@ class SynthPrinter:
         "m3Diameter": 3.0,
         "m3DiameterWithTolerance": lambda config: config["m3Diameter"]
         + config["tolerance"],
-        "m3ScrewNotchWidth": lambda config: config["m3DiameterWithTolerance"] * 2.5,
-        "m3ScrewNotchHeight": lambda config: config["m3DiameterWithTolerance"],
-        "m3ScrewNotchDistanceFromTop": 3.0,
-        "m3ScrewNotchDistanceFromBottom": 3.0,
-        "m3ScrewNotchDistanceFromSide": lambda config: config["m3DiameterWithTolerance"]
+        "m3screwSlotWidth": lambda config: config["m3DiameterWithTolerance"] * 2.5,
+        "m3screwSlotHeight": lambda config: config["m3DiameterWithTolerance"],
+        "m3screwSlotDistanceFromTop": 3.0,
+        "m3screwSlotDistanceFromBottom": 3.0,
+        "m3screwSlotDistanceFromSide": lambda config: config["m3DiameterWithTolerance"]
         * 1.5,
         ###### M2
         "m2Diameter": 2.0,
@@ -313,16 +313,16 @@ class SynthPrinter:
         self,
         width: float,
         height: float,
-        screwNotches: str = "auto",
+        screwSlots: str = "auto",
     ):
         """Adds a rectangular panel of arbitrary dimensions.
         You can only add one.
 
-        Screw notches in the corners provide better tolerances than holes
-        in a DIY printed system. If the panel is too small for four notches,
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
         there will be only two by default.
 
-        :param screwNotches: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
 
         if self.panelAdded == True:
@@ -345,98 +345,98 @@ class SynthPrinter:
 
         # Do we add screw slots?
         # default to "none" configuration
-        screwNotchTopLeft = False
-        screwNotchTopCenter = False
-        screwNotchTopRight = False
-        screwNotchBottomLeft = False
-        screwNotchBottomCenter = False
-        screwNotchBottomRight = False
-        if (  # If too small for 4 notches
-            self.config["m3ScrewNotchWidth"] * 2
+        screwSlotTopLeft = False
+        screwSlotTopCenter = False
+        screwSlotTopRight = False
+        screwSlotBottomLeft = False
+        screwSlotBottomCenter = False
+        screwSlotBottomRight = False
+        if (  # If too small for 4 slots
+            self.config["m3screwSlotWidth"] * 2
             + (
-                self.config["m3ScrewNotchDistanceFromSide"]
-                - self.config["m3ScrewNotchWidth"] / 2
+                self.config["m3screwSlotDistanceFromSide"]
+                - self.config["m3screwSlotWidth"] / 2
             )
             * 2
         ) > self.config["panelWidth"]:
-            if screwNotches == "auto":
-                screwNotches = "tlbr"
-            if screwNotches == "auto-tlbr":
-                screwNotches = "tlbr"
-            if screwNotches == "auto-trbl":
-                screwNotches = "trbl"
-            if screwNotches == "auto-center":
-                screwNotches = "center"
-        else:  # Large enough for 4 notches
-            if screwNotches == "auto":
-                screwNotches = "all"
-            if screwNotches == "auto-tlbr":
-                screwNotches = "all"
-            if screwNotches == "auto-trbl":
-                screwNotches = "all"
-            if screwNotches == "auto-center":
-                screwNotches = "all"
-        if screwNotches == "tlbr":
-            screwNotchTopLeft = True
-            screwNotchBottomRight = True
-        if screwNotches == "trbl":
-            screwNotchTopRight = True
-            screwNotchBottomLeft = True
-        if screwNotches == "center":
-            screwNotchTopCenter = True
-            screwNotchBottomCenter = True
-        if screwNotches == "all":
-            screwNotchTopLeft = True
-            screwNotchTopRight = True
-            screwNotchBottomLeft = True
-            screwNotchBottomRight = True
+            if screwSlots == "auto":
+                screwSlots = "tlbr"
+            if screwSlots == "auto-tlbr":
+                screwSlots = "tlbr"
+            if screwSlots == "auto-trbl":
+                screwSlots = "trbl"
+            if screwSlots == "auto-center":
+                screwSlots = "center"
+        else:  # Large enough for 4 slots
+            if screwSlots == "auto":
+                screwSlots = "all"
+            if screwSlots == "auto-tlbr":
+                screwSlots = "all"
+            if screwSlots == "auto-trbl":
+                screwSlots = "all"
+            if screwSlots == "auto-center":
+                screwSlots = "all"
+        if screwSlots == "tlbr":
+            screwSlotTopLeft = True
+            screwSlotBottomRight = True
+        if screwSlots == "trbl":
+            screwSlotTopRight = True
+            screwSlotBottomLeft = True
+        if screwSlots == "center":
+            screwSlotTopCenter = True
+            screwSlotBottomCenter = True
+        if screwSlots == "all":
+            screwSlotTopLeft = True
+            screwSlotTopRight = True
+            screwSlotBottomLeft = True
+            screwSlotBottomRight = True
 
         screwPoints = []
-        if screwNotchTopLeft:
+        if screwSlotTopLeft:
             screwPoints.append(
                 (
-                    self.config["m3ScrewNotchDistanceFromSide"],
+                    self.config["m3screwSlotDistanceFromSide"],
                     self.config["panelHeight"]
-                    - self.config["m3ScrewNotchDistanceFromTop"],
+                    - self.config["m3screwSlotDistanceFromTop"],
                 )
             )
-        if screwNotchTopCenter:
+        if screwSlotTopCenter:
             screwPoints.append(
                 (
                     self.config["panelWidth"] / 2,
                     self.config["panelHeight"]
-                    - self.config["m3ScrewNotchDistanceFromTop"],
+                    - self.config["m3screwSlotDistanceFromTop"],
                 )
             )
-        if screwNotchTopRight:
+        if screwSlotTopRight:
             screwPoints.append(
                 (
                     self.config["panelWidth"]
-                    - self.config["m3ScrewNotchDistanceFromSide"],
+                    - self.config["m3screwSlotDistanceFromSide"],
                     self.config["panelHeight"]
-                    - self.config["m3ScrewNotchDistanceFromTop"],
+                    - self.config["m3screwSlotDistanceFromTop"],
                 )
             )
-        if screwNotchBottomLeft:
+        if screwSlotBottomLeft:
             screwPoints.append(
                 (
-                    self.config["m3ScrewNotchDistanceFromSide"],
-                    self.config["m3ScrewNotchDistanceFromBottom"],
+                    self.config["m3screwSlotDistanceFromSide"],
+                    self.config["m3screwSlotDistanceFromBottom"],
                 )
             )
-        if screwNotchBottomCenter:
+        if screwSlotBottomCenter:
             screwPoints.append(
                 (
                     self.config["panelWidth"] / 2,
-                    self.config["m3ScrewNotchDistanceFromBottom"],
+                    self.config["m3screwSlotDistanceFromBottom"],
                 )
             )
-        if screwNotchBottomRight:
+        if screwSlotBottomRight:
             screwPoints.append(
                 (
                     self.config["panelWidth"]
-                    - self.config["m3ScrewNotchDistanceFromSide"],
-                    self.config["m3ScrewNotchDistanceFromBottom"],
+                    - self.config["m3screwSlotDistanceFromSide"],
+                    self.config["m3screwSlotDistanceFromBottom"],
                 )
             )
         if screwPoints != []:
@@ -446,8 +446,8 @@ class SynthPrinter:
                 .center(-self.config["panelWidth"] / 2, -self.config["panelHeight"] / 2)
                 .pushPoints(screwPoints)
                 .slot2D(
-                    self.config["m3ScrewNotchWidth"],
-                    self.config["m3ScrewNotchHeight"],
+                    self.config["m3screwSlotWidth"],
+                    self.config["m3screwSlotHeight"],
                     0,
                 )
                 .cutThruAll()
@@ -456,56 +456,59 @@ class SynthPrinter:
     def addEurorackPanel(
         self,
         hp: int,
-        screwNotches="auto",
+        screwSlots="auto",
     ):
-        """Adds a Eurorack panel with screw notches. Eurorack width is defined in hp().
+        """Adds a Eurorack panel with screw slots. Eurorack width is defined in hp().
 
         Eurorack sizes are generally an even number of hp, such as 4hp or 8hp.
         3hp and 5hp are the only odd number sizes commonly seen in commercial hardware.
 
-        Screw notches in the corners provide better tolerances than holes
-        in a DIY printed system. If the panel is too small for four notches,
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
         there will be only two by default.
 
-        :param screwNotches: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
-        self.addPanel(
-            self.config["hp"] * hp, self.config["eurorackHeight"], screwNotches
-        )
+        self.addPanel(self.config["hp"] * hp, self.config["eurorackHeight"], screwSlots)
 
     def add1UIJPanel(
         self,
         hp: int,
-        screwNotches="auto",
+        screwSlots="auto",
     ):
-        """Adds a 1U Tile (Intellijel size) panel with screw notches. Eurorack width is defined in hp().
+        """Adds a 1U Tile (Intellijel size) panel with screw slots. Eurorack width is defined in hp().
 
         Note that there are two incompatible 1U tile standards: Intellijel and PulpLogic.
 
-        Screw notches in the corners provide better tolerances than holes
-        in a DIY printed system. If the panel is too small for four notches,
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
         there will be only two by default.
 
-        :param screwNotches: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
-        self.addPanel(self.config["hp"] * hp, self.config["i1UIJHeight"], screwNotches)
+        self.addPanel(self.config["hp"] * hp, self.config["i1UIJHeight"], screwSlots)
 
     def addKosmoPanel(
         self,
         khp: int,
-        screwNotches="auto",
+        screwSlots="auto",
     ):
-        """Adds a Kosmo panel with screw notches. khp argument is the amount of 25mm columns.
+        """Adds a Kosmo panel with screw slots. khp argument is the amount of 25mm columns.
 
         Kosmo, also known as Metric 5U, is a format compatible with Eurorack
         popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
         It has a horizontal pitch of 25mm (called khp in Synth Printer for simplicity)
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. Kosmo panels are always large enough for four slots,
+        but you can explicitly set a different configuration of slots.
+
+        :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
-        # Kosmo panels are always large enough for four notches
         self.addPanel(
             self.config["khp"] * khp,
             self.config["kosmoHeight"],
-            screwNotches=screwNotches,
+            screwSlots=screwSlots,
         )
 
     #######################################################################
