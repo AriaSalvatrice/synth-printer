@@ -3,13 +3,13 @@
 
 Hey kid, wanna extrude a synth?
 
-Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough). You don't need to install a complex Python environment either.
+Synth Printer is a very very lightweight system letting you create faceplates for your DIY modular synthesizer, using simple Python code — code so simple you don't need to know any Python at all (a bit of experience with any programming language will be enough). You don't need to install a complex Python environment either - no dependency hell.
 
 Try it out! In just a few minutes, you'll get a STL file ready to print, and your components will fit just right, without having to bust out the calipers. With live visualization as you edit the code, and realistic previews of the size of the elements, it's much less fiddly than using CAD software, and much easier to get clearances right.
 
 ![](https://fedi.aria.dog/media/c4884ecad3a1700363192ba8b7769008bfdbd071679a2cdc40e2fe0c17a83720.jpg)
 
-**This is alpha quality software! Until I release a version 1, expect the default values to change, and the name of functions to change. You can get great results from Synth Printer today, but only use it for projects you don't mind not being able to edit further in the future.**
+**This is alpha quality software! Until I release a stable version 1, expect the default values and the name of things to change frequently. I hope you will try out Synth Printer today, as you can get great results from it already, but only use it for projects you don't mind not being able to edit further in the future, and be sure to export STLs for archival and reference.**
 
 It's based on [CadQuery](https://github.com/CadQuery/cadquery), but provides a greatly simplified syntax focusing only on synth panels. It's meant to create panels that print right out of the box: they account for tolerances, and they provide footprints that match the kind of synth diy hardware you'll find in the wild. I've made a lot of panels using this system already. My goal is to make it so things will fit on your first attempt.
 
