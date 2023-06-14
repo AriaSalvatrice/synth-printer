@@ -210,7 +210,7 @@ class SynthPrinter:
             .hole(diameter, depth)
         )
 
-    def cutBox(
+    def cutRect(
         self,
         x: float,
         y: float,
@@ -223,6 +223,7 @@ class SynthPrinter:
         x, y define the top-left."""
 
         # TODO: Rounding corners
+        # TODO: Top-left and center version
 
         if depth == 0:
             depth = self.config["panelThickness"]
@@ -310,6 +311,9 @@ class SynthPrinter:
     #######################################################################
     ### Panels
     #######################################################################
+
+    # TODO: Change the nomenclature from Notches to Slots
+    # TODO: Add Slots to the drill template
 
     def addPanel(
         self,
@@ -570,6 +574,7 @@ class SynthPrinter:
 
         x, y define the top-left of the box as seen from the front
         """
+        # TODO: Top-left and center version
         self.supports = (
             self.supports.moveTo(
                 -self.config["panelWidth"] / 2 + x + width / 2,
@@ -663,15 +668,37 @@ class SynthPrinter:
             .extrude(self.config["DrillTemplateMarkThickness"])
         )
 
+    def markRect(self, x: float, y: float, width: float, height: float):
+        """Marks a rectangle on the drill template.
+
+        x, y define the center."""
+        # TODO: Top-left and center version
+
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(1)
+            .moveTo(
+                -self.config["panelWidth"] / 2 + x,
+                -self.config["panelHeight"] / 2 + y,
+            )
+            .rect(
+                width - self.config["DrillTemplateMarkThickness"] * 2,
+                height - self.config["DrillTemplateMarkThickness"] * 2,
+            )
+            .cutThruAll()
+        )
+
     def markHole(self, x: float, y: float, diameter: float):
         """Marks a circular hole on the drill template.
 
         x, y define the center."""
         # FIXME: Nasty, and requires marking circles before crosses
         self.drillTemplate = (
-            self.drillTemplate
-            # .center(x, y)
-            .moveTo(
+            self.drillTemplate.moveTo(
                 -self.config["panelWidth"] / 2 + x,
                 -self.config["panelHeight"] / 2 + y,
             )
@@ -701,6 +728,10 @@ class SynthPrinter:
         self.previewCylinderOnBack(x, y, 24, 24.4)
         self.previewCylinderOnBack(x, y, 34.8, 6.5)
 
+    def markArcadeButton30mm(self, x: float, y: float):
+        self.markHole(x, y, self.config["arcade30mmButtonWithTolerance"])
+        self.markCross(x, y)
+
     def addArcadeButton30mm(self, x: float, y: float):
         """Should work with all major types of 30mm arcade buttons.
 
@@ -718,6 +749,7 @@ class SynthPrinter:
         """
         self.cutArcadeButton30mm(x, y)
         self.previewArcadeButton30mm(x, y)
+        self.markArcadeButton30mm(x, y)
 
     # FIXME: untested footprint revision!!
     def cutArcadeButton24mm(self, x: float, y: float):
@@ -735,6 +767,10 @@ class SynthPrinter:
         self.previewCylinderOnBack(x, y, 24, 24.4)
         self.previewCylinderOnBack(x, y, 28, 6)
 
+    def markArcadeButton24mm(self, x: float, y: float):
+        self.markHole(x, y, self.config["arcade24mmButtonWithTolerance"])
+        self.markCross(x, y)
+
     def addArcadeButton24mm(self, x: float, y: float):
         """Should work with all major types of 24mm arcade buttons.
 
@@ -748,6 +784,7 @@ class SynthPrinter:
         """
         self.cutArcadeButton24mm(x, y)
         self.previewArcadeButton24mm(x, y)
+        self.markArcadeButton24mm(x, y)
 
     def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
         if orientation == "horizontal":
@@ -779,6 +816,10 @@ class SynthPrinter:
         self.previewBoxOnBack(x, y, width, length, 13.6)
         self.previewCylinderOnFront(x, y, self.config["miniToggleSwitchDiameter"], 19)
 
+    def markMiniToggleSwitch(self, x: float, y: float):
+        self.markHole(x, y, self.config["miniToggleSwitchDiameterWithTolerance"])
+        self.markCross(x, y)
+
     def addMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
         """A mini toggle switch, with a retaining notch.
 
@@ -788,11 +829,10 @@ class SynthPrinter:
 
         :param orientation: "horizontal" (default) or "vertical".
         """
-
         # TODO: DPDT
-
         self.cutMiniToggleSwitch(x, y, orientation)
         self.previewMiniToggleSwitch(x, y, orientation)
+        self.markMiniToggleSwitch(x, y)
 
     #######################################################################
     ### Potentiometers, rotary encoders, sliders
@@ -903,7 +943,7 @@ class SynthPrinter:
             )
             .cutBlind(-self.config["sliderNotchDepth"])
         )
-        self.cutBox(
+        self.cutRect(
             x,
             y,
             slotWidth,
@@ -915,7 +955,18 @@ class SynthPrinter:
     ):
         self.previewCylinderOnFront(x, y, 15, 10)
         self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)
-        # self.previewCylinderOnFront(x, y, 9.6, 1.6)
+
+    def markSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        self.markRect(x, y, sliderWidth, sliderHeight)
+        self.markRect(x, y, slotWidth, slotHeight)
 
     def addSlider(
         self,
@@ -936,6 +987,7 @@ class SynthPrinter:
         """
         self.cutSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
         self.previewSlider(x, y, sliderWidth, sliderHeight)
+        self.markSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
 
     # TODO: Rotary encoders
 
@@ -962,6 +1014,10 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, 12.6, 2.2)
         self.previewBoxOnBack(x, y, 16, 16, 27)
 
+    def markBigJack(self, x: float, y: float):
+        self.markHole(x, y, self.config["bigJackDiameterWithTolerance"])
+        self.markCross(x, y)
+
     def addBigJack(self, x: float, y: float):
         """This fits panel mount 6.35mm jacks with a rectangular base, as used
         in Kosmo builds.
@@ -970,6 +1026,7 @@ class SynthPrinter:
         """
         self.cutBigJack(x, y)
         self.previewBigJack(x, y)
+        self.markBigJack(x, y)
 
     # FIXME: MiniJacks are untested with Thonk ones, but work with my stock of generic ones
     def cutMiniJack(self, x: float, y: float):
@@ -991,13 +1048,18 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, 8, 2.2)
         self.previewBoxOnBack(x, y, 9, 10.5, 12.5)
 
+    def markMiniJack(self, x: float, y: float):
+        self.markHole(x, y, self.config["miniJackDiameterWithTolerance"])
+        self.markCross(x, y)
+
     def addMiniJack(self, x: float, y: float):
-        """This fits 3.5mm PJ398SM "Thonkiconn" 3.5mm jacks. UNTESTED FOOTPRINT!
+        """This fits 3.5mm PJ398SM "Thonkiconn" 3.5mm jacks and similar.
 
         There is a retaining notch the size of the base to help keep it in place.
         """
         self.cutMiniJack(x, y)
         self.previewMiniJack(x, y)
+        self.markMiniJack(x, y)
 
     #######################################################################
     ### Blinkenlichten
@@ -1010,6 +1072,10 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, 4.7, 3)
         self.previewBoxOnBack(x, y, 4, 1, 17)
 
+    def markLed5mm(self, x: float, y: float):
+        self.markHole(x, y, self.config["5mmLedWithTolerance"])
+        self.markCross(x, y)
+
     def addLed5mm(self, x: float, y: float):
         """Creates a hole for a 5mm LED protruding from the hole.
 
@@ -1017,6 +1083,7 @@ class SynthPrinter:
         """
         self.cutLed5mm(x, y)
         self.previewLed5mm(x, y)
+        self.markLed5mm(x, y)
 
     def cutLed3mm(self, x: float, y: float):
         self.cutHole(x, y, self.config["3mmLedWithTolerance"])
@@ -1024,6 +1091,10 @@ class SynthPrinter:
     def previewLed3mm(self, x: float, y: float):
         self.previewCylinderOnFront(x, y, 2.8, 1)
         self.previewBoxOnBack(x, y, 2.7, 1, 17)
+
+    def markLed3mm(self, x: float, y: float):
+        self.markHole(x, y, self.config["3mmLedWithTolerance"])
+        self.markCross(x, y)
 
     def addLed3mm(self, x: float, y: float):
         """Creates a hole for a 3mm LED fitting inside the hole.
@@ -1034,6 +1105,7 @@ class SynthPrinter:
         """
         self.cutLed3mm(x, y)
         self.previewLed3mm(x, y)
+        self.markLed3mm(x, y)
 
     def cutDisplayWindow(
         self,
@@ -1041,8 +1113,8 @@ class SynthPrinter:
         y: float,
         windowWidth: float = 30,
         windowHeight: float = 15,
-        windowVerticalOffset: float = -5,
         windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
         screwsHorizontalDistance: float = 40,
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
@@ -1100,14 +1172,70 @@ class SynthPrinter:
                 .cutThruAll()
             )
 
+    def markDisplayWindow(
+        self,
+        x: float,
+        y: float,
+        windowWidth: float = 30,
+        windowHeight: float = 15,
+        windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
+        screwsHorizontalDistance: float = 40,
+        screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
+    ):
+        self.markRect(
+            x + windowHorizontalOffset,
+            y + windowVerticalOffset,
+            windowWidth,
+            windowHeight,
+        )
+        if addScrews:
+            self.markHole(
+                x - screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+                self.config["m2DiameterWithTolerance"],
+            )
+            self.markHole(
+                x + screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+                self.config["m2DiameterWithTolerance"],
+            )
+            self.markHole(
+                x - screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+                self.config["m2DiameterWithTolerance"],
+            )
+            self.markHole(
+                x + screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+                self.config["m2DiameterWithTolerance"],
+            )
+            self.markCross(
+                x - screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x + screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x - screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x + screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+            )
+
     def addDisplayWindow(
         self,
         x: float,
         y: float,
         windowWidth: float = 30,
         windowHeight: float = 15,
-        windowVerticalOffset: float = -5,
         windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
         screwsHorizontalDistance: float = 40,
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
@@ -1128,8 +1256,20 @@ class SynthPrinter:
             y,
             windowWidth,
             windowHeight,
-            windowVerticalOffset,
             windowHorizontalOffset,
+            windowVerticalOffset,
+            screwsHorizontalDistance,
+            screwsVerticalDistance,
+            addScrews,
+        )
+
+        self.markDisplayWindow(
+            x,
+            y,
+            windowWidth,
+            windowHeight,
+            windowHorizontalOffset,
+            windowVerticalOffset,
             screwsHorizontalDistance,
             screwsVerticalDistance,
             addScrews,
@@ -1174,3 +1314,60 @@ def krow(krow: float):
 #######################################################################
 # CQ-Editor can't autoreload modules, so placing test code here
 # is simpler than figuring out a workaround.
+
+
+sp = SynthPrinter()
+
+sp.addKosmoPanel(10)
+
+sp.addPotentiometer(kcol(1.5), krow(1))
+sp.addKnob(kcol(1.5), krow(1), 37, 24)
+sp.addSlider(kcol(1), krow(3.5), 11.6, 68.4, 4, 50)
+sp.addLed5mm(kcol(1), krow(5) + 5)
+sp.addLed3mm(kcol(1), krow(5) + 20)
+sp.addBigJack(kcol(1), krow(6.5))
+sp.addMiniJack(kcol(1), krow(7.25))
+
+sp.addMiniToggleSwitch(kcol(2), krow(2.5), "horizontal")
+sp.addMiniToggleSwitch(kcol(2), krow(3.5), "vertical")
+sp.addArcadeButton30mm(kcol(2), krow(5))
+sp.addArcadeButton24mm(kcol(2), krow(7))
+
+sp.addDisplayWindow(kcol(3), krow(1), 25, 15, 10, -5, 35, 35, True)
+
+
+sp.render()
+
+# TODO: Make this unnecessary for users
+sp.panel = sp.panel.rotate((0, 0, 0), (1, 0, 0), 180)
+sp.preview = sp.preview.rotate((0, 0, 0), (1, 0, 0), 180)
+sp.supports = sp.supports.rotate((0, 0, 0), (1, 0, 0), 180)
+sp.drillTemplate = sp.drillTemplate.rotate((0, 0, 0), (1, 0, 0), 180)
+
+show_object(sp.panel, name="panel", options={"alpha": 0.2, "color": (0, 180, 230)})
+show_object(
+    sp.supports, name="supports", options={"alpha": 0.1, "color": (180, 230, 0)}
+)
+show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
+show_object(
+    sp.drillTemplate,
+    name="drillTemplate",
+    options={"alpha": 0.1, "color": (50, 200, 50)},
+)
+
+cq.exporters.export(
+    sp.drillTemplate,
+    "testTemplate.svg",
+    opt={
+        "width": 2000,
+        "height": 2000,
+        "marginLeft": 0,
+        "marginTop": 0,
+        "showAxes": False,
+        "projectionDir": (0.0, 0.0, 1.0),
+        "strokeWidth": 0.25,
+        "strokeColor": (255, 0, 0),
+        "hiddenColor": (0, 0, 255),
+        "showHidden": False,
+    },
+)

@@ -3,7 +3,6 @@
 See also the "FIXME:" and "TODO:" in the code itself.
 
 - [ ] Make more footprints!
-  - [ ] Vertical slider
 - [ ] Better support for engraving
   - [ ] Potentiometer ranges
 - [ ] Support for embossing
@@ -20,3 +19,9 @@ See also the "FIXME:" and "TODO:" in the code itself.
 - [ ] Implement width tolerance for panels—without messing up the user-facing coordinates. It's not really neede for Kosmo since it uses 5cm on a 5.08 grid, but it's probably required for Eurorack stuff.
 - [ ] Break the library into multiple files
 - [ ] Record a demo video for version 1
+- [ ] Reorganize the files better
+- [ ] Have a better logical progression of examples
+- [ ] Figure out if I can make this a better neighbor - behave more like a normal Python library does, not sure what it'd entail
+- [ ] Improve the underlying CADQuery code! It's very dirty but it works.
+- [ ] Have a top-left and a centered version of every footprint, defaulting to centered.
+- [ ] Better way for user to declare layers to use, skip drawing those not requested
