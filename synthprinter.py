@@ -80,7 +80,6 @@ class SynthPrinter:
         "arcade30mmButtonWithTolerance": lambda config: config["arcade30mmButton"]
         + config["tolerance"] * 1.4,
         ###### Mini Toggle Switches
-        # FIXME: It works but you can't add the washers on the back. Do they matter anyway? It seems sturdy enough without.
         "miniToggleSwitchWidth": 13.2,
         "miniToggleSwitchLength": 7.9,
         "miniToggleSwitchDiameter": 6,
@@ -125,9 +124,6 @@ class SynthPrinter:
         + config["tolerance"],
         "bigJackNotchDepth": lambda config: config["retainingNotchDepth"],
         ###### Mini
-        # FIXME: Untested values!! Based on the drawing of the PJ398SM
-        # FIXME: Tweaked back tolerance up a little, need another test print
-        # TODO: What are other common types?
         "miniJackDiameter": 6,
         "miniJackDiameterWithTolerance": lambda config: config["miniJackDiameter"]
         + config["tolerance"],
@@ -186,7 +182,6 @@ class SynthPrinter:
         self.drillTemplate = self.drillTemplate.translate(
             (0, 0, self.config["DrillTemplateDistance"])
         )
-        # TODO: Rotate for viewing? Still need to export as oriented.
 
     #######################################################################
     #######################################################################
@@ -222,8 +217,7 @@ class SynthPrinter:
 
         x, y define the top-left."""
 
-        # TODO: Rounding corners
-        # TODO: Top-left and center version
+        # FIXME: Default to center for consistency, and change existing callers
 
         if depth == 0:
             depth = self.config["panelThickness"]
@@ -518,8 +512,6 @@ class SynthPrinter:
     ### Panel engravings
     #######################################################################
 
-    # TODO: engraveLineTo that takes toX toY
-
     def engraveLine(
         self,
         fromX: float,
@@ -574,7 +566,6 @@ class SynthPrinter:
 
         x, y define the top-left of the box as seen from the front
         """
-        # TODO: Top-left and center version
         self.supports = (
             self.supports.moveTo(
                 -self.config["panelWidth"] / 2 + x + width / 2,
@@ -672,7 +663,6 @@ class SynthPrinter:
         """Marks a rectangle on the drill template.
 
         x, y define the center."""
-        # TODO: Top-left and center version
 
         self.drillTemplate = (
             self.drillTemplate.moveTo(
@@ -717,8 +707,6 @@ class SynthPrinter:
     ### Buttons and switches
     #######################################################################
 
-    # TODO: Other types of common buttons and switches.... Not sure what's super common.
-
     def cutArcadeButton30mm(self, x: float, y: float):
         self.cutHole(x, y, self.config["arcade30mmButtonWithTolerance"])
 
@@ -751,7 +739,6 @@ class SynthPrinter:
         self.previewArcadeButton30mm(x, y)
         self.markArcadeButton30mm(x, y)
 
-    # FIXME: untested footprint revision!!
     def cutArcadeButton24mm(self, x: float, y: float):
         self.cutHole(x, y, self.config["arcade24mmButtonWithTolerance"])
         self.cutHole(
@@ -829,7 +816,6 @@ class SynthPrinter:
 
         :param orientation: "horizontal" (default) or "vertical".
         """
-        # TODO: DPDT
         self.cutMiniToggleSwitch(x, y, orientation)
         self.previewMiniToggleSwitch(x, y, orientation)
         self.markMiniToggleSwitch(x, y)
@@ -989,8 +975,6 @@ class SynthPrinter:
         self.previewSlider(x, y, sliderWidth, sliderHeight)
         self.markSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
 
-    # TODO: Rotary encoders
-
     #######################################################################
     ### Jacks
     #######################################################################
@@ -1028,7 +1012,6 @@ class SynthPrinter:
         self.previewBigJack(x, y)
         self.markBigJack(x, y)
 
-    # FIXME: MiniJacks are untested with Thonk ones, but work with my stock of generic ones
     def cutMiniJack(self, x: float, y: float):
         self.cutHole(x, y, self.config["miniJackDiameterWithTolerance"])
         self.panel = (
@@ -1314,3 +1297,4 @@ def krow(krow: float):
 #######################################################################
 # CQ-Editor can't autoreload modules, so placing test code here
 # is simpler than figuring out a workaround.
+# Try not to commit it. It's embarrassing.
