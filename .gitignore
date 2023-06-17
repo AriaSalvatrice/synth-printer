@@ -1,5 +1,7 @@
 .vscode/
+__pycache__/
 archive/
 *.stl
 *.3mf
 test*
+*.pyc

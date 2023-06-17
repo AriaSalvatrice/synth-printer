@@ -34,14 +34,17 @@ class SynthPrinter:
 
     The naming convention of methods is as follows:
 
-    - `addX`: calls the corresponding cutX, markX, and previewX methods
+    - `addX`: calls the corresponding cutX, markX, and previewX methods.
+    In most cases, you want to call that instead of making individual calls.
     - `cutX`: makes a hole for X on the **panel** layer
-    - `markX`: draws marks for X on the **drillTemplate** layer
+    - `markX`: draws marks for X on the **drillTemplate** layer.
+    _[Exporting a drill template is a WIP, it still takes a bit of tinkering to
+    make the PDF the proper size]_
     - `previewX`: draws boxes and cylinders to preview the size of footprints
     on the **preview** layer
     - `embossX`: creates an element on the **emboss** layer. You can only 3D print
     embossings if you orient your panel with the back as the first layer.
-    **[Not implemented yet]**
+    _[Not implemented yet]_
     - `engraveX`: carves an engraving that does not cut all the way through the
     **panel** layer
     - `supportX`: creates an element on the **supports** layer, used to strenghten
@@ -234,6 +237,7 @@ class SynthPrinter:
         self.panel = cq.Workplane(&#34;XY&#34;)
         self.preview = cq.Workplane(&#34;XY&#34;)
         self.supports = cq.Workplane(&#34;XY&#34;)
+        self.emboss = cq.Workplane(&#34;XY&#34;)
         self.drillTemplate = cq.Workplane(&#34;XY&#34;)
 
         self.panelAdded = False  # We can only have one or horrible things happen
@@ -1162,9 +1166,6 @@ class SynthPrinter:
         diffuse a bit of light in the surrounding plastic.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
-
-        FIXME: This is the nastiest way possible to implement a fillet
-        but the only one I could figure out.
         &#34;&#34;&#34;
         self.cutLed3mm(x, y)
         self.previewLed3mm(x, y)
@@ -1182,6 +1183,9 @@ class SynthPrinter:
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
     ):
+        # FIXME: This is the nastiest way possible to implement a fillet
+        # but the only one I could figure out.
+
         cutout = (
             cq.Workplane(&#34;XY&#34;)
             .box(
@@ -1460,14 +1464,17 @@ Useful to align things to the the custom kcol / krow grid.</p></div>
 <div class="desc"><p>Each SynthPrinter object corresponds to a panel.</p>
 <p>The naming convention of methods is as follows:</p>
 <ul>
-<li><code>addX</code>: calls the corresponding cutX, markX, and previewX methods</li>
+<li><code>addX</code>: calls the corresponding cutX, markX, and previewX methods.
+In most cases, you want to call that instead of making individual calls.</li>
 <li><code>cutX</code>: makes a hole for X on the <strong>panel</strong> layer</li>
-<li><code>markX</code>: draws marks for X on the <strong>drillTemplate</strong> layer</li>
+<li><code>markX</code>: draws marks for X on the <strong>drillTemplate</strong> layer.
+<em>[Exporting a drill template is a WIP, it still takes a bit of tinkering to
+make the PDF the proper size]</em></li>
 <li><code>previewX</code>: draws boxes and cylinders to preview the size of footprints
 on the <strong>preview</strong> layer</li>
 <li><code>embossX</code>: creates an element on the <strong>emboss</strong> layer. You can only 3D print
 embossings if you orient your panel with the back as the first layer.
-<strong>[Not implemented yet]</strong></li>
+<em>[Not implemented yet]</em></li>
 <li><code>engraveX</code>: carves an engraving that does not cut all the way through the
 <strong>panel</strong> layer</li>
 <li><code>supportX</code>: creates an element on the <strong>supports</strong> layer, used to strenghten
@@ -1486,14 +1493,17 @@ correctly. Elements might be out of alignment if you skip this call.</p>
 
     The naming convention of methods is as follows:
 
-    - `addX`: calls the corresponding cutX, markX, and previewX methods
+    - `addX`: calls the corresponding cutX, markX, and previewX methods.
+    In most cases, you want to call that instead of making individual calls.
     - `cutX`: makes a hole for X on the **panel** layer
-    - `markX`: draws marks for X on the **drillTemplate** layer
+    - `markX`: draws marks for X on the **drillTemplate** layer.
+    _[Exporting a drill template is a WIP, it still takes a bit of tinkering to
+    make the PDF the proper size]_
     - `previewX`: draws boxes and cylinders to preview the size of footprints
     on the **preview** layer
     - `embossX`: creates an element on the **emboss** layer. You can only 3D print
     embossings if you orient your panel with the back as the first layer.
-    **[Not implemented yet]**
+    _[Not implemented yet]_
     - `engraveX`: carves an engraving that does not cut all the way through the
     **panel** layer
     - `supportX`: creates an element on the **supports** layer, used to strenghten
@@ -1686,6 +1696,7 @@ correctly. Elements might be out of alignment if you skip this call.</p>
         self.panel = cq.Workplane(&#34;XY&#34;)
         self.preview = cq.Workplane(&#34;XY&#34;)
         self.supports = cq.Workplane(&#34;XY&#34;)
+        self.emboss = cq.Workplane(&#34;XY&#34;)
         self.drillTemplate = cq.Workplane(&#34;XY&#34;)
 
         self.panelAdded = False  # We can only have one or horrible things happen
@@ -2614,9 +2625,6 @@ correctly. Elements might be out of alignment if you skip this call.</p>
         diffuse a bit of light in the surrounding plastic.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
-
-        FIXME: This is the nastiest way possible to implement a fillet
-        but the only one I could figure out.
         &#34;&#34;&#34;
         self.cutLed3mm(x, y)
         self.previewLed3mm(x, y)
@@ -2634,6 +2642,9 @@ correctly. Elements might be out of alignment if you skip this call.</p>
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
     ):
+        # FIXME: This is the nastiest way possible to implement a fillet
+        # but the only one I could figure out.
+
         cutout = (
             cq.Workplane(&#34;XY&#34;)
             .box(
@@ -3093,9 +3104,7 @@ but you can explicitly set a different configuration of slots.</p>
 <div class="desc"><p>Creates a hole for a 3mm LED fitting inside the hole.
 On default settings, it will not protrude past the hole, and might
 diffuse a bit of light in the surrounding plastic.</p>
-<p>There is no mechanism to hold it in place, but hot glue will do the trick.</p>
-<p>FIXME: This is the nastiest way possible to implement a fillet
-but the only one I could figure out.</p></div>
+<p>There is no mechanism to hold it in place, but hot glue will do the trick.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3106,9 +3115,6 @@ but the only one I could figure out.</p></div>
     diffuse a bit of light in the surrounding plastic.
 
     There is no mechanism to hold it in place, but hot glue will do the trick.
-
-    FIXME: This is the nastiest way possible to implement a fillet
-    but the only one I could figure out.
     &#34;&#34;&#34;
     self.cutLed3mm(x, y)
     self.previewLed3mm(x, y)
@@ -3508,6 +3514,9 @@ have a PCB or are will add some glue or something similarly nasty.</p>
     screwsVerticalDistance: float = 40,
     addScrews: bool = True,
 ):
+    # FIXME: This is the nastiest way possible to implement a fillet
+    # but the only one I could figure out.
+
     cutout = (
         cq.Workplane(&#34;XY&#34;)
         .box(

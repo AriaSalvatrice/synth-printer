@@ -6,14 +6,17 @@ class SynthPrinter:
 
     The naming convention of methods is as follows:
 
-    - `addX`: calls the corresponding cutX, markX, and previewX methods
+    - `addX`: calls the corresponding cutX, markX, and previewX methods.
+    In most cases, you want to call that instead of making individual calls.
     - `cutX`: makes a hole for X on the **panel** layer
-    - `markX`: draws marks for X on the **drillTemplate** layer
+    - `markX`: draws marks for X on the **drillTemplate** layer.
+    _[Exporting a drill template is a WIP, it still takes a bit of tinkering to
+    make the PDF the proper size]_
     - `previewX`: draws boxes and cylinders to preview the size of footprints
     on the **preview** layer
     - `embossX`: creates an element on the **emboss** layer. You can only 3D print
     embossings if you orient your panel with the back as the first layer.
-    **[Not implemented yet]**
+    _[Not implemented yet]_
     - `engraveX`: carves an engraving that does not cut all the way through the
     **panel** layer
     - `supportX`: creates an element on the **supports** layer, used to strenghten
@@ -206,6 +209,7 @@ class SynthPrinter:
         self.panel = cq.Workplane("XY")
         self.preview = cq.Workplane("XY")
         self.supports = cq.Workplane("XY")
+        self.emboss = cq.Workplane("XY")
         self.drillTemplate = cq.Workplane("XY")
 
         self.panelAdded = False  # We can only have one or horrible things happen
@@ -956,6 +960,11 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, diameter, depth + 5)
 
     def addKnob(self, x: float, y: float, diameter: float, depth: float):
+        """Adds a knob for preview only. Place it at the same location as
+        potentiometers and rotary encoders!
+
+        Since there is a lot of variation in knob sizes, and sometimes the
+        shaft is left exposed without a knob, it's not added automatically."""
         self.previewKnob(x, y, diameter, depth)
 
     def cutSlider(
@@ -1134,9 +1143,6 @@ class SynthPrinter:
         diffuse a bit of light in the surrounding plastic.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
-
-        FIXME: This is the nastiest way possible to implement a fillet
-        but the only one I could figure out.
         """
         self.cutLed3mm(x, y)
         self.previewLed3mm(x, y)
@@ -1154,6 +1160,9 @@ class SynthPrinter:
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
     ):
+        # FIXME: This is the nastiest way possible to implement a fillet
+        # but the only one I could figure out.
+
         cutout = (
             cq.Workplane("XY")
             .box(
