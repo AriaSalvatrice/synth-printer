@@ -1,0 +1,4634 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>synthprinter API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>synthprinter</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import cadquery as cq
+
+
+class SynthPrinter:
+    &#34;&#34;&#34;Each SynthPrinter object corresponds to a panel.
+
+    The naming convention of methods is as follows:
+
+    - `addX`: calls the corresponding cutX, markX, and previewX methods
+    - `cutX`: makes a hole for X on the **panel** layer
+    - `markX`: draws marks for X on the **drillTemplate** layer
+    - `previewX`: draws boxes and cylinders to preview the size of footprints
+    on the **preview** layer
+    - `embossX`: creates an element on the **emboss** layer. You can only 3D print
+    embossings if you orient your panel with the back as the first layer.
+    **[Not implemented yet]**
+    - `engraveX`: carves an engraving that does not cut all the way through the
+    **panel** layer
+    - `supportX`: creates an element on the **supports** layer, used to strenghten
+    panels and hold in place PCBs. You can only 3D print supports if you orient
+    your panel with the front as the first layer.
+
+    You must call render() before exporting an object, to post-process things
+    correctly. Elements might be out of alignment if you skip this call.
+
+    Be sure to take a look at the bundled examples!
+    &#34;&#34;&#34;
+
+    defaultConfig = {
+        ###########################################################
+        # You can override any of these settings from the defaultConfig by
+        # passing them as a parameter to the constructor.
+        #
+        # Preview objects have their sizes hardcoded to keep
+        # the size of this config in check.
+        #
+        ###########################################################
+        ### Common Dimensions
+        ###########################################################
+        &#34;tolerance&#34;: 0.4,
+        &#34;panelWidth&#34;: 100.0,
+        &#34;panelHeight&#34;: 100.0,
+        &#34;panelThickness&#34;: 4.0,
+        &#34;hp&#34;: 5.08,  # 0.2 inches
+        &#34;khp&#34;: 25,  # Kosmo horizontal pitch
+        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
+        # it hollows out 5 layers instead of 4. This helps making the notches
+        # better at keeping things in place.
+        &#34;retainingNotchDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 3.9,
+        ###########################################################
+        ### Visualization
+        ###########################################################
+        &#34;panelColorRGBA&#34;: cq.Color(0, 0.7, 0.7, 0.9),
+        &#34;previewColorRGBA&#34;: cq.Color(0.7, 0.2, 0.2, 0.4),
+        ###########################################################
+        ### Screws
+        ###########################################################
+        ###### M3
+        &#34;m3Diameter&#34;: 3.0,
+        &#34;m3DiameterWithTolerance&#34;: lambda config: config[&#34;m3Diameter&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;m3screwSlotWidth&#34;: lambda config: config[&#34;m3DiameterWithTolerance&#34;] * 2.5,
+        &#34;m3screwSlotHeight&#34;: lambda config: config[&#34;m3DiameterWithTolerance&#34;],
+        &#34;m3screwSlotDistanceFromTop&#34;: 3.0,
+        &#34;m3screwSlotDistanceFromBottom&#34;: 3.0,
+        &#34;m3screwSlotDistanceFromSide&#34;: lambda config: config[&#34;m3DiameterWithTolerance&#34;]
+        * 1.5,
+        ###### M2
+        &#34;m2Diameter&#34;: 2.0,
+        &#34;m2DiameterWithTolerance&#34;: lambda config: config[&#34;m2Diameter&#34;]
+        + config[&#34;tolerance&#34;] * 1.5,  # More expansion with small screws
+        ###########################################################
+        ### Panels
+        ###########################################################
+        &#34;eurorackHeight&#34;: 128.5,  # Modules are smaller than the full 3U
+        &#34;eurorackWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
+        &#34;i1UIJHeight&#34;: 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
+        &#34;i1UIJWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
+        &#34;kosmoHeight&#34;: 200.0,
+        &#34;kosmoWidthTolerance&#34;: 0,  # Kosmo needs no additional tolerance due to fitting HP rails
+        ###########################################################
+        ### Panel engravings
+        ###########################################################
+        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
+        # it engraves 5 layers instead of 4. This greatly helps with color
+        # changes, with fewer layers, the first color might be a bit translucent.
+        &#34;panelEngravingDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 3.9,
+        ###########################################################
+        ### Buttons and switches
+        ###########################################################
+        ###### Arcade
+        # Sanwas have little clips making them require more tolerance
+        # and the 24mm one require a thinner panel than the default
+        # to snap in properly
+        &#34;arcade24mmButton&#34;: 24,
+        &#34;arcade24mmButtonWithTolerance&#34;: lambda config: config[&#34;arcade24mmButton&#34;]
+        + config[&#34;tolerance&#34;] * 1.4,
+        &#34;arcade24mmButtonAdditionalClearanceDiameter&#34;: 27,
+        &#34;arcade24mmButtonAdditionalClearanceDepth&#34;: lambda config: config[
+            &#34;retainingNotchDepth&#34;
+        ],
+        &#34;arcade30mmButton&#34;: 30,
+        &#34;arcade30mmButtonWithTolerance&#34;: lambda config: config[&#34;arcade30mmButton&#34;]
+        + config[&#34;tolerance&#34;] * 1.4,
+        ###### Mini Toggle Switches
+        &#34;miniToggleSwitchWidth&#34;: 13.2,
+        &#34;miniToggleSwitchLength&#34;: 7.9,
+        &#34;miniToggleSwitchDiameter&#34;: 6,
+        &#34;miniToggleSwitchWidthWithTolerance&#34;: lambda config: config[
+            &#34;miniToggleSwitchWidth&#34;
+        ]
+        + config[&#34;tolerance&#34;],
+        &#34;miniToggleSwitchLengthWithTolerance&#34;: lambda config: config[
+            &#34;miniToggleSwitchLength&#34;
+        ]
+        + config[&#34;tolerance&#34;],
+        &#34;miniToggleSwitchDiameterWithTolerance&#34;: lambda config: config[
+            &#34;miniToggleSwitchDiameter&#34;
+        ]
+        + config[&#34;tolerance&#34;],
+        &#34;miniToggleSwitchNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
+        ###########################################################
+        ### Potentiometers and rotary encoders
+        ###########################################################
+        ###### Pots
+        &#34;potentiometerHoleDiameter&#34;: 7,
+        &#34;potentiometerHoleDiameterWithTolerance&#34;: lambda config: config[
+            &#34;potentiometerHoleDiameter&#34;
+        ]
+        + config[&#34;tolerance&#34;],
+        &#34;potentiometerNotchDistanceFromCenter&#34;: 6.9,
+        &#34;potentiometerNotchDiameter&#34;: 3.9,
+        &#34;potentiometerNotchDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 1.5,
+        &#34;sliderNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
+        ###########################################################
+        ### Jacks
+        ###########################################################
+        ###### Big
+        &#34;bigJackDiameter&#34;: 9,
+        &#34;bigJackDiameterWithTolerance&#34;: lambda config: config[&#34;bigJackDiameter&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;bigJackWidth&#34;: 16,
+        &#34;bigJackHeight&#34;: lambda config: config[&#34;bigJackWidth&#34;],
+        &#34;bigJackWidthWithTolerance&#34;: lambda config: config[&#34;bigJackWidth&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;bigJackHeightWithTolerance&#34;: lambda config: config[&#34;bigJackHeight&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;bigJackNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
+        ###### Mini
+        &#34;miniJackDiameter&#34;: 6,
+        &#34;miniJackDiameterWithTolerance&#34;: lambda config: config[&#34;miniJackDiameter&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;miniJackWidth&#34;: 9,
+        &#34;miniJackHeight&#34;: 9.5,
+        &#34;miniJackWidthWithTolerance&#34;: lambda config: config[&#34;miniJackWidth&#34;]
+        + config[&#34;tolerance&#34;] * 2,
+        &#34;miniJackHeightWithTolerance&#34;: lambda config: config[&#34;miniJackHeight&#34;]
+        + config[&#34;tolerance&#34;] * 2,
+        &#34;miniJackNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
+        ###########################################################
+        ### Blinkenlichten
+        ###########################################################
+        &#34;5mmLed&#34;: 4.9,
+        &#34;5mmLedWithTolerance&#34;: lambda config: config[&#34;5mmLed&#34;] + config[&#34;tolerance&#34;],
+        &#34;3mmLed&#34;: 2.9,
+        &#34;3mmLedWithTolerance&#34;: lambda config: config[&#34;3mmLed&#34;]
+        + config[&#34;tolerance&#34;] * 1.5,
+        ###########################################################
+        ### Drill Template
+        ###########################################################
+        &#34;DrillTemplateMarkLength&#34;: 10,
+        &#34;DrillTemplateMarkThickness&#34;: 0.2,
+        &#34;DrillTemplateDistance&#34;: -80,
+    }
+    &#34;&#34;&#34;
+    You can override any of the defaultConfig settings by passing them as a
+    parameter to the constructor. Look at the code for the full list of
+    settings. Some are dynamically calculated from other settings.
+
+    For example, to replace the default tolerance of 0.4mm, create a
+    new object as follows:
+
+        sp = SynthPrinter(
+            tolerance=0.6,
+        )
+
+    defaultConfig values are mostly dimensions that have been tested to
+    work well with 3D printing. You are encouraged to try out the defaults 
+    first. But with a different process than FDM 3D printing, you will want to
+    make your own configuration profile.&#34;&#34;&#34;
+
+    def __init__(self, **kwargs):
+        self.config = self.defaultConfig.copy()
+
+        # override defaults
+        for key, value in kwargs.items():
+            if key in self.config:
+                self.config[key] = value
+
+        # call lambdas
+        for key, value in self.config.items():
+            if callable(value):
+                self.config[key] = value(self.config)
+
+        # Create layers
+        self.panel = cq.Workplane(&#34;XY&#34;)
+        self.preview = cq.Workplane(&#34;XY&#34;)
+        self.supports = cq.Workplane(&#34;XY&#34;)
+        self.drillTemplate = cq.Workplane(&#34;XY&#34;)
+
+        self.panelAdded = False  # We can only have one or horrible things happen
+
+    def render(self):
+        &#34;&#34;&#34;You must call this before displaying or exporting your panel
+        to post-process it properly&#34;&#34;&#34;
+        # Move the supports where they belong
+        self.supports = self.supports.translate(
+            (0, 0, self.config[&#34;panelThickness&#34;] / 2)
+        )
+        # Move the drill template above the panel
+        self.drillTemplate = self.drillTemplate.translate(
+            (0, 0, self.config[&#34;DrillTemplateDistance&#34;])
+        )
+
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+
+    #######################################################################
+    ### Basic operations
+    #######################################################################
+
+    def cutHole(self, x: float, y: float, diameter: float, depth: float = None):
+        &#34;&#34;&#34;Makes a circular hole, default depth is through the entire panel
+
+        x, y define the center.&#34;&#34;&#34;
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .hole(diameter, depth)
+        )
+
+    def cutRect(
+        self,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        depth: float = 0,
+    ):
+        &#34;&#34;&#34;Cuts a rectangular shape through the panel.
+
+        FIXME: Default to center for consistency, and change existing callers
+
+        x, y define the top-left.
+
+        **WARNING: This will be changed to center in the future!**
+        &#34;&#34;&#34;
+
+        if depth == 0:
+            depth = self.config[&#34;panelThickness&#34;]
+
+        cutout = (
+            cq.Workplane(&#34;XY&#34;)
+            .box(width, height, depth)
+            .translate(
+                (
+                    -self.config[&#34;panelWidth&#34;] / 2 + x,
+                    -self.config[&#34;panelHeight&#34;] / 2 + y,
+                    0,
+                )
+            )
+        )
+
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .cut(cutout)
+        )
+
+    def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
+        &#34;&#34;&#34;Adds a cylinder for preview on the back of the panel.
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.&#34;&#34;&#34;
+        self.preview = (
+            self.preview.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(depth + self.config[&#34;panelThickness&#34;] / 2)
+        )
+
+    def previewCylinderOnFront(self, x: float, y: float, diameter: float, depth: float):
+        &#34;&#34;&#34;Adds a cylinder for preview on the front of the panel.
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.&#34;&#34;&#34;
+        self.preview = (
+            self.preview.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(-depth - self.config[&#34;panelThickness&#34;] / 2)
+        )
+
+    def previewBoxOnBack(
+        self, x: float, y: float, width: float, height: float, depth: float
+    ):
+        &#34;&#34;&#34;Adds a box for preview on the back of the panel.
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.&#34;&#34;&#34;
+        self.preview = (
+            self.preview.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(depth + self.config[&#34;panelThickness&#34;] / 2)
+        )
+
+    def previewBoxOnFront(
+        self, x: float, y: float, width: float, height: float, depth: float
+    ):
+        &#34;&#34;&#34;Adds a box for preview on the front of the panel.
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.
+        &#34;&#34;&#34;
+        self.preview = (
+            self.preview.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(-depth - self.config[&#34;panelThickness&#34;] / 2)
+        )
+
+    #######################################################################
+    ### Panels
+    #######################################################################
+
+    def addPanel(
+        self,
+        width: float,
+        height: float,
+        screwSlots: str = &#34;auto&#34;,
+    ):
+        &#34;&#34;&#34;Adds a rectangular panel of arbitrary dimensions.
+        You can only add one.
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
+        there will be only two by default.
+
+
+        TODO: Add Slots to the drill template
+
+
+        :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+        &#34;&#34;&#34;
+
+        if self.panelAdded == True:
+            raise Warning(&#34;Only one panel can be added&#34;)
+        else:
+            self.panelAdded = True
+
+        self.config[&#34;panelWidth&#34;] = width
+        self.config[&#34;panelHeight&#34;] = height
+
+        # Make the main panel shape
+        self.panel = self.panel.box(
+            self.config[&#34;panelWidth&#34;],
+            self.config[&#34;panelHeight&#34;],
+            self.config[&#34;panelThickness&#34;],
+        )
+
+        # Initialize the drill template
+        self.markOutline()
+
+        # Do we add screw slots?
+        # default to &#34;none&#34; configuration
+        screwSlotTopLeft = False
+        screwSlotTopCenter = False
+        screwSlotTopRight = False
+        screwSlotBottomLeft = False
+        screwSlotBottomCenter = False
+        screwSlotBottomRight = False
+        if (  # If too small for 4 slots
+            self.config[&#34;m3screwSlotWidth&#34;] * 2
+            + (
+                self.config[&#34;m3screwSlotDistanceFromSide&#34;]
+                - self.config[&#34;m3screwSlotWidth&#34;] / 2
+            )
+            * 2
+        ) &gt; self.config[&#34;panelWidth&#34;]:
+            if screwSlots == &#34;auto&#34;:
+                screwSlots = &#34;tlbr&#34;
+            if screwSlots == &#34;auto-tlbr&#34;:
+                screwSlots = &#34;tlbr&#34;
+            if screwSlots == &#34;auto-trbl&#34;:
+                screwSlots = &#34;trbl&#34;
+            if screwSlots == &#34;auto-center&#34;:
+                screwSlots = &#34;center&#34;
+        else:  # Large enough for 4 slots
+            if screwSlots == &#34;auto&#34;:
+                screwSlots = &#34;all&#34;
+            if screwSlots == &#34;auto-tlbr&#34;:
+                screwSlots = &#34;all&#34;
+            if screwSlots == &#34;auto-trbl&#34;:
+                screwSlots = &#34;all&#34;
+            if screwSlots == &#34;auto-center&#34;:
+                screwSlots = &#34;all&#34;
+        if screwSlots == &#34;tlbr&#34;:
+            screwSlotTopLeft = True
+            screwSlotBottomRight = True
+        if screwSlots == &#34;trbl&#34;:
+            screwSlotTopRight = True
+            screwSlotBottomLeft = True
+        if screwSlots == &#34;center&#34;:
+            screwSlotTopCenter = True
+            screwSlotBottomCenter = True
+        if screwSlots == &#34;all&#34;:
+            screwSlotTopLeft = True
+            screwSlotTopRight = True
+            screwSlotBottomLeft = True
+            screwSlotBottomRight = True
+
+        screwPoints = []
+        if screwSlotTopLeft:
+            screwPoints.append(
+                (
+                    self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                    self.config[&#34;panelHeight&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+                )
+            )
+        if screwSlotTopCenter:
+            screwPoints.append(
+                (
+                    self.config[&#34;panelWidth&#34;] / 2,
+                    self.config[&#34;panelHeight&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+                )
+            )
+        if screwSlotTopRight:
+            screwPoints.append(
+                (
+                    self.config[&#34;panelWidth&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                    self.config[&#34;panelHeight&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+                )
+            )
+        if screwSlotBottomLeft:
+            screwPoints.append(
+                (
+                    self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                    self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+                )
+            )
+        if screwSlotBottomCenter:
+            screwPoints.append(
+                (
+                    self.config[&#34;panelWidth&#34;] / 2,
+                    self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+                )
+            )
+        if screwSlotBottomRight:
+            screwPoints.append(
+                (
+                    self.config[&#34;panelWidth&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                    self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+                )
+            )
+        if screwPoints != []:
+            self.panel = (
+                self.panel.faces(&#34;&gt;Z&#34;)
+                .workplane()
+                .center(-self.config[&#34;panelWidth&#34;] / 2, -self.config[&#34;panelHeight&#34;] / 2)
+                .pushPoints(screwPoints)
+                .slot2D(
+                    self.config[&#34;m3screwSlotWidth&#34;],
+                    self.config[&#34;m3screwSlotHeight&#34;],
+                    0,
+                )
+                .cutThruAll()
+            )
+
+    def addEurorackPanel(
+        self,
+        hp: int,
+        screwSlots=&#34;auto&#34;,
+    ):
+        &#34;&#34;&#34;Adds a Eurorack panel with screw slots. Eurorack width is defined in hp().
+
+        Eurorack sizes are generally an even number of hp, such as 4hp or 8hp.
+        3hp and 5hp are the only odd number sizes commonly seen in commercial hardware.
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
+        there will be only two by default.
+
+        :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+        &#34;&#34;&#34;
+        self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;eurorackHeight&#34;], screwSlots)
+
+    def add1UIJPanel(
+        self,
+        hp: int,
+        screwSlots=&#34;auto&#34;,
+    ):
+        &#34;&#34;&#34;Adds a 1U Tile (Intellijel size) panel with screw slots. Eurorack width is defined in hp().
+
+        Note that there are two incompatible 1U tile standards: Intellijel and PulpLogic.
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
+        there will be only two by default.
+
+        :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+        &#34;&#34;&#34;
+        self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;i1UIJHeight&#34;], screwSlots)
+
+    def addKosmoPanel(
+        self,
+        khp: int,
+        screwSlots=&#34;auto&#34;,
+    ):
+        &#34;&#34;&#34;Adds a Kosmo panel with screw slots. khp argument is the amount of 25mm columns.
+
+        Kosmo, also known as Metric 5U, is a format compatible with Eurorack
+        popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
+        It has a horizontal pitch of 25mm (called khp in Synth Printer for simplicity)
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. Kosmo panels are always large enough for four slots,
+        but you can explicitly set a different configuration of slots.
+
+        :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+        &#34;&#34;&#34;
+        self.addPanel(
+            self.config[&#34;khp&#34;] * khp,
+            self.config[&#34;kosmoHeight&#34;],
+            screwSlots=screwSlots,
+        )
+
+    #######################################################################
+    ### Panel engravings
+    #######################################################################
+
+    def engraveLine(
+        self,
+        fromX: float,
+        fromY: float,
+        angle: float,
+        length: float,
+        width: float,
+        depth: float = 0,
+    ):
+        &#34;&#34;&#34;Engraves a line on the front of the panel.
+
+        If the depth parameter is omitted or 0, the default depth is used.
+
+        Be sure to inspect both sides of the print to make sure there aren&#39;t
+        any sections that are too thin!
+        &#34;&#34;&#34;
+        if depth == 0:
+            depth = self.config[&#34;panelEngravingDepth&#34;]
+        cutout = (
+            cq.Workplane(&#34;XY&#34;)
+            .lineTo(-width / 2, 0)
+            .lineTo(-width / 2, -length)
+            .lineTo(width / 2, -length)
+            .lineTo(width / 2, 0)
+            .close()
+            .extrude(depth)
+            .rotate((0, 0, 0), (0, 0, 1), angle)
+            .translate(
+                (
+                    -self.config[&#34;panelWidth&#34;] / 2 + fromX,
+                    -self.config[&#34;panelHeight&#34;] / 2 + fromY,
+                    -self.config[&#34;panelThickness&#34;] / 2,
+                )
+            )
+        )
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .cut(cutout)
+        )
+
+    #######################################################################
+    ### Support structures
+    #######################################################################
+
+    # Every function adding to the supports layer has support at the
+    # start of the name.
+
+    def supportBar(self, x: float, y: float, width: float, height: float, depth: float):
+        &#34;&#34;&#34;Adds a box on the supports layer.
+
+        x, y define the top-left of the box as seen from the front
+        &#34;&#34;&#34;
+        self.supports = (
+            self.supports.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
+                -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+            )
+            .rect(width, height)
+            .extrude(depth)
+        )
+
+    #######################################################################
+    ### Drill template marks
+    #######################################################################
+
+    # Drill template marks are simple cross shapes that will more or less
+    # look like crosses when exported at typical sizes.
+    # Every function adding to the drillTemplate layer has mark at the
+    # start of the name
+
+    def markOutline(self):
+        &#34;&#34;&#34;Add an outline to the drill template layer. This ensures proper
+        SVG export. This is automatically done when adding a panel.&#34;&#34;&#34;
+
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(  # Top
+                0,
+                -self.config[&#34;panelHeight&#34;] / 2
+                + self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+            )
+            .rect(
+                self.config[&#34;panelWidth&#34;],
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .moveTo(  # Bottom
+                0,
+                self.config[&#34;panelHeight&#34;] / 2
+                - self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+            )
+            .rect(
+                self.config[&#34;panelWidth&#34;],
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .moveTo(  # Left
+                -self.config[&#34;panelWidth&#34;] / 2
+                + self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+                0,
+            )
+            .rect(
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+                self.config[&#34;panelHeight&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .moveTo(  # Right
+                self.config[&#34;panelWidth&#34;] / 2
+                - self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+                0,
+            )
+            .rect(
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+                self.config[&#34;panelHeight&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+        )
+
+    def markCross(self, x: float, y: float):
+        &#34;&#34;&#34;Adds a mark on the drill template layer. At typical synth panel
+        sizes, it will show up as a cross the perfect size for printing out and
+        using as a drill template.
+
+        x, y define the center of the mark as seen from the front.
+        &#34;&#34;&#34;
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(
+                self.config[&#34;DrillTemplateMarkLength&#34;],
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+                self.config[&#34;DrillTemplateMarkLength&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+        )
+
+    def markRect(self, x: float, y: float, width: float, height: float):
+        &#34;&#34;&#34;Marks a rectangle on the drill template.
+
+        x, y define the center.&#34;&#34;&#34;
+
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(1)
+            .moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(
+                width - self.config[&#34;DrillTemplateMarkThickness&#34;] * 2,
+                height - self.config[&#34;DrillTemplateMarkThickness&#34;] * 2,
+            )
+            .cutThruAll()
+        )
+
+    def markHole(self, x: float, y: float, diameter: float):
+        &#34;&#34;&#34;Marks a circular hole on the drill template.
+
+        x, y define the center.
+
+        FIXME: Nasty implementation, and requires marking circles before crosses
+
+        &#34;&#34;&#34;
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(1)
+            .moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .circle(diameter / 2 - self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .cutThruAll()
+        )
+        return
+
+    #######################################################################
+    ### Buttons and switches
+    #######################################################################
+
+    def cutArcadeButton30mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
+
+    def previewArcadeButton30mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 32.3, 3.4)
+        self.previewCylinderOnFront(x, y, 24, 7)
+        self.previewCylinderOnBack(x, y, 24, 24.4)
+        self.previewCylinderOnBack(x, y, 34.8, 6.5)
+
+    def markArcadeButton30mm(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addArcadeButton30mm(self, x: float, y: float):
+        &#34;&#34;&#34;Should work with all major types of 30mm arcade buttons.
+
+        30mm is the size of action buttons commonly seen in arcade cabinets.
+        Smaller buttons like the start button are 24mm.
+
+        Tested with the Sanwa OBSF-30 snap-in button.
+        Sanwas have a hair trigger and a concave surface.
+
+        Also tested with an unidentified screw-in type. The preview includes its retaining ring.
+
+        Also tested with an unidentified Happ type.
+        Happ buttons are concave are more commonly seen on American games.
+        They are much deeper than on the preview.
+        &#34;&#34;&#34;
+        self.cutArcadeButton30mm(x, y)
+        self.previewArcadeButton30mm(x, y)
+        self.markArcadeButton30mm(x, y)
+
+    def cutArcadeButton24mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
+        self.cutHole(
+            x,
+            y,
+            self.config[&#34;arcade24mmButtonAdditionalClearanceDiameter&#34;],
+            self.config[&#34;arcade24mmButtonAdditionalClearanceDepth&#34;],
+        )
+
+    def previewArcadeButton24mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 27, 3.4)
+        self.previewCylinderOnFront(x, y, 22, 7)
+        self.previewCylinderOnBack(x, y, 24, 24.4)
+        self.previewCylinderOnBack(x, y, 28, 6)
+
+    def markArcadeButton24mm(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addArcadeButton24mm(self, x: float, y: float):
+        &#34;&#34;&#34;Should work with all major types of 24mm arcade buttons.
+
+        24mm is the size of utility buttons (like the start button) commonly seen in arcade cabinets.
+        Actual action buttons are 30mm.
+
+        Uses the dimensions for the Sanwa OBSF-24 snap-in button.
+        Sanwas have a hair trigger and a concave surface.
+
+        Also tested with an unidentified screw-in type. The preview includes its retaining ring.
+        &#34;&#34;&#34;
+        self.cutArcadeButton24mm(x, y)
+        self.previewArcadeButton24mm(x, y)
+        self.markArcadeButton24mm(x, y)
+
+    def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+        if orientation == &#34;horizontal&#34;:
+            width = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
+            length = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
+        else:
+            width = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
+            length = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
+
+        self.cutHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(width, length)
+            .cutBlind(-self.config[&#34;miniToggleSwitchNotchDepth&#34;])
+        )
+
+    def previewMiniToggleSwitch(
+        self, x: float, y: float, orientation: str = &#34;horizontal&#34;
+    ):
+        if orientation == &#34;horizontal&#34;:
+            width = self.config[&#34;miniToggleSwitchWidth&#34;]
+            length = self.config[&#34;miniToggleSwitchLength&#34;]
+        else:
+            width = self.config[&#34;miniToggleSwitchLength&#34;]
+            length = self.config[&#34;miniToggleSwitchWidth&#34;]
+        self.previewBoxOnBack(x, y, width, length, 13.6)
+        self.previewCylinderOnFront(x, y, self.config[&#34;miniToggleSwitchDiameter&#34;], 19)
+
+    def markMiniToggleSwitch(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+        &#34;&#34;&#34;A mini toggle switch, with a retaining notch.
+
+        This will fit the switches often sold as the &#34;MTS-100&#34; series by Aliexpress vendors that have only a single row of pins.
+
+        It will not fit DPDT switches that have two rows of pins, those are bigger.
+
+        :param orientation: &#34;horizontal&#34; (default) or &#34;vertical&#34;.
+        &#34;&#34;&#34;
+        self.cutMiniToggleSwitch(x, y, orientation)
+        self.previewMiniToggleSwitch(x, y, orientation)
+        self.markMiniToggleSwitch(x, y)
+
+    #######################################################################
+    ### Potentiometers, rotary encoders, sliders
+    #######################################################################
+
+    def cutPotentiometer(
+        self,
+        x: float,
+        y: float,
+        notchOrientation: str = &#34;all&#34;,
+    ):
+        self.cutHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
+        # Add the notches
+
+        # default to &#34;none&#34; configuration
+        points = []
+        if notchOrientation == &#34;top&#34; or notchOrientation == &#34;all&#34;:
+            points.append((0, -self.config[&#34;potentiometerNotchDistanceFromCenter&#34;]))
+        if notchOrientation == &#34;right&#34; or notchOrientation == &#34;all&#34;:
+            points.append((self.config[&#34;potentiometerNotchDistanceFromCenter&#34;], 0))
+        if notchOrientation == &#34;bottom&#34; or notchOrientation == &#34;all&#34;:
+            points.append((0, self.config[&#34;potentiometerNotchDistanceFromCenter&#34;]))
+        if notchOrientation == &#34;left&#34; or notchOrientation == &#34;all&#34;:
+            points.append((-self.config[&#34;potentiometerNotchDistanceFromCenter&#34;], 0))
+
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .pushPoints(points)
+            .hole(
+                self.config[&#34;potentiometerNotchDiameter&#34;],
+                self.config[&#34;potentiometerNotchDepth&#34;],
+            )
+        )
+
+    def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = &#34;all&#34;):
+        self.previewCylinderOnFront(x, y, 6, 21)
+        self.previewCylinderOnFront(x, y, 9.6, 1.6)
+        self.previewCylinderOnBack(x, y, 16, 8)
+        if lugsOrientation == &#34;all&#34; or lugsOrientation == &#34;bottom&#34;:
+            self.previewBoxOnBack(x, y + 10, 15, 18, 2.4)
+        if lugsOrientation == &#34;top&#34;:
+            self.previewBoxOnBack(x, y - 10, 15, 18, 2.4)
+        if lugsOrientation == &#34;left&#34;:
+            self.previewBoxOnBack(x - 10, y, 18, 15, 2.4)
+        if lugsOrientation == &#34;right&#34;:
+            self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)
+
+    def markPotentiometer(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addPotentiometer(
+        self,
+        x: float,
+        y: float,
+        notchOrientation: str = &#34;all&#34;,
+        lugsOrientation: str = &#34;all&#34;,
+    ):
+        &#34;&#34;&#34;Fits most types of panel-mount potentiometers with a 6mm shaft.
+
+        There will be four notches around the hole, allowing you to catch the
+        retaining tab of the potentiometer in the most convenient orientation
+        possible.
+
+        This won&#39;t fit rotary encoders!
+
+        If you want a knob, add it separately with addKnob()
+
+        The orientation parameters are seen from the front, and are:
+        &#34;all&#34;, &#34;none&#34;, &#34;top&#34;, &#34;left&#34;, &#34;right&#34;, &#34;bottom&#34;.
+
+        The retaining notches aren&#39;t always on the same side, depending on the
+        type of potentiometer! If in doubt, just leave it to &#34;all&#34; to add 4 notches.
+
+        The preview size for the lugs doesn&#39;t account for the possibility of bending them,
+        so it might be safe to have this area overlap other stuff a little.
+        &#34;&#34;&#34;
+        self.cutPotentiometer(x, y, notchOrientation)
+        self.previewPotentiometer(x, y, lugsOrientation)
+        self.markPotentiometer(x, y)
+
+    def previewKnob(self, x: float, y: float, diameter: float, depth: float):
+        self.previewCylinderOnFront(x, y, diameter, depth + 5)
+
+    def addKnob(self, x: float, y: float, diameter: float, depth: float):
+        self.previewKnob(x, y, diameter, depth)
+
+    def cutSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(
+                sliderWidth,
+                sliderHeight,
+            )
+            .cutBlind(-self.config[&#34;sliderNotchDepth&#34;])
+        )
+        self.cutRect(
+            x,
+            y,
+            slotWidth,
+            slotHeight,
+        )
+
+    def previewSlider(
+        self, x: float, y: float, sliderWidth: float, sliderHeight: float
+    ):
+        self.previewCylinderOnFront(x, y, 15, 10)
+        self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)
+
+    def markSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        self.markRect(x, y, sliderWidth, sliderHeight)
+        self.markRect(x, y, slotWidth, slotHeight)
+
+    def addSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        &#34;&#34;&#34;For slide potentiomenters. Multiple sizes are common, so you have to
+        specify yours.
+
+        No special provision are made to hold them in place, it&#39;s assumed you
+        have a PCB or are will add some glue or something similarly nasty.
+
+        x, y: center
+        &#34;&#34;&#34;
+        self.cutSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
+        self.previewSlider(x, y, sliderWidth, sliderHeight)
+        self.markSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
+
+    #######################################################################
+    ### Jacks
+    #######################################################################
+
+    def cutBigJack(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(
+                self.config[&#34;bigJackWidthWithTolerance&#34;],
+                self.config[&#34;bigJackHeightWithTolerance&#34;],
+            )
+            .cutBlind(-self.config[&#34;bigJackNotchDepth&#34;])
+        )
+
+    def previewBigJack(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 8.5, 7)
+        self.previewCylinderOnFront(x, y, 12.6, 2.2)
+        self.previewBoxOnBack(x, y, 16, 16, 27)
+
+    def markBigJack(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addBigJack(self, x: float, y: float):
+        &#34;&#34;&#34;This fits panel mount 6.35mm jacks with a rectangular base, as used
+        in Kosmo builds.
+
+        There is a retaining notch the size of the base to help keep it in place.
+        &#34;&#34;&#34;
+        self.cutBigJack(x, y)
+        self.previewBigJack(x, y)
+        self.markBigJack(x, y)
+
+    def cutMiniJack(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(
+                self.config[&#34;miniJackWidthWithTolerance&#34;],
+                self.config[&#34;miniJackHeightWithTolerance&#34;],
+            )
+            .cutBlind(-self.config[&#34;miniJackNotchDepth&#34;])
+        )
+
+    def previewMiniJack(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 6, 5.5)
+        self.previewCylinderOnFront(x, y, 8, 2.2)
+        self.previewBoxOnBack(x, y, 9, 10.5, 12.5)
+
+    def markMiniJack(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addMiniJack(self, x: float, y: float):
+        &#34;&#34;&#34;This fits 3.5mm PJ398SM &#34;Thonkiconn&#34; 3.5mm jacks and similar.
+
+        There is a retaining notch the size of the base to help keep it in place.
+        &#34;&#34;&#34;
+        self.cutMiniJack(x, y)
+        self.previewMiniJack(x, y)
+        self.markMiniJack(x, y)
+
+    #######################################################################
+    ### Blinkenlichten
+    #######################################################################
+
+    def cutLed5mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
+
+    def previewLed5mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 4.7, 3)
+        self.previewBoxOnBack(x, y, 4, 1, 17)
+
+    def markLed5mm(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addLed5mm(self, x: float, y: float):
+        &#34;&#34;&#34;Creates a hole for a 5mm LED protruding from the hole.
+
+        There is no mechanism to hold it in place, but hot glue will do the trick.
+        &#34;&#34;&#34;
+        self.cutLed5mm(x, y)
+        self.previewLed5mm(x, y)
+        self.markLed5mm(x, y)
+
+    def cutLed3mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
+
+    def previewLed3mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 2.8, 1)
+        self.previewBoxOnBack(x, y, 2.7, 1, 17)
+
+    def markLed3mm(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addLed3mm(self, x: float, y: float):
+        &#34;&#34;&#34;Creates a hole for a 3mm LED fitting inside the hole.
+        On default settings, it will not protrude past the hole, and might
+        diffuse a bit of light in the surrounding plastic.
+
+        There is no mechanism to hold it in place, but hot glue will do the trick.
+
+        FIXME: This is the nastiest way possible to implement a fillet
+        but the only one I could figure out.
+        &#34;&#34;&#34;
+        self.cutLed3mm(x, y)
+        self.previewLed3mm(x, y)
+        self.markLed3mm(x, y)
+
+    def cutDisplayWindow(
+        self,
+        x: float,
+        y: float,
+        windowWidth: float = 30,
+        windowHeight: float = 15,
+        windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
+        screwsHorizontalDistance: float = 40,
+        screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
+    ):
+        cutout = (
+            cq.Workplane(&#34;XY&#34;)
+            .box(
+                windowWidth + self.config[&#34;panelThickness&#34;],
+                windowHeight + self.config[&#34;panelThickness&#34;],
+                self.config[&#34;panelThickness&#34;],
+            )
+            .edges(&#34;&gt;Z&#34;)
+            .fillet(self.config[&#34;panelThickness&#34;] * 0.99)
+            .translate(
+                (
+                    -self.config[&#34;panelWidth&#34;] / 2 + x + windowHorizontalOffset,
+                    -self.config[&#34;panelHeight&#34;] / 2 + y + windowVerticalOffset,
+                    0,
+                )
+            )
+        )
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .cut(cutout)
+        )
+
+        # Next, the actual cutout
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x + windowHorizontalOffset, y + windowVerticalOffset)
+            .rect(windowWidth, windowHeight)
+            .cutThruAll()
+        )
+
+        # Now, the screws
+        if addScrews:
+            self.panel = (
+                self.panel.faces(&#34;&gt;Z&#34;)
+                .vertices(&#34;&lt;XY&#34;)
+                .workplane(centerOption=&#34;CenterOfMass&#34;)
+                .center(x, y)
+                .rect(
+                    screwsHorizontalDistance,
+                    screwsVerticalDistance,
+                    forConstruction=True,
+                )
+                .vertices()
+                .circle(self.config[&#34;m2DiameterWithTolerance&#34;] / 2)
+                .cutThruAll()
+            )
+
+    def markDisplayWindow(
+        self,
+        x: float,
+        y: float,
+        windowWidth: float = 30,
+        windowHeight: float = 15,
+        windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
+        screwsHorizontalDistance: float = 40,
+        screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
+    ):
+        self.markRect(
+            x + windowHorizontalOffset,
+            y + windowVerticalOffset,
+            windowWidth,
+            windowHeight,
+        )
+        if addScrews:
+            self.markHole(
+                x - screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+                self.config[&#34;m2DiameterWithTolerance&#34;],
+            )
+            self.markHole(
+                x + screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+                self.config[&#34;m2DiameterWithTolerance&#34;],
+            )
+            self.markHole(
+                x - screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+                self.config[&#34;m2DiameterWithTolerance&#34;],
+            )
+            self.markHole(
+                x + screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+                self.config[&#34;m2DiameterWithTolerance&#34;],
+            )
+            self.markCross(
+                x - screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x + screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x - screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x + screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+            )
+
+    def addDisplayWindow(
+        self,
+        x: float,
+        y: float,
+        windowWidth: float = 30,
+        windowHeight: float = 15,
+        windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
+        screwsHorizontalDistance: float = 40,
+        screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
+    ):
+        &#34;&#34;&#34;Creates a window for a rectangular display mounted with four screws in the corner.
+
+        Every single display available has different dimensions, especially the cheapo OLEDs
+        from Aliexpress. Even when the display size is the same, various boards differ by
+        a few millimeters.
+
+        The defaults offered are for a non-existent model, for preview purposes.
+        Provide your own measurements instead!
+
+        There is no preview widget for this footprint.
+        &#34;&#34;&#34;
+        self.cutDisplayWindow(
+            x,
+            y,
+            windowWidth,
+            windowHeight,
+            windowHorizontalOffset,
+            windowVerticalOffset,
+            screwsHorizontalDistance,
+            screwsVerticalDistance,
+            addScrews,
+        )
+
+        self.markDisplayWindow(
+            x,
+            y,
+            windowWidth,
+            windowHeight,
+            windowHorizontalOffset,
+            windowVerticalOffset,
+            screwsHorizontalDistance,
+            screwsVerticalDistance,
+            addScrews,
+        )
+
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+
+
+#######################################################################
+### Helpers
+#######################################################################
+
+
+def hp(hp: float):
+    &#34;&#34;&#34;Converts Eurorack hp to millimeters (1hp = 0.2in = 5.08mm).
+    Useful to align things to the grid.&#34;&#34;&#34;
+    return hp * 5.08
+
+
+def khp(khp: float):
+    &#34;&#34;&#34;Converts khp (Kosmo HP) to millimeters (1khp = 25mm).
+    Useful to align things to the the custom kcol / krow grid.&#34;&#34;&#34;
+    return khp * 25
+
+
+def kcol(kcol: float):
+    &#34;&#34;&#34;Custom Kosmo grid system: each kcol is at the center of a 25mm section&#34;&#34;&#34;
+    return (kcol - 1) * 25 + 12.5
+
+
+def krow(krow: float):
+    &#34;&#34;&#34;Custom Kosmo grid system: each krow is 25mm, first starts 25mm from top&#34;&#34;&#34;
+    return (krow) * 25
+
+
+# To generate API reference: `pdoc --html --force synthprinter.py -o ./`
+
+#######################################################################
+### TEST CODE
+#######################################################################
+# CQ-Editor can&#39;t autoreload modules, so placing test code here
+# is simpler than figuring out a workaround.
+# Try not to commit it. It&#39;s embarrassing.</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="synthprinter.hp"><code class="name flex">
+<span>def <span class="ident">hp</span></span>(<span>hp: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts Eurorack hp to millimeters (1hp = 0.2in = 5.08mm).
+Useful to align things to the grid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def hp(hp: float):
+    &#34;&#34;&#34;Converts Eurorack hp to millimeters (1hp = 0.2in = 5.08mm).
+    Useful to align things to the grid.&#34;&#34;&#34;
+    return hp * 5.08</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.kcol"><code class="name flex">
+<span>def <span class="ident">kcol</span></span>(<span>kcol: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Custom Kosmo grid system: each kcol is at the center of a 25mm section</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def kcol(kcol: float):
+    &#34;&#34;&#34;Custom Kosmo grid system: each kcol is at the center of a 25mm section&#34;&#34;&#34;
+    return (kcol - 1) * 25 + 12.5</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.khp"><code class="name flex">
+<span>def <span class="ident">khp</span></span>(<span>khp: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts khp (Kosmo HP) to millimeters (1khp = 25mm).
+Useful to align things to the the custom kcol / krow grid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def khp(khp: float):
+    &#34;&#34;&#34;Converts khp (Kosmo HP) to millimeters (1khp = 25mm).
+    Useful to align things to the the custom kcol / krow grid.&#34;&#34;&#34;
+    return khp * 25</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.krow"><code class="name flex">
+<span>def <span class="ident">krow</span></span>(<span>krow: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Custom Kosmo grid system: each krow is 25mm, first starts 25mm from top</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def krow(krow: float):
+    &#34;&#34;&#34;Custom Kosmo grid system: each krow is 25mm, first starts 25mm from top&#34;&#34;&#34;
+    return (krow) * 25</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="synthprinter.SynthPrinter"><code class="flex name class">
+<span>class <span class="ident">SynthPrinter</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Each SynthPrinter object corresponds to a panel.</p>
+<p>The naming convention of methods is as follows:</p>
+<ul>
+<li><code>addX</code>: calls the corresponding cutX, markX, and previewX methods</li>
+<li><code>cutX</code>: makes a hole for X on the <strong>panel</strong> layer</li>
+<li><code>markX</code>: draws marks for X on the <strong>drillTemplate</strong> layer</li>
+<li><code>previewX</code>: draws boxes and cylinders to preview the size of footprints
+on the <strong>preview</strong> layer</li>
+<li><code>embossX</code>: creates an element on the <strong>emboss</strong> layer. You can only 3D print
+embossings if you orient your panel with the back as the first layer.
+<strong>[Not implemented yet]</strong></li>
+<li><code>engraveX</code>: carves an engraving that does not cut all the way through the
+<strong>panel</strong> layer</li>
+<li><code>supportX</code>: creates an element on the <strong>supports</strong> layer, used to strenghten
+panels and hold in place PCBs. You can only 3D print supports if you orient
+your panel with the front as the first layer.</li>
+</ul>
+<p>You must call render() before exporting an object, to post-process things
+correctly. Elements might be out of alignment if you skip this call.</p>
+<p>Be sure to take a look at the bundled examples!</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SynthPrinter:
+    &#34;&#34;&#34;Each SynthPrinter object corresponds to a panel.
+
+    The naming convention of methods is as follows:
+
+    - `addX`: calls the corresponding cutX, markX, and previewX methods
+    - `cutX`: makes a hole for X on the **panel** layer
+    - `markX`: draws marks for X on the **drillTemplate** layer
+    - `previewX`: draws boxes and cylinders to preview the size of footprints
+    on the **preview** layer
+    - `embossX`: creates an element on the **emboss** layer. You can only 3D print
+    embossings if you orient your panel with the back as the first layer.
+    **[Not implemented yet]**
+    - `engraveX`: carves an engraving that does not cut all the way through the
+    **panel** layer
+    - `supportX`: creates an element on the **supports** layer, used to strenghten
+    panels and hold in place PCBs. You can only 3D print supports if you orient
+    your panel with the front as the first layer.
+
+    You must call render() before exporting an object, to post-process things
+    correctly. Elements might be out of alignment if you skip this call.
+
+    Be sure to take a look at the bundled examples!
+    &#34;&#34;&#34;
+
+    defaultConfig = {
+        ###########################################################
+        # You can override any of these settings from the defaultConfig by
+        # passing them as a parameter to the constructor.
+        #
+        # Preview objects have their sizes hardcoded to keep
+        # the size of this config in check.
+        #
+        ###########################################################
+        ### Common Dimensions
+        ###########################################################
+        &#34;tolerance&#34;: 0.4,
+        &#34;panelWidth&#34;: 100.0,
+        &#34;panelHeight&#34;: 100.0,
+        &#34;panelThickness&#34;: 4.0,
+        &#34;hp&#34;: 5.08,  # 0.2 inches
+        &#34;khp&#34;: 25,  # Kosmo horizontal pitch
+        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
+        # it hollows out 5 layers instead of 4. This helps making the notches
+        # better at keeping things in place.
+        &#34;retainingNotchDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 3.9,
+        ###########################################################
+        ### Visualization
+        ###########################################################
+        &#34;panelColorRGBA&#34;: cq.Color(0, 0.7, 0.7, 0.9),
+        &#34;previewColorRGBA&#34;: cq.Color(0.7, 0.2, 0.2, 0.4),
+        ###########################################################
+        ### Screws
+        ###########################################################
+        ###### M3
+        &#34;m3Diameter&#34;: 3.0,
+        &#34;m3DiameterWithTolerance&#34;: lambda config: config[&#34;m3Diameter&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;m3screwSlotWidth&#34;: lambda config: config[&#34;m3DiameterWithTolerance&#34;] * 2.5,
+        &#34;m3screwSlotHeight&#34;: lambda config: config[&#34;m3DiameterWithTolerance&#34;],
+        &#34;m3screwSlotDistanceFromTop&#34;: 3.0,
+        &#34;m3screwSlotDistanceFromBottom&#34;: 3.0,
+        &#34;m3screwSlotDistanceFromSide&#34;: lambda config: config[&#34;m3DiameterWithTolerance&#34;]
+        * 1.5,
+        ###### M2
+        &#34;m2Diameter&#34;: 2.0,
+        &#34;m2DiameterWithTolerance&#34;: lambda config: config[&#34;m2Diameter&#34;]
+        + config[&#34;tolerance&#34;] * 1.5,  # More expansion with small screws
+        ###########################################################
+        ### Panels
+        ###########################################################
+        &#34;eurorackHeight&#34;: 128.5,  # Modules are smaller than the full 3U
+        &#34;eurorackWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
+        &#34;i1UIJHeight&#34;: 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
+        &#34;i1UIJWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
+        &#34;kosmoHeight&#34;: 200.0,
+        &#34;kosmoWidthTolerance&#34;: 0,  # Kosmo needs no additional tolerance due to fitting HP rails
+        ###########################################################
+        ### Panel engravings
+        ###########################################################
+        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
+        # it engraves 5 layers instead of 4. This greatly helps with color
+        # changes, with fewer layers, the first color might be a bit translucent.
+        &#34;panelEngravingDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 3.9,
+        ###########################################################
+        ### Buttons and switches
+        ###########################################################
+        ###### Arcade
+        # Sanwas have little clips making them require more tolerance
+        # and the 24mm one require a thinner panel than the default
+        # to snap in properly
+        &#34;arcade24mmButton&#34;: 24,
+        &#34;arcade24mmButtonWithTolerance&#34;: lambda config: config[&#34;arcade24mmButton&#34;]
+        + config[&#34;tolerance&#34;] * 1.4,
+        &#34;arcade24mmButtonAdditionalClearanceDiameter&#34;: 27,
+        &#34;arcade24mmButtonAdditionalClearanceDepth&#34;: lambda config: config[
+            &#34;retainingNotchDepth&#34;
+        ],
+        &#34;arcade30mmButton&#34;: 30,
+        &#34;arcade30mmButtonWithTolerance&#34;: lambda config: config[&#34;arcade30mmButton&#34;]
+        + config[&#34;tolerance&#34;] * 1.4,
+        ###### Mini Toggle Switches
+        &#34;miniToggleSwitchWidth&#34;: 13.2,
+        &#34;miniToggleSwitchLength&#34;: 7.9,
+        &#34;miniToggleSwitchDiameter&#34;: 6,
+        &#34;miniToggleSwitchWidthWithTolerance&#34;: lambda config: config[
+            &#34;miniToggleSwitchWidth&#34;
+        ]
+        + config[&#34;tolerance&#34;],
+        &#34;miniToggleSwitchLengthWithTolerance&#34;: lambda config: config[
+            &#34;miniToggleSwitchLength&#34;
+        ]
+        + config[&#34;tolerance&#34;],
+        &#34;miniToggleSwitchDiameterWithTolerance&#34;: lambda config: config[
+            &#34;miniToggleSwitchDiameter&#34;
+        ]
+        + config[&#34;tolerance&#34;],
+        &#34;miniToggleSwitchNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
+        ###########################################################
+        ### Potentiometers and rotary encoders
+        ###########################################################
+        ###### Pots
+        &#34;potentiometerHoleDiameter&#34;: 7,
+        &#34;potentiometerHoleDiameterWithTolerance&#34;: lambda config: config[
+            &#34;potentiometerHoleDiameter&#34;
+        ]
+        + config[&#34;tolerance&#34;],
+        &#34;potentiometerNotchDistanceFromCenter&#34;: 6.9,
+        &#34;potentiometerNotchDiameter&#34;: 3.9,
+        &#34;potentiometerNotchDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 1.5,
+        &#34;sliderNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
+        ###########################################################
+        ### Jacks
+        ###########################################################
+        ###### Big
+        &#34;bigJackDiameter&#34;: 9,
+        &#34;bigJackDiameterWithTolerance&#34;: lambda config: config[&#34;bigJackDiameter&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;bigJackWidth&#34;: 16,
+        &#34;bigJackHeight&#34;: lambda config: config[&#34;bigJackWidth&#34;],
+        &#34;bigJackWidthWithTolerance&#34;: lambda config: config[&#34;bigJackWidth&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;bigJackHeightWithTolerance&#34;: lambda config: config[&#34;bigJackHeight&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;bigJackNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
+        ###### Mini
+        &#34;miniJackDiameter&#34;: 6,
+        &#34;miniJackDiameterWithTolerance&#34;: lambda config: config[&#34;miniJackDiameter&#34;]
+        + config[&#34;tolerance&#34;],
+        &#34;miniJackWidth&#34;: 9,
+        &#34;miniJackHeight&#34;: 9.5,
+        &#34;miniJackWidthWithTolerance&#34;: lambda config: config[&#34;miniJackWidth&#34;]
+        + config[&#34;tolerance&#34;] * 2,
+        &#34;miniJackHeightWithTolerance&#34;: lambda config: config[&#34;miniJackHeight&#34;]
+        + config[&#34;tolerance&#34;] * 2,
+        &#34;miniJackNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
+        ###########################################################
+        ### Blinkenlichten
+        ###########################################################
+        &#34;5mmLed&#34;: 4.9,
+        &#34;5mmLedWithTolerance&#34;: lambda config: config[&#34;5mmLed&#34;] + config[&#34;tolerance&#34;],
+        &#34;3mmLed&#34;: 2.9,
+        &#34;3mmLedWithTolerance&#34;: lambda config: config[&#34;3mmLed&#34;]
+        + config[&#34;tolerance&#34;] * 1.5,
+        ###########################################################
+        ### Drill Template
+        ###########################################################
+        &#34;DrillTemplateMarkLength&#34;: 10,
+        &#34;DrillTemplateMarkThickness&#34;: 0.2,
+        &#34;DrillTemplateDistance&#34;: -80,
+    }
+    &#34;&#34;&#34;
+    You can override any of the defaultConfig settings by passing them as a
+    parameter to the constructor. Look at the code for the full list of
+    settings. Some are dynamically calculated from other settings.
+
+    For example, to replace the default tolerance of 0.4mm, create a
+    new object as follows:
+
+        sp = SynthPrinter(
+            tolerance=0.6,
+        )
+
+    defaultConfig values are mostly dimensions that have been tested to
+    work well with 3D printing. You are encouraged to try out the defaults 
+    first. But with a different process than FDM 3D printing, you will want to
+    make your own configuration profile.&#34;&#34;&#34;
+
+    def __init__(self, **kwargs):
+        self.config = self.defaultConfig.copy()
+
+        # override defaults
+        for key, value in kwargs.items():
+            if key in self.config:
+                self.config[key] = value
+
+        # call lambdas
+        for key, value in self.config.items():
+            if callable(value):
+                self.config[key] = value(self.config)
+
+        # Create layers
+        self.panel = cq.Workplane(&#34;XY&#34;)
+        self.preview = cq.Workplane(&#34;XY&#34;)
+        self.supports = cq.Workplane(&#34;XY&#34;)
+        self.drillTemplate = cq.Workplane(&#34;XY&#34;)
+
+        self.panelAdded = False  # We can only have one or horrible things happen
+
+    def render(self):
+        &#34;&#34;&#34;You must call this before displaying or exporting your panel
+        to post-process it properly&#34;&#34;&#34;
+        # Move the supports where they belong
+        self.supports = self.supports.translate(
+            (0, 0, self.config[&#34;panelThickness&#34;] / 2)
+        )
+        # Move the drill template above the panel
+        self.drillTemplate = self.drillTemplate.translate(
+            (0, 0, self.config[&#34;DrillTemplateDistance&#34;])
+        )
+
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+
+    #######################################################################
+    ### Basic operations
+    #######################################################################
+
+    def cutHole(self, x: float, y: float, diameter: float, depth: float = None):
+        &#34;&#34;&#34;Makes a circular hole, default depth is through the entire panel
+
+        x, y define the center.&#34;&#34;&#34;
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .hole(diameter, depth)
+        )
+
+    def cutRect(
+        self,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        depth: float = 0,
+    ):
+        &#34;&#34;&#34;Cuts a rectangular shape through the panel.
+
+        FIXME: Default to center for consistency, and change existing callers
+
+        x, y define the top-left.
+
+        **WARNING: This will be changed to center in the future!**
+        &#34;&#34;&#34;
+
+        if depth == 0:
+            depth = self.config[&#34;panelThickness&#34;]
+
+        cutout = (
+            cq.Workplane(&#34;XY&#34;)
+            .box(width, height, depth)
+            .translate(
+                (
+                    -self.config[&#34;panelWidth&#34;] / 2 + x,
+                    -self.config[&#34;panelHeight&#34;] / 2 + y,
+                    0,
+                )
+            )
+        )
+
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .cut(cutout)
+        )
+
+    def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
+        &#34;&#34;&#34;Adds a cylinder for preview on the back of the panel.
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.&#34;&#34;&#34;
+        self.preview = (
+            self.preview.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(depth + self.config[&#34;panelThickness&#34;] / 2)
+        )
+
+    def previewCylinderOnFront(self, x: float, y: float, diameter: float, depth: float):
+        &#34;&#34;&#34;Adds a cylinder for preview on the front of the panel.
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.&#34;&#34;&#34;
+        self.preview = (
+            self.preview.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(-depth - self.config[&#34;panelThickness&#34;] / 2)
+        )
+
+    def previewBoxOnBack(
+        self, x: float, y: float, width: float, height: float, depth: float
+    ):
+        &#34;&#34;&#34;Adds a box for preview on the back of the panel.
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.&#34;&#34;&#34;
+        self.preview = (
+            self.preview.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(depth + self.config[&#34;panelThickness&#34;] / 2)
+        )
+
+    def previewBoxOnFront(
+        self, x: float, y: float, width: float, height: float, depth: float
+    ):
+        &#34;&#34;&#34;Adds a box for preview on the front of the panel.
+        It will be deeper by half the panel thickness.
+
+        x, y define the center.
+        &#34;&#34;&#34;
+        self.preview = (
+            self.preview.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(-depth - self.config[&#34;panelThickness&#34;] / 2)
+        )
+
+    #######################################################################
+    ### Panels
+    #######################################################################
+
+    def addPanel(
+        self,
+        width: float,
+        height: float,
+        screwSlots: str = &#34;auto&#34;,
+    ):
+        &#34;&#34;&#34;Adds a rectangular panel of arbitrary dimensions.
+        You can only add one.
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
+        there will be only two by default.
+
+
+        TODO: Add Slots to the drill template
+
+
+        :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+        &#34;&#34;&#34;
+
+        if self.panelAdded == True:
+            raise Warning(&#34;Only one panel can be added&#34;)
+        else:
+            self.panelAdded = True
+
+        self.config[&#34;panelWidth&#34;] = width
+        self.config[&#34;panelHeight&#34;] = height
+
+        # Make the main panel shape
+        self.panel = self.panel.box(
+            self.config[&#34;panelWidth&#34;],
+            self.config[&#34;panelHeight&#34;],
+            self.config[&#34;panelThickness&#34;],
+        )
+
+        # Initialize the drill template
+        self.markOutline()
+
+        # Do we add screw slots?
+        # default to &#34;none&#34; configuration
+        screwSlotTopLeft = False
+        screwSlotTopCenter = False
+        screwSlotTopRight = False
+        screwSlotBottomLeft = False
+        screwSlotBottomCenter = False
+        screwSlotBottomRight = False
+        if (  # If too small for 4 slots
+            self.config[&#34;m3screwSlotWidth&#34;] * 2
+            + (
+                self.config[&#34;m3screwSlotDistanceFromSide&#34;]
+                - self.config[&#34;m3screwSlotWidth&#34;] / 2
+            )
+            * 2
+        ) &gt; self.config[&#34;panelWidth&#34;]:
+            if screwSlots == &#34;auto&#34;:
+                screwSlots = &#34;tlbr&#34;
+            if screwSlots == &#34;auto-tlbr&#34;:
+                screwSlots = &#34;tlbr&#34;
+            if screwSlots == &#34;auto-trbl&#34;:
+                screwSlots = &#34;trbl&#34;
+            if screwSlots == &#34;auto-center&#34;:
+                screwSlots = &#34;center&#34;
+        else:  # Large enough for 4 slots
+            if screwSlots == &#34;auto&#34;:
+                screwSlots = &#34;all&#34;
+            if screwSlots == &#34;auto-tlbr&#34;:
+                screwSlots = &#34;all&#34;
+            if screwSlots == &#34;auto-trbl&#34;:
+                screwSlots = &#34;all&#34;
+            if screwSlots == &#34;auto-center&#34;:
+                screwSlots = &#34;all&#34;
+        if screwSlots == &#34;tlbr&#34;:
+            screwSlotTopLeft = True
+            screwSlotBottomRight = True
+        if screwSlots == &#34;trbl&#34;:
+            screwSlotTopRight = True
+            screwSlotBottomLeft = True
+        if screwSlots == &#34;center&#34;:
+            screwSlotTopCenter = True
+            screwSlotBottomCenter = True
+        if screwSlots == &#34;all&#34;:
+            screwSlotTopLeft = True
+            screwSlotTopRight = True
+            screwSlotBottomLeft = True
+            screwSlotBottomRight = True
+
+        screwPoints = []
+        if screwSlotTopLeft:
+            screwPoints.append(
+                (
+                    self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                    self.config[&#34;panelHeight&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+                )
+            )
+        if screwSlotTopCenter:
+            screwPoints.append(
+                (
+                    self.config[&#34;panelWidth&#34;] / 2,
+                    self.config[&#34;panelHeight&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+                )
+            )
+        if screwSlotTopRight:
+            screwPoints.append(
+                (
+                    self.config[&#34;panelWidth&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                    self.config[&#34;panelHeight&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+                )
+            )
+        if screwSlotBottomLeft:
+            screwPoints.append(
+                (
+                    self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                    self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+                )
+            )
+        if screwSlotBottomCenter:
+            screwPoints.append(
+                (
+                    self.config[&#34;panelWidth&#34;] / 2,
+                    self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+                )
+            )
+        if screwSlotBottomRight:
+            screwPoints.append(
+                (
+                    self.config[&#34;panelWidth&#34;]
+                    - self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                    self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+                )
+            )
+        if screwPoints != []:
+            self.panel = (
+                self.panel.faces(&#34;&gt;Z&#34;)
+                .workplane()
+                .center(-self.config[&#34;panelWidth&#34;] / 2, -self.config[&#34;panelHeight&#34;] / 2)
+                .pushPoints(screwPoints)
+                .slot2D(
+                    self.config[&#34;m3screwSlotWidth&#34;],
+                    self.config[&#34;m3screwSlotHeight&#34;],
+                    0,
+                )
+                .cutThruAll()
+            )
+
+    def addEurorackPanel(
+        self,
+        hp: int,
+        screwSlots=&#34;auto&#34;,
+    ):
+        &#34;&#34;&#34;Adds a Eurorack panel with screw slots. Eurorack width is defined in hp().
+
+        Eurorack sizes are generally an even number of hp, such as 4hp or 8hp.
+        3hp and 5hp are the only odd number sizes commonly seen in commercial hardware.
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
+        there will be only two by default.
+
+        :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+        &#34;&#34;&#34;
+        self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;eurorackHeight&#34;], screwSlots)
+
+    def add1UIJPanel(
+        self,
+        hp: int,
+        screwSlots=&#34;auto&#34;,
+    ):
+        &#34;&#34;&#34;Adds a 1U Tile (Intellijel size) panel with screw slots. Eurorack width is defined in hp().
+
+        Note that there are two incompatible 1U tile standards: Intellijel and PulpLogic.
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. If the panel is too small for four slots,
+        there will be only two by default.
+
+        :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+        &#34;&#34;&#34;
+        self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;i1UIJHeight&#34;], screwSlots)
+
+    def addKosmoPanel(
+        self,
+        khp: int,
+        screwSlots=&#34;auto&#34;,
+    ):
+        &#34;&#34;&#34;Adds a Kosmo panel with screw slots. khp argument is the amount of 25mm columns.
+
+        Kosmo, also known as Metric 5U, is a format compatible with Eurorack
+        popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
+        It has a horizontal pitch of 25mm (called khp in Synth Printer for simplicity)
+
+        Screw slots in the corners provide better tolerances than holes
+        in a DIY printed system. Kosmo panels are always large enough for four slots,
+        but you can explicitly set a different configuration of slots.
+
+        :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+        &#34;&#34;&#34;
+        self.addPanel(
+            self.config[&#34;khp&#34;] * khp,
+            self.config[&#34;kosmoHeight&#34;],
+            screwSlots=screwSlots,
+        )
+
+    #######################################################################
+    ### Panel engravings
+    #######################################################################
+
+    def engraveLine(
+        self,
+        fromX: float,
+        fromY: float,
+        angle: float,
+        length: float,
+        width: float,
+        depth: float = 0,
+    ):
+        &#34;&#34;&#34;Engraves a line on the front of the panel.
+
+        If the depth parameter is omitted or 0, the default depth is used.
+
+        Be sure to inspect both sides of the print to make sure there aren&#39;t
+        any sections that are too thin!
+        &#34;&#34;&#34;
+        if depth == 0:
+            depth = self.config[&#34;panelEngravingDepth&#34;]
+        cutout = (
+            cq.Workplane(&#34;XY&#34;)
+            .lineTo(-width / 2, 0)
+            .lineTo(-width / 2, -length)
+            .lineTo(width / 2, -length)
+            .lineTo(width / 2, 0)
+            .close()
+            .extrude(depth)
+            .rotate((0, 0, 0), (0, 0, 1), angle)
+            .translate(
+                (
+                    -self.config[&#34;panelWidth&#34;] / 2 + fromX,
+                    -self.config[&#34;panelHeight&#34;] / 2 + fromY,
+                    -self.config[&#34;panelThickness&#34;] / 2,
+                )
+            )
+        )
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .cut(cutout)
+        )
+
+    #######################################################################
+    ### Support structures
+    #######################################################################
+
+    # Every function adding to the supports layer has support at the
+    # start of the name.
+
+    def supportBar(self, x: float, y: float, width: float, height: float, depth: float):
+        &#34;&#34;&#34;Adds a box on the supports layer.
+
+        x, y define the top-left of the box as seen from the front
+        &#34;&#34;&#34;
+        self.supports = (
+            self.supports.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
+                -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+            )
+            .rect(width, height)
+            .extrude(depth)
+        )
+
+    #######################################################################
+    ### Drill template marks
+    #######################################################################
+
+    # Drill template marks are simple cross shapes that will more or less
+    # look like crosses when exported at typical sizes.
+    # Every function adding to the drillTemplate layer has mark at the
+    # start of the name
+
+    def markOutline(self):
+        &#34;&#34;&#34;Add an outline to the drill template layer. This ensures proper
+        SVG export. This is automatically done when adding a panel.&#34;&#34;&#34;
+
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(  # Top
+                0,
+                -self.config[&#34;panelHeight&#34;] / 2
+                + self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+            )
+            .rect(
+                self.config[&#34;panelWidth&#34;],
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .moveTo(  # Bottom
+                0,
+                self.config[&#34;panelHeight&#34;] / 2
+                - self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+            )
+            .rect(
+                self.config[&#34;panelWidth&#34;],
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .moveTo(  # Left
+                -self.config[&#34;panelWidth&#34;] / 2
+                + self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+                0,
+            )
+            .rect(
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+                self.config[&#34;panelHeight&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .moveTo(  # Right
+                self.config[&#34;panelWidth&#34;] / 2
+                - self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+                0,
+            )
+            .rect(
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+                self.config[&#34;panelHeight&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+        )
+
+    def markCross(self, x: float, y: float):
+        &#34;&#34;&#34;Adds a mark on the drill template layer. At typical synth panel
+        sizes, it will show up as a cross the perfect size for printing out and
+        using as a drill template.
+
+        x, y define the center of the mark as seen from the front.
+        &#34;&#34;&#34;
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(
+                self.config[&#34;DrillTemplateMarkLength&#34;],
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(
+                self.config[&#34;DrillTemplateMarkThickness&#34;],
+                self.config[&#34;DrillTemplateMarkLength&#34;],
+            )
+            .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+        )
+
+    def markRect(self, x: float, y: float, width: float, height: float):
+        &#34;&#34;&#34;Marks a rectangle on the drill template.
+
+        x, y define the center.&#34;&#34;&#34;
+
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(width, height)
+            .extrude(1)
+            .moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .rect(
+                width - self.config[&#34;DrillTemplateMarkThickness&#34;] * 2,
+                height - self.config[&#34;DrillTemplateMarkThickness&#34;] * 2,
+            )
+            .cutThruAll()
+        )
+
+    def markHole(self, x: float, y: float, diameter: float):
+        &#34;&#34;&#34;Marks a circular hole on the drill template.
+
+        x, y define the center.
+
+        FIXME: Nasty implementation, and requires marking circles before crosses
+
+        &#34;&#34;&#34;
+        self.drillTemplate = (
+            self.drillTemplate.moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .circle(diameter / 2)
+            .extrude(1)
+            .moveTo(
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+            )
+            .circle(diameter / 2 - self.config[&#34;DrillTemplateMarkThickness&#34;])
+            .cutThruAll()
+        )
+        return
+
+    #######################################################################
+    ### Buttons and switches
+    #######################################################################
+
+    def cutArcadeButton30mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
+
+    def previewArcadeButton30mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 32.3, 3.4)
+        self.previewCylinderOnFront(x, y, 24, 7)
+        self.previewCylinderOnBack(x, y, 24, 24.4)
+        self.previewCylinderOnBack(x, y, 34.8, 6.5)
+
+    def markArcadeButton30mm(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addArcadeButton30mm(self, x: float, y: float):
+        &#34;&#34;&#34;Should work with all major types of 30mm arcade buttons.
+
+        30mm is the size of action buttons commonly seen in arcade cabinets.
+        Smaller buttons like the start button are 24mm.
+
+        Tested with the Sanwa OBSF-30 snap-in button.
+        Sanwas have a hair trigger and a concave surface.
+
+        Also tested with an unidentified screw-in type. The preview includes its retaining ring.
+
+        Also tested with an unidentified Happ type.
+        Happ buttons are concave are more commonly seen on American games.
+        They are much deeper than on the preview.
+        &#34;&#34;&#34;
+        self.cutArcadeButton30mm(x, y)
+        self.previewArcadeButton30mm(x, y)
+        self.markArcadeButton30mm(x, y)
+
+    def cutArcadeButton24mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
+        self.cutHole(
+            x,
+            y,
+            self.config[&#34;arcade24mmButtonAdditionalClearanceDiameter&#34;],
+            self.config[&#34;arcade24mmButtonAdditionalClearanceDepth&#34;],
+        )
+
+    def previewArcadeButton24mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 27, 3.4)
+        self.previewCylinderOnFront(x, y, 22, 7)
+        self.previewCylinderOnBack(x, y, 24, 24.4)
+        self.previewCylinderOnBack(x, y, 28, 6)
+
+    def markArcadeButton24mm(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addArcadeButton24mm(self, x: float, y: float):
+        &#34;&#34;&#34;Should work with all major types of 24mm arcade buttons.
+
+        24mm is the size of utility buttons (like the start button) commonly seen in arcade cabinets.
+        Actual action buttons are 30mm.
+
+        Uses the dimensions for the Sanwa OBSF-24 snap-in button.
+        Sanwas have a hair trigger and a concave surface.
+
+        Also tested with an unidentified screw-in type. The preview includes its retaining ring.
+        &#34;&#34;&#34;
+        self.cutArcadeButton24mm(x, y)
+        self.previewArcadeButton24mm(x, y)
+        self.markArcadeButton24mm(x, y)
+
+    def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+        if orientation == &#34;horizontal&#34;:
+            width = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
+            length = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
+        else:
+            width = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
+            length = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
+
+        self.cutHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(width, length)
+            .cutBlind(-self.config[&#34;miniToggleSwitchNotchDepth&#34;])
+        )
+
+    def previewMiniToggleSwitch(
+        self, x: float, y: float, orientation: str = &#34;horizontal&#34;
+    ):
+        if orientation == &#34;horizontal&#34;:
+            width = self.config[&#34;miniToggleSwitchWidth&#34;]
+            length = self.config[&#34;miniToggleSwitchLength&#34;]
+        else:
+            width = self.config[&#34;miniToggleSwitchLength&#34;]
+            length = self.config[&#34;miniToggleSwitchWidth&#34;]
+        self.previewBoxOnBack(x, y, width, length, 13.6)
+        self.previewCylinderOnFront(x, y, self.config[&#34;miniToggleSwitchDiameter&#34;], 19)
+
+    def markMiniToggleSwitch(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+        &#34;&#34;&#34;A mini toggle switch, with a retaining notch.
+
+        This will fit the switches often sold as the &#34;MTS-100&#34; series by Aliexpress vendors that have only a single row of pins.
+
+        It will not fit DPDT switches that have two rows of pins, those are bigger.
+
+        :param orientation: &#34;horizontal&#34; (default) or &#34;vertical&#34;.
+        &#34;&#34;&#34;
+        self.cutMiniToggleSwitch(x, y, orientation)
+        self.previewMiniToggleSwitch(x, y, orientation)
+        self.markMiniToggleSwitch(x, y)
+
+    #######################################################################
+    ### Potentiometers, rotary encoders, sliders
+    #######################################################################
+
+    def cutPotentiometer(
+        self,
+        x: float,
+        y: float,
+        notchOrientation: str = &#34;all&#34;,
+    ):
+        self.cutHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
+        # Add the notches
+
+        # default to &#34;none&#34; configuration
+        points = []
+        if notchOrientation == &#34;top&#34; or notchOrientation == &#34;all&#34;:
+            points.append((0, -self.config[&#34;potentiometerNotchDistanceFromCenter&#34;]))
+        if notchOrientation == &#34;right&#34; or notchOrientation == &#34;all&#34;:
+            points.append((self.config[&#34;potentiometerNotchDistanceFromCenter&#34;], 0))
+        if notchOrientation == &#34;bottom&#34; or notchOrientation == &#34;all&#34;:
+            points.append((0, self.config[&#34;potentiometerNotchDistanceFromCenter&#34;]))
+        if notchOrientation == &#34;left&#34; or notchOrientation == &#34;all&#34;:
+            points.append((-self.config[&#34;potentiometerNotchDistanceFromCenter&#34;], 0))
+
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .pushPoints(points)
+            .hole(
+                self.config[&#34;potentiometerNotchDiameter&#34;],
+                self.config[&#34;potentiometerNotchDepth&#34;],
+            )
+        )
+
+    def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = &#34;all&#34;):
+        self.previewCylinderOnFront(x, y, 6, 21)
+        self.previewCylinderOnFront(x, y, 9.6, 1.6)
+        self.previewCylinderOnBack(x, y, 16, 8)
+        if lugsOrientation == &#34;all&#34; or lugsOrientation == &#34;bottom&#34;:
+            self.previewBoxOnBack(x, y + 10, 15, 18, 2.4)
+        if lugsOrientation == &#34;top&#34;:
+            self.previewBoxOnBack(x, y - 10, 15, 18, 2.4)
+        if lugsOrientation == &#34;left&#34;:
+            self.previewBoxOnBack(x - 10, y, 18, 15, 2.4)
+        if lugsOrientation == &#34;right&#34;:
+            self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)
+
+    def markPotentiometer(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addPotentiometer(
+        self,
+        x: float,
+        y: float,
+        notchOrientation: str = &#34;all&#34;,
+        lugsOrientation: str = &#34;all&#34;,
+    ):
+        &#34;&#34;&#34;Fits most types of panel-mount potentiometers with a 6mm shaft.
+
+        There will be four notches around the hole, allowing you to catch the
+        retaining tab of the potentiometer in the most convenient orientation
+        possible.
+
+        This won&#39;t fit rotary encoders!
+
+        If you want a knob, add it separately with addKnob()
+
+        The orientation parameters are seen from the front, and are:
+        &#34;all&#34;, &#34;none&#34;, &#34;top&#34;, &#34;left&#34;, &#34;right&#34;, &#34;bottom&#34;.
+
+        The retaining notches aren&#39;t always on the same side, depending on the
+        type of potentiometer! If in doubt, just leave it to &#34;all&#34; to add 4 notches.
+
+        The preview size for the lugs doesn&#39;t account for the possibility of bending them,
+        so it might be safe to have this area overlap other stuff a little.
+        &#34;&#34;&#34;
+        self.cutPotentiometer(x, y, notchOrientation)
+        self.previewPotentiometer(x, y, lugsOrientation)
+        self.markPotentiometer(x, y)
+
+    def previewKnob(self, x: float, y: float, diameter: float, depth: float):
+        self.previewCylinderOnFront(x, y, diameter, depth + 5)
+
+    def addKnob(self, x: float, y: float, diameter: float, depth: float):
+        self.previewKnob(x, y, diameter, depth)
+
+    def cutSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(
+                sliderWidth,
+                sliderHeight,
+            )
+            .cutBlind(-self.config[&#34;sliderNotchDepth&#34;])
+        )
+        self.cutRect(
+            x,
+            y,
+            slotWidth,
+            slotHeight,
+        )
+
+    def previewSlider(
+        self, x: float, y: float, sliderWidth: float, sliderHeight: float
+    ):
+        self.previewCylinderOnFront(x, y, 15, 10)
+        self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)
+
+    def markSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        self.markRect(x, y, sliderWidth, sliderHeight)
+        self.markRect(x, y, slotWidth, slotHeight)
+
+    def addSlider(
+        self,
+        x: float,
+        y: float,
+        sliderWidth: float,
+        sliderHeight: float,
+        slotWidth: float,
+        slotHeight: float,
+    ):
+        &#34;&#34;&#34;For slide potentiomenters. Multiple sizes are common, so you have to
+        specify yours.
+
+        No special provision are made to hold them in place, it&#39;s assumed you
+        have a PCB or are will add some glue or something similarly nasty.
+
+        x, y: center
+        &#34;&#34;&#34;
+        self.cutSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
+        self.previewSlider(x, y, sliderWidth, sliderHeight)
+        self.markSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
+
+    #######################################################################
+    ### Jacks
+    #######################################################################
+
+    def cutBigJack(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(
+                self.config[&#34;bigJackWidthWithTolerance&#34;],
+                self.config[&#34;bigJackHeightWithTolerance&#34;],
+            )
+            .cutBlind(-self.config[&#34;bigJackNotchDepth&#34;])
+        )
+
+    def previewBigJack(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 8.5, 7)
+        self.previewCylinderOnFront(x, y, 12.6, 2.2)
+        self.previewBoxOnBack(x, y, 16, 16, 27)
+
+    def markBigJack(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addBigJack(self, x: float, y: float):
+        &#34;&#34;&#34;This fits panel mount 6.35mm jacks with a rectangular base, as used
+        in Kosmo builds.
+
+        There is a retaining notch the size of the base to help keep it in place.
+        &#34;&#34;&#34;
+        self.cutBigJack(x, y)
+        self.previewBigJack(x, y)
+        self.markBigJack(x, y)
+
+    def cutMiniJack(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(
+                self.config[&#34;miniJackWidthWithTolerance&#34;],
+                self.config[&#34;miniJackHeightWithTolerance&#34;],
+            )
+            .cutBlind(-self.config[&#34;miniJackNotchDepth&#34;])
+        )
+
+    def previewMiniJack(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 6, 5.5)
+        self.previewCylinderOnFront(x, y, 8, 2.2)
+        self.previewBoxOnBack(x, y, 9, 10.5, 12.5)
+
+    def markMiniJack(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addMiniJack(self, x: float, y: float):
+        &#34;&#34;&#34;This fits 3.5mm PJ398SM &#34;Thonkiconn&#34; 3.5mm jacks and similar.
+
+        There is a retaining notch the size of the base to help keep it in place.
+        &#34;&#34;&#34;
+        self.cutMiniJack(x, y)
+        self.previewMiniJack(x, y)
+        self.markMiniJack(x, y)
+
+    #######################################################################
+    ### Blinkenlichten
+    #######################################################################
+
+    def cutLed5mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
+
+    def previewLed5mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 4.7, 3)
+        self.previewBoxOnBack(x, y, 4, 1, 17)
+
+    def markLed5mm(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addLed5mm(self, x: float, y: float):
+        &#34;&#34;&#34;Creates a hole for a 5mm LED protruding from the hole.
+
+        There is no mechanism to hold it in place, but hot glue will do the trick.
+        &#34;&#34;&#34;
+        self.cutLed5mm(x, y)
+        self.previewLed5mm(x, y)
+        self.markLed5mm(x, y)
+
+    def cutLed3mm(self, x: float, y: float):
+        self.cutHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
+
+    def previewLed3mm(self, x: float, y: float):
+        self.previewCylinderOnFront(x, y, 2.8, 1)
+        self.previewBoxOnBack(x, y, 2.7, 1, 17)
+
+    def markLed3mm(self, x: float, y: float):
+        self.markHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
+        self.markCross(x, y)
+
+    def addLed3mm(self, x: float, y: float):
+        &#34;&#34;&#34;Creates a hole for a 3mm LED fitting inside the hole.
+        On default settings, it will not protrude past the hole, and might
+        diffuse a bit of light in the surrounding plastic.
+
+        There is no mechanism to hold it in place, but hot glue will do the trick.
+
+        FIXME: This is the nastiest way possible to implement a fillet
+        but the only one I could figure out.
+        &#34;&#34;&#34;
+        self.cutLed3mm(x, y)
+        self.previewLed3mm(x, y)
+        self.markLed3mm(x, y)
+
+    def cutDisplayWindow(
+        self,
+        x: float,
+        y: float,
+        windowWidth: float = 30,
+        windowHeight: float = 15,
+        windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
+        screwsHorizontalDistance: float = 40,
+        screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
+    ):
+        cutout = (
+            cq.Workplane(&#34;XY&#34;)
+            .box(
+                windowWidth + self.config[&#34;panelThickness&#34;],
+                windowHeight + self.config[&#34;panelThickness&#34;],
+                self.config[&#34;panelThickness&#34;],
+            )
+            .edges(&#34;&gt;Z&#34;)
+            .fillet(self.config[&#34;panelThickness&#34;] * 0.99)
+            .translate(
+                (
+                    -self.config[&#34;panelWidth&#34;] / 2 + x + windowHorizontalOffset,
+                    -self.config[&#34;panelHeight&#34;] / 2 + y + windowVerticalOffset,
+                    0,
+                )
+            )
+        )
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .cut(cutout)
+        )
+
+        # Next, the actual cutout
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x + windowHorizontalOffset, y + windowVerticalOffset)
+            .rect(windowWidth, windowHeight)
+            .cutThruAll()
+        )
+
+        # Now, the screws
+        if addScrews:
+            self.panel = (
+                self.panel.faces(&#34;&gt;Z&#34;)
+                .vertices(&#34;&lt;XY&#34;)
+                .workplane(centerOption=&#34;CenterOfMass&#34;)
+                .center(x, y)
+                .rect(
+                    screwsHorizontalDistance,
+                    screwsVerticalDistance,
+                    forConstruction=True,
+                )
+                .vertices()
+                .circle(self.config[&#34;m2DiameterWithTolerance&#34;] / 2)
+                .cutThruAll()
+            )
+
+    def markDisplayWindow(
+        self,
+        x: float,
+        y: float,
+        windowWidth: float = 30,
+        windowHeight: float = 15,
+        windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
+        screwsHorizontalDistance: float = 40,
+        screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
+    ):
+        self.markRect(
+            x + windowHorizontalOffset,
+            y + windowVerticalOffset,
+            windowWidth,
+            windowHeight,
+        )
+        if addScrews:
+            self.markHole(
+                x - screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+                self.config[&#34;m2DiameterWithTolerance&#34;],
+            )
+            self.markHole(
+                x + screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+                self.config[&#34;m2DiameterWithTolerance&#34;],
+            )
+            self.markHole(
+                x - screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+                self.config[&#34;m2DiameterWithTolerance&#34;],
+            )
+            self.markHole(
+                x + screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+                self.config[&#34;m2DiameterWithTolerance&#34;],
+            )
+            self.markCross(
+                x - screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x + screwsHorizontalDistance / 2,
+                y - screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x - screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+            )
+            self.markCross(
+                x + screwsHorizontalDistance / 2,
+                y + screwsVerticalDistance / 2,
+            )
+
+    def addDisplayWindow(
+        self,
+        x: float,
+        y: float,
+        windowWidth: float = 30,
+        windowHeight: float = 15,
+        windowHorizontalOffset: float = 0,
+        windowVerticalOffset: float = -5,
+        screwsHorizontalDistance: float = 40,
+        screwsVerticalDistance: float = 40,
+        addScrews: bool = True,
+    ):
+        &#34;&#34;&#34;Creates a window for a rectangular display mounted with four screws in the corner.
+
+        Every single display available has different dimensions, especially the cheapo OLEDs
+        from Aliexpress. Even when the display size is the same, various boards differ by
+        a few millimeters.
+
+        The defaults offered are for a non-existent model, for preview purposes.
+        Provide your own measurements instead!
+
+        There is no preview widget for this footprint.
+        &#34;&#34;&#34;
+        self.cutDisplayWindow(
+            x,
+            y,
+            windowWidth,
+            windowHeight,
+            windowHorizontalOffset,
+            windowVerticalOffset,
+            screwsHorizontalDistance,
+            screwsVerticalDistance,
+            addScrews,
+        )
+
+        self.markDisplayWindow(
+            x,
+            y,
+            windowWidth,
+            windowHeight,
+            windowHorizontalOffset,
+            windowVerticalOffset,
+            screwsHorizontalDistance,
+            screwsVerticalDistance,
+            addScrews,
+        )
+
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="synthprinter.SynthPrinter.defaultConfig"><code class="name">var <span class="ident">defaultConfig</span></code></dt>
+<dd>
+<div class="desc"><p>You can override any of the defaultConfig settings by passing them as a
+parameter to the constructor. Look at the code for the full list of
+settings. Some are dynamically calculated from other settings.</p>
+<p>For example, to replace the default tolerance of 0.4mm, create a
+new object as follows:</p>
+<pre><code>sp = SynthPrinter(
+    tolerance=0.6,
+)
+</code></pre>
+<p>defaultConfig values are mostly dimensions that have been tested to
+work well with 3D printing. You are encouraged to try out the defaults
+first. But with a different process than FDM 3D printing, you will want to
+make your own configuration profile.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="synthprinter.SynthPrinter.add1UIJPanel"><code class="name flex">
+<span>def <span class="ident">add1UIJPanel</span></span>(<span>self, hp: int, screwSlots='auto')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a 1U Tile (Intellijel size) panel with screw slots. Eurorack width is defined in hp().</p>
+<p>Note that there are two incompatible 1U tile standards: Intellijel and PulpLogic.</p>
+<p>Screw slots in the corners provide better tolerances than holes
+in a DIY printed system. If the panel is too small for four slots,
+there will be only two by default.</p>
+<p>:param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add1UIJPanel(
+    self,
+    hp: int,
+    screwSlots=&#34;auto&#34;,
+):
+    &#34;&#34;&#34;Adds a 1U Tile (Intellijel size) panel with screw slots. Eurorack width is defined in hp().
+
+    Note that there are two incompatible 1U tile standards: Intellijel and PulpLogic.
+
+    Screw slots in the corners provide better tolerances than holes
+    in a DIY printed system. If the panel is too small for four slots,
+    there will be only two by default.
+
+    :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+    &#34;&#34;&#34;
+    self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;i1UIJHeight&#34;], screwSlots)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addArcadeButton24mm"><code class="name flex">
+<span>def <span class="ident">addArcadeButton24mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Should work with all major types of 24mm arcade buttons.</p>
+<p>24mm is the size of utility buttons (like the start button) commonly seen in arcade cabinets.
+Actual action buttons are 30mm.</p>
+<p>Uses the dimensions for the Sanwa OBSF-24 snap-in button.
+Sanwas have a hair trigger and a concave surface.</p>
+<p>Also tested with an unidentified screw-in type. The preview includes its retaining ring.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addArcadeButton24mm(self, x: float, y: float):
+    &#34;&#34;&#34;Should work with all major types of 24mm arcade buttons.
+
+    24mm is the size of utility buttons (like the start button) commonly seen in arcade cabinets.
+    Actual action buttons are 30mm.
+
+    Uses the dimensions for the Sanwa OBSF-24 snap-in button.
+    Sanwas have a hair trigger and a concave surface.
+
+    Also tested with an unidentified screw-in type. The preview includes its retaining ring.
+    &#34;&#34;&#34;
+    self.cutArcadeButton24mm(x, y)
+    self.previewArcadeButton24mm(x, y)
+    self.markArcadeButton24mm(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addArcadeButton30mm"><code class="name flex">
+<span>def <span class="ident">addArcadeButton30mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Should work with all major types of 30mm arcade buttons.</p>
+<p>30mm is the size of action buttons commonly seen in arcade cabinets.
+Smaller buttons like the start button are 24mm.</p>
+<p>Tested with the Sanwa OBSF-30 snap-in button.
+Sanwas have a hair trigger and a concave surface.</p>
+<p>Also tested with an unidentified screw-in type. The preview includes its retaining ring.</p>
+<p>Also tested with an unidentified Happ type.
+Happ buttons are concave are more commonly seen on American games.
+They are much deeper than on the preview.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addArcadeButton30mm(self, x: float, y: float):
+    &#34;&#34;&#34;Should work with all major types of 30mm arcade buttons.
+
+    30mm is the size of action buttons commonly seen in arcade cabinets.
+    Smaller buttons like the start button are 24mm.
+
+    Tested with the Sanwa OBSF-30 snap-in button.
+    Sanwas have a hair trigger and a concave surface.
+
+    Also tested with an unidentified screw-in type. The preview includes its retaining ring.
+
+    Also tested with an unidentified Happ type.
+    Happ buttons are concave are more commonly seen on American games.
+    They are much deeper than on the preview.
+    &#34;&#34;&#34;
+    self.cutArcadeButton30mm(x, y)
+    self.previewArcadeButton30mm(x, y)
+    self.markArcadeButton30mm(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addBigJack"><code class="name flex">
+<span>def <span class="ident">addBigJack</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This fits panel mount 6.35mm jacks with a rectangular base, as used
+in Kosmo builds.</p>
+<p>There is a retaining notch the size of the base to help keep it in place.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addBigJack(self, x: float, y: float):
+    &#34;&#34;&#34;This fits panel mount 6.35mm jacks with a rectangular base, as used
+    in Kosmo builds.
+
+    There is a retaining notch the size of the base to help keep it in place.
+    &#34;&#34;&#34;
+    self.cutBigJack(x, y)
+    self.previewBigJack(x, y)
+    self.markBigJack(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addDisplayWindow"><code class="name flex">
+<span>def <span class="ident">addDisplayWindow</span></span>(<span>self, x: float, y: float, windowWidth: float = 30, windowHeight: float = 15, windowHorizontalOffset: float = 0, windowVerticalOffset: float = -5, screwsHorizontalDistance: float = 40, screwsVerticalDistance: float = 40, addScrews: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a window for a rectangular display mounted with four screws in the corner.</p>
+<p>Every single display available has different dimensions, especially the cheapo OLEDs
+from Aliexpress. Even when the display size is the same, various boards differ by
+a few millimeters.</p>
+<p>The defaults offered are for a non-existent model, for preview purposes.
+Provide your own measurements instead!</p>
+<p>There is no preview widget for this footprint.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addDisplayWindow(
+    self,
+    x: float,
+    y: float,
+    windowWidth: float = 30,
+    windowHeight: float = 15,
+    windowHorizontalOffset: float = 0,
+    windowVerticalOffset: float = -5,
+    screwsHorizontalDistance: float = 40,
+    screwsVerticalDistance: float = 40,
+    addScrews: bool = True,
+):
+    &#34;&#34;&#34;Creates a window for a rectangular display mounted with four screws in the corner.
+
+    Every single display available has different dimensions, especially the cheapo OLEDs
+    from Aliexpress. Even when the display size is the same, various boards differ by
+    a few millimeters.
+
+    The defaults offered are for a non-existent model, for preview purposes.
+    Provide your own measurements instead!
+
+    There is no preview widget for this footprint.
+    &#34;&#34;&#34;
+    self.cutDisplayWindow(
+        x,
+        y,
+        windowWidth,
+        windowHeight,
+        windowHorizontalOffset,
+        windowVerticalOffset,
+        screwsHorizontalDistance,
+        screwsVerticalDistance,
+        addScrews,
+    )
+
+    self.markDisplayWindow(
+        x,
+        y,
+        windowWidth,
+        windowHeight,
+        windowHorizontalOffset,
+        windowVerticalOffset,
+        screwsHorizontalDistance,
+        screwsVerticalDistance,
+        addScrews,
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addEurorackPanel"><code class="name flex">
+<span>def <span class="ident">addEurorackPanel</span></span>(<span>self, hp: int, screwSlots='auto')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a Eurorack panel with screw slots. Eurorack width is defined in hp().</p>
+<p>Eurorack sizes are generally an even number of hp, such as 4hp or 8hp.
+3hp and 5hp are the only odd number sizes commonly seen in commercial hardware.</p>
+<p>Screw slots in the corners provide better tolerances than holes
+in a DIY printed system. If the panel is too small for four slots,
+there will be only two by default.</p>
+<p>:param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addEurorackPanel(
+    self,
+    hp: int,
+    screwSlots=&#34;auto&#34;,
+):
+    &#34;&#34;&#34;Adds a Eurorack panel with screw slots. Eurorack width is defined in hp().
+
+    Eurorack sizes are generally an even number of hp, such as 4hp or 8hp.
+    3hp and 5hp are the only odd number sizes commonly seen in commercial hardware.
+
+    Screw slots in the corners provide better tolerances than holes
+    in a DIY printed system. If the panel is too small for four slots,
+    there will be only two by default.
+
+    :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+    &#34;&#34;&#34;
+    self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;eurorackHeight&#34;], screwSlots)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addKnob"><code class="name flex">
+<span>def <span class="ident">addKnob</span></span>(<span>self, x: float, y: float, diameter: float, depth: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addKnob(self, x: float, y: float, diameter: float, depth: float):
+    self.previewKnob(x, y, diameter, depth)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addKosmoPanel"><code class="name flex">
+<span>def <span class="ident">addKosmoPanel</span></span>(<span>self, khp: int, screwSlots='auto')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a Kosmo panel with screw slots. khp argument is the amount of 25mm columns.</p>
+<p>Kosmo, also known as Metric 5U, is a format compatible with Eurorack
+popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
+It has a horizontal pitch of 25mm (called khp in Synth Printer for simplicity)</p>
+<p>Screw slots in the corners provide better tolerances than holes
+in a DIY printed system. Kosmo panels are always large enough for four slots,
+but you can explicitly set a different configuration of slots.</p>
+<p>:param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addKosmoPanel(
+    self,
+    khp: int,
+    screwSlots=&#34;auto&#34;,
+):
+    &#34;&#34;&#34;Adds a Kosmo panel with screw slots. khp argument is the amount of 25mm columns.
+
+    Kosmo, also known as Metric 5U, is a format compatible with Eurorack
+    popularized by Youtuber Sam Battle (Look Mum No Computer), that uses big jacks.
+    It has a horizontal pitch of 25mm (called khp in Synth Printer for simplicity)
+
+    Screw slots in the corners provide better tolerances than holes
+    in a DIY printed system. Kosmo panels are always large enough for four slots,
+    but you can explicitly set a different configuration of slots.
+
+    :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+    &#34;&#34;&#34;
+    self.addPanel(
+        self.config[&#34;khp&#34;] * khp,
+        self.config[&#34;kosmoHeight&#34;],
+        screwSlots=screwSlots,
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addLed3mm"><code class="name flex">
+<span>def <span class="ident">addLed3mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a hole for a 3mm LED fitting inside the hole.
+On default settings, it will not protrude past the hole, and might
+diffuse a bit of light in the surrounding plastic.</p>
+<p>There is no mechanism to hold it in place, but hot glue will do the trick.</p>
+<p>FIXME: This is the nastiest way possible to implement a fillet
+but the only one I could figure out.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addLed3mm(self, x: float, y: float):
+    &#34;&#34;&#34;Creates a hole for a 3mm LED fitting inside the hole.
+    On default settings, it will not protrude past the hole, and might
+    diffuse a bit of light in the surrounding plastic.
+
+    There is no mechanism to hold it in place, but hot glue will do the trick.
+
+    FIXME: This is the nastiest way possible to implement a fillet
+    but the only one I could figure out.
+    &#34;&#34;&#34;
+    self.cutLed3mm(x, y)
+    self.previewLed3mm(x, y)
+    self.markLed3mm(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addLed5mm"><code class="name flex">
+<span>def <span class="ident">addLed5mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a hole for a 5mm LED protruding from the hole.</p>
+<p>There is no mechanism to hold it in place, but hot glue will do the trick.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addLed5mm(self, x: float, y: float):
+    &#34;&#34;&#34;Creates a hole for a 5mm LED protruding from the hole.
+
+    There is no mechanism to hold it in place, but hot glue will do the trick.
+    &#34;&#34;&#34;
+    self.cutLed5mm(x, y)
+    self.previewLed5mm(x, y)
+    self.markLed5mm(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addMiniJack"><code class="name flex">
+<span>def <span class="ident">addMiniJack</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This fits 3.5mm PJ398SM "Thonkiconn" 3.5mm jacks and similar.</p>
+<p>There is a retaining notch the size of the base to help keep it in place.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addMiniJack(self, x: float, y: float):
+    &#34;&#34;&#34;This fits 3.5mm PJ398SM &#34;Thonkiconn&#34; 3.5mm jacks and similar.
+
+    There is a retaining notch the size of the base to help keep it in place.
+    &#34;&#34;&#34;
+    self.cutMiniJack(x, y)
+    self.previewMiniJack(x, y)
+    self.markMiniJack(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addMiniToggleSwitch"><code class="name flex">
+<span>def <span class="ident">addMiniToggleSwitch</span></span>(<span>self, x: float, y: float, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A mini toggle switch, with a retaining notch.</p>
+<p>This will fit the switches often sold as the "MTS-100" series by Aliexpress vendors that have only a single row of pins.</p>
+<p>It will not fit DPDT switches that have two rows of pins, those are bigger.</p>
+<p>:param orientation: "horizontal" (default) or "vertical".</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+    &#34;&#34;&#34;A mini toggle switch, with a retaining notch.
+
+    This will fit the switches often sold as the &#34;MTS-100&#34; series by Aliexpress vendors that have only a single row of pins.
+
+    It will not fit DPDT switches that have two rows of pins, those are bigger.
+
+    :param orientation: &#34;horizontal&#34; (default) or &#34;vertical&#34;.
+    &#34;&#34;&#34;
+    self.cutMiniToggleSwitch(x, y, orientation)
+    self.previewMiniToggleSwitch(x, y, orientation)
+    self.markMiniToggleSwitch(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addPanel"><code class="name flex">
+<span>def <span class="ident">addPanel</span></span>(<span>self, width: float, height: float, screwSlots: str = 'auto')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a rectangular panel of arbitrary dimensions.
+You can only add one.</p>
+<p>Screw slots in the corners provide better tolerances than holes
+in a DIY printed system. If the panel is too small for four slots,
+there will be only two by default.</p>
+<p>TODO: Add Slots to the drill template</p>
+<p>:param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addPanel(
+    self,
+    width: float,
+    height: float,
+    screwSlots: str = &#34;auto&#34;,
+):
+    &#34;&#34;&#34;Adds a rectangular panel of arbitrary dimensions.
+    You can only add one.
+
+    Screw slots in the corners provide better tolerances than holes
+    in a DIY printed system. If the panel is too small for four slots,
+    there will be only two by default.
+
+
+    TODO: Add Slots to the drill template
+
+
+    :param screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
+    &#34;&#34;&#34;
+
+    if self.panelAdded == True:
+        raise Warning(&#34;Only one panel can be added&#34;)
+    else:
+        self.panelAdded = True
+
+    self.config[&#34;panelWidth&#34;] = width
+    self.config[&#34;panelHeight&#34;] = height
+
+    # Make the main panel shape
+    self.panel = self.panel.box(
+        self.config[&#34;panelWidth&#34;],
+        self.config[&#34;panelHeight&#34;],
+        self.config[&#34;panelThickness&#34;],
+    )
+
+    # Initialize the drill template
+    self.markOutline()
+
+    # Do we add screw slots?
+    # default to &#34;none&#34; configuration
+    screwSlotTopLeft = False
+    screwSlotTopCenter = False
+    screwSlotTopRight = False
+    screwSlotBottomLeft = False
+    screwSlotBottomCenter = False
+    screwSlotBottomRight = False
+    if (  # If too small for 4 slots
+        self.config[&#34;m3screwSlotWidth&#34;] * 2
+        + (
+            self.config[&#34;m3screwSlotDistanceFromSide&#34;]
+            - self.config[&#34;m3screwSlotWidth&#34;] / 2
+        )
+        * 2
+    ) &gt; self.config[&#34;panelWidth&#34;]:
+        if screwSlots == &#34;auto&#34;:
+            screwSlots = &#34;tlbr&#34;
+        if screwSlots == &#34;auto-tlbr&#34;:
+            screwSlots = &#34;tlbr&#34;
+        if screwSlots == &#34;auto-trbl&#34;:
+            screwSlots = &#34;trbl&#34;
+        if screwSlots == &#34;auto-center&#34;:
+            screwSlots = &#34;center&#34;
+    else:  # Large enough for 4 slots
+        if screwSlots == &#34;auto&#34;:
+            screwSlots = &#34;all&#34;
+        if screwSlots == &#34;auto-tlbr&#34;:
+            screwSlots = &#34;all&#34;
+        if screwSlots == &#34;auto-trbl&#34;:
+            screwSlots = &#34;all&#34;
+        if screwSlots == &#34;auto-center&#34;:
+            screwSlots = &#34;all&#34;
+    if screwSlots == &#34;tlbr&#34;:
+        screwSlotTopLeft = True
+        screwSlotBottomRight = True
+    if screwSlots == &#34;trbl&#34;:
+        screwSlotTopRight = True
+        screwSlotBottomLeft = True
+    if screwSlots == &#34;center&#34;:
+        screwSlotTopCenter = True
+        screwSlotBottomCenter = True
+    if screwSlots == &#34;all&#34;:
+        screwSlotTopLeft = True
+        screwSlotTopRight = True
+        screwSlotBottomLeft = True
+        screwSlotBottomRight = True
+
+    screwPoints = []
+    if screwSlotTopLeft:
+        screwPoints.append(
+            (
+                self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                self.config[&#34;panelHeight&#34;]
+                - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+            )
+        )
+    if screwSlotTopCenter:
+        screwPoints.append(
+            (
+                self.config[&#34;panelWidth&#34;] / 2,
+                self.config[&#34;panelHeight&#34;]
+                - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+            )
+        )
+    if screwSlotTopRight:
+        screwPoints.append(
+            (
+                self.config[&#34;panelWidth&#34;]
+                - self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                self.config[&#34;panelHeight&#34;]
+                - self.config[&#34;m3screwSlotDistanceFromTop&#34;],
+            )
+        )
+    if screwSlotBottomLeft:
+        screwPoints.append(
+            (
+                self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+            )
+        )
+    if screwSlotBottomCenter:
+        screwPoints.append(
+            (
+                self.config[&#34;panelWidth&#34;] / 2,
+                self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+            )
+        )
+    if screwSlotBottomRight:
+        screwPoints.append(
+            (
+                self.config[&#34;panelWidth&#34;]
+                - self.config[&#34;m3screwSlotDistanceFromSide&#34;],
+                self.config[&#34;m3screwSlotDistanceFromBottom&#34;],
+            )
+        )
+    if screwPoints != []:
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .workplane()
+            .center(-self.config[&#34;panelWidth&#34;] / 2, -self.config[&#34;panelHeight&#34;] / 2)
+            .pushPoints(screwPoints)
+            .slot2D(
+                self.config[&#34;m3screwSlotWidth&#34;],
+                self.config[&#34;m3screwSlotHeight&#34;],
+                0,
+            )
+            .cutThruAll()
+        )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addPotentiometer"><code class="name flex">
+<span>def <span class="ident">addPotentiometer</span></span>(<span>self, x: float, y: float, notchOrientation: str = 'all', lugsOrientation: str = 'all')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fits most types of panel-mount potentiometers with a 6mm shaft.</p>
+<p>There will be four notches around the hole, allowing you to catch the
+retaining tab of the potentiometer in the most convenient orientation
+possible.</p>
+<p>This won't fit rotary encoders!</p>
+<p>If you want a knob, add it separately with addKnob()</p>
+<p>The orientation parameters are seen from the front, and are:
+"all", "none", "top", "left", "right", "bottom".</p>
+<p>The retaining notches aren't always on the same side, depending on the
+type of potentiometer! If in doubt, just leave it to "all" to add 4 notches.</p>
+<p>The preview size for the lugs doesn't account for the possibility of bending them,
+so it might be safe to have this area overlap other stuff a little.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addPotentiometer(
+    self,
+    x: float,
+    y: float,
+    notchOrientation: str = &#34;all&#34;,
+    lugsOrientation: str = &#34;all&#34;,
+):
+    &#34;&#34;&#34;Fits most types of panel-mount potentiometers with a 6mm shaft.
+
+    There will be four notches around the hole, allowing you to catch the
+    retaining tab of the potentiometer in the most convenient orientation
+    possible.
+
+    This won&#39;t fit rotary encoders!
+
+    If you want a knob, add it separately with addKnob()
+
+    The orientation parameters are seen from the front, and are:
+    &#34;all&#34;, &#34;none&#34;, &#34;top&#34;, &#34;left&#34;, &#34;right&#34;, &#34;bottom&#34;.
+
+    The retaining notches aren&#39;t always on the same side, depending on the
+    type of potentiometer! If in doubt, just leave it to &#34;all&#34; to add 4 notches.
+
+    The preview size for the lugs doesn&#39;t account for the possibility of bending them,
+    so it might be safe to have this area overlap other stuff a little.
+    &#34;&#34;&#34;
+    self.cutPotentiometer(x, y, notchOrientation)
+    self.previewPotentiometer(x, y, lugsOrientation)
+    self.markPotentiometer(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.addSlider"><code class="name flex">
+<span>def <span class="ident">addSlider</span></span>(<span>self, x: float, y: float, sliderWidth: float, sliderHeight: float, slotWidth: float, slotHeight: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>For slide potentiomenters. Multiple sizes are common, so you have to
+specify yours.</p>
+<p>No special provision are made to hold them in place, it's assumed you
+have a PCB or are will add some glue or something similarly nasty.</p>
+<p>x, y: center</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addSlider(
+    self,
+    x: float,
+    y: float,
+    sliderWidth: float,
+    sliderHeight: float,
+    slotWidth: float,
+    slotHeight: float,
+):
+    &#34;&#34;&#34;For slide potentiomenters. Multiple sizes are common, so you have to
+    specify yours.
+
+    No special provision are made to hold them in place, it&#39;s assumed you
+    have a PCB or are will add some glue or something similarly nasty.
+
+    x, y: center
+    &#34;&#34;&#34;
+    self.cutSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
+    self.previewSlider(x, y, sliderWidth, sliderHeight)
+    self.markSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutArcadeButton24mm"><code class="name flex">
+<span>def <span class="ident">cutArcadeButton24mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutArcadeButton24mm(self, x: float, y: float):
+    self.cutHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
+    self.cutHole(
+        x,
+        y,
+        self.config[&#34;arcade24mmButtonAdditionalClearanceDiameter&#34;],
+        self.config[&#34;arcade24mmButtonAdditionalClearanceDepth&#34;],
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutArcadeButton30mm"><code class="name flex">
+<span>def <span class="ident">cutArcadeButton30mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutArcadeButton30mm(self, x: float, y: float):
+    self.cutHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutBigJack"><code class="name flex">
+<span>def <span class="ident">cutBigJack</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutBigJack(self, x: float, y: float):
+    self.cutHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .center(x, y)
+        .rect(
+            self.config[&#34;bigJackWidthWithTolerance&#34;],
+            self.config[&#34;bigJackHeightWithTolerance&#34;],
+        )
+        .cutBlind(-self.config[&#34;bigJackNotchDepth&#34;])
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutDisplayWindow"><code class="name flex">
+<span>def <span class="ident">cutDisplayWindow</span></span>(<span>self, x: float, y: float, windowWidth: float = 30, windowHeight: float = 15, windowHorizontalOffset: float = 0, windowVerticalOffset: float = -5, screwsHorizontalDistance: float = 40, screwsVerticalDistance: float = 40, addScrews: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutDisplayWindow(
+    self,
+    x: float,
+    y: float,
+    windowWidth: float = 30,
+    windowHeight: float = 15,
+    windowHorizontalOffset: float = 0,
+    windowVerticalOffset: float = -5,
+    screwsHorizontalDistance: float = 40,
+    screwsVerticalDistance: float = 40,
+    addScrews: bool = True,
+):
+    cutout = (
+        cq.Workplane(&#34;XY&#34;)
+        .box(
+            windowWidth + self.config[&#34;panelThickness&#34;],
+            windowHeight + self.config[&#34;panelThickness&#34;],
+            self.config[&#34;panelThickness&#34;],
+        )
+        .edges(&#34;&gt;Z&#34;)
+        .fillet(self.config[&#34;panelThickness&#34;] * 0.99)
+        .translate(
+            (
+                -self.config[&#34;panelWidth&#34;] / 2 + x + windowHorizontalOffset,
+                -self.config[&#34;panelHeight&#34;] / 2 + y + windowVerticalOffset,
+                0,
+            )
+        )
+    )
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .cut(cutout)
+    )
+
+    # Next, the actual cutout
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .center(x + windowHorizontalOffset, y + windowVerticalOffset)
+        .rect(windowWidth, windowHeight)
+        .cutThruAll()
+    )
+
+    # Now, the screws
+    if addScrews:
+        self.panel = (
+            self.panel.faces(&#34;&gt;Z&#34;)
+            .vertices(&#34;&lt;XY&#34;)
+            .workplane(centerOption=&#34;CenterOfMass&#34;)
+            .center(x, y)
+            .rect(
+                screwsHorizontalDistance,
+                screwsVerticalDistance,
+                forConstruction=True,
+            )
+            .vertices()
+            .circle(self.config[&#34;m2DiameterWithTolerance&#34;] / 2)
+            .cutThruAll()
+        )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutHole"><code class="name flex">
+<span>def <span class="ident">cutHole</span></span>(<span>self, x: float, y: float, diameter: float, depth: float = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Makes a circular hole, default depth is through the entire panel</p>
+<p>x, y define the center.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutHole(self, x: float, y: float, diameter: float, depth: float = None):
+    &#34;&#34;&#34;Makes a circular hole, default depth is through the entire panel
+
+    x, y define the center.&#34;&#34;&#34;
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .center(x, y)
+        .hole(diameter, depth)
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutLed3mm"><code class="name flex">
+<span>def <span class="ident">cutLed3mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutLed3mm(self, x: float, y: float):
+    self.cutHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutLed5mm"><code class="name flex">
+<span>def <span class="ident">cutLed5mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutLed5mm(self, x: float, y: float):
+    self.cutHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutMiniJack"><code class="name flex">
+<span>def <span class="ident">cutMiniJack</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutMiniJack(self, x: float, y: float):
+    self.cutHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .center(x, y)
+        .rect(
+            self.config[&#34;miniJackWidthWithTolerance&#34;],
+            self.config[&#34;miniJackHeightWithTolerance&#34;],
+        )
+        .cutBlind(-self.config[&#34;miniJackNotchDepth&#34;])
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutMiniToggleSwitch"><code class="name flex">
+<span>def <span class="ident">cutMiniToggleSwitch</span></span>(<span>self, x: float, y: float, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+    if orientation == &#34;horizontal&#34;:
+        width = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
+        length = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
+    else:
+        width = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
+        length = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
+
+    self.cutHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .center(x, y)
+        .rect(width, length)
+        .cutBlind(-self.config[&#34;miniToggleSwitchNotchDepth&#34;])
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutPotentiometer"><code class="name flex">
+<span>def <span class="ident">cutPotentiometer</span></span>(<span>self, x: float, y: float, notchOrientation: str = 'all')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutPotentiometer(
+    self,
+    x: float,
+    y: float,
+    notchOrientation: str = &#34;all&#34;,
+):
+    self.cutHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
+    # Add the notches
+
+    # default to &#34;none&#34; configuration
+    points = []
+    if notchOrientation == &#34;top&#34; or notchOrientation == &#34;all&#34;:
+        points.append((0, -self.config[&#34;potentiometerNotchDistanceFromCenter&#34;]))
+    if notchOrientation == &#34;right&#34; or notchOrientation == &#34;all&#34;:
+        points.append((self.config[&#34;potentiometerNotchDistanceFromCenter&#34;], 0))
+    if notchOrientation == &#34;bottom&#34; or notchOrientation == &#34;all&#34;:
+        points.append((0, self.config[&#34;potentiometerNotchDistanceFromCenter&#34;]))
+    if notchOrientation == &#34;left&#34; or notchOrientation == &#34;all&#34;:
+        points.append((-self.config[&#34;potentiometerNotchDistanceFromCenter&#34;], 0))
+
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .center(x, y)
+        .pushPoints(points)
+        .hole(
+            self.config[&#34;potentiometerNotchDiameter&#34;],
+            self.config[&#34;potentiometerNotchDepth&#34;],
+        )
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutRect"><code class="name flex">
+<span>def <span class="ident">cutRect</span></span>(<span>self, x: float, y: float, width: float, height: float, depth: float = 0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Cuts a rectangular shape through the panel.</p>
+<p>FIXME: Default to center for consistency, and change existing callers</p>
+<p>x, y define the top-left.</p>
+<p><strong>WARNING: This will be changed to center in the future!</strong></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutRect(
+    self,
+    x: float,
+    y: float,
+    width: float,
+    height: float,
+    depth: float = 0,
+):
+    &#34;&#34;&#34;Cuts a rectangular shape through the panel.
+
+    FIXME: Default to center for consistency, and change existing callers
+
+    x, y define the top-left.
+
+    **WARNING: This will be changed to center in the future!**
+    &#34;&#34;&#34;
+
+    if depth == 0:
+        depth = self.config[&#34;panelThickness&#34;]
+
+    cutout = (
+        cq.Workplane(&#34;XY&#34;)
+        .box(width, height, depth)
+        .translate(
+            (
+                -self.config[&#34;panelWidth&#34;] / 2 + x,
+                -self.config[&#34;panelHeight&#34;] / 2 + y,
+                0,
+            )
+        )
+    )
+
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .cut(cutout)
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.cutSlider"><code class="name flex">
+<span>def <span class="ident">cutSlider</span></span>(<span>self, x: float, y: float, sliderWidth: float, sliderHeight: float, slotWidth: float, slotHeight: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutSlider(
+    self,
+    x: float,
+    y: float,
+    sliderWidth: float,
+    sliderHeight: float,
+    slotWidth: float,
+    slotHeight: float,
+):
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .center(x, y)
+        .rect(
+            sliderWidth,
+            sliderHeight,
+        )
+        .cutBlind(-self.config[&#34;sliderNotchDepth&#34;])
+    )
+    self.cutRect(
+        x,
+        y,
+        slotWidth,
+        slotHeight,
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.engraveLine"><code class="name flex">
+<span>def <span class="ident">engraveLine</span></span>(<span>self, fromX: float, fromY: float, angle: float, length: float, width: float, depth: float = 0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Engraves a line on the front of the panel.</p>
+<p>If the depth parameter is omitted or 0, the default depth is used.</p>
+<p>Be sure to inspect both sides of the print to make sure there aren't
+any sections that are too thin!</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def engraveLine(
+    self,
+    fromX: float,
+    fromY: float,
+    angle: float,
+    length: float,
+    width: float,
+    depth: float = 0,
+):
+    &#34;&#34;&#34;Engraves a line on the front of the panel.
+
+    If the depth parameter is omitted or 0, the default depth is used.
+
+    Be sure to inspect both sides of the print to make sure there aren&#39;t
+    any sections that are too thin!
+    &#34;&#34;&#34;
+    if depth == 0:
+        depth = self.config[&#34;panelEngravingDepth&#34;]
+    cutout = (
+        cq.Workplane(&#34;XY&#34;)
+        .lineTo(-width / 2, 0)
+        .lineTo(-width / 2, -length)
+        .lineTo(width / 2, -length)
+        .lineTo(width / 2, 0)
+        .close()
+        .extrude(depth)
+        .rotate((0, 0, 0), (0, 0, 1), angle)
+        .translate(
+            (
+                -self.config[&#34;panelWidth&#34;] / 2 + fromX,
+                -self.config[&#34;panelHeight&#34;] / 2 + fromY,
+                -self.config[&#34;panelThickness&#34;] / 2,
+            )
+        )
+    )
+    self.panel = (
+        self.panel.faces(&#34;&gt;Z&#34;)
+        .vertices(&#34;&lt;XY&#34;)
+        .workplane(centerOption=&#34;CenterOfMass&#34;)
+        .cut(cutout)
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markArcadeButton24mm"><code class="name flex">
+<span>def <span class="ident">markArcadeButton24mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markArcadeButton24mm(self, x: float, y: float):
+    self.markHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
+    self.markCross(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markArcadeButton30mm"><code class="name flex">
+<span>def <span class="ident">markArcadeButton30mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markArcadeButton30mm(self, x: float, y: float):
+    self.markHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
+    self.markCross(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markBigJack"><code class="name flex">
+<span>def <span class="ident">markBigJack</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markBigJack(self, x: float, y: float):
+    self.markHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
+    self.markCross(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markCross"><code class="name flex">
+<span>def <span class="ident">markCross</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a mark on the drill template layer. At typical synth panel
+sizes, it will show up as a cross the perfect size for printing out and
+using as a drill template.</p>
+<p>x, y define the center of the mark as seen from the front.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markCross(self, x: float, y: float):
+    &#34;&#34;&#34;Adds a mark on the drill template layer. At typical synth panel
+    sizes, it will show up as a cross the perfect size for printing out and
+    using as a drill template.
+
+    x, y define the center of the mark as seen from the front.
+    &#34;&#34;&#34;
+    self.drillTemplate = (
+        self.drillTemplate.moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .rect(
+            self.config[&#34;DrillTemplateMarkLength&#34;],
+            self.config[&#34;DrillTemplateMarkThickness&#34;],
+        )
+        .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+        .moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .rect(
+            self.config[&#34;DrillTemplateMarkThickness&#34;],
+            self.config[&#34;DrillTemplateMarkLength&#34;],
+        )
+        .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markDisplayWindow"><code class="name flex">
+<span>def <span class="ident">markDisplayWindow</span></span>(<span>self, x: float, y: float, windowWidth: float = 30, windowHeight: float = 15, windowHorizontalOffset: float = 0, windowVerticalOffset: float = -5, screwsHorizontalDistance: float = 40, screwsVerticalDistance: float = 40, addScrews: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markDisplayWindow(
+    self,
+    x: float,
+    y: float,
+    windowWidth: float = 30,
+    windowHeight: float = 15,
+    windowHorizontalOffset: float = 0,
+    windowVerticalOffset: float = -5,
+    screwsHorizontalDistance: float = 40,
+    screwsVerticalDistance: float = 40,
+    addScrews: bool = True,
+):
+    self.markRect(
+        x + windowHorizontalOffset,
+        y + windowVerticalOffset,
+        windowWidth,
+        windowHeight,
+    )
+    if addScrews:
+        self.markHole(
+            x - screwsHorizontalDistance / 2,
+            y - screwsVerticalDistance / 2,
+            self.config[&#34;m2DiameterWithTolerance&#34;],
+        )
+        self.markHole(
+            x + screwsHorizontalDistance / 2,
+            y - screwsVerticalDistance / 2,
+            self.config[&#34;m2DiameterWithTolerance&#34;],
+        )
+        self.markHole(
+            x - screwsHorizontalDistance / 2,
+            y + screwsVerticalDistance / 2,
+            self.config[&#34;m2DiameterWithTolerance&#34;],
+        )
+        self.markHole(
+            x + screwsHorizontalDistance / 2,
+            y + screwsVerticalDistance / 2,
+            self.config[&#34;m2DiameterWithTolerance&#34;],
+        )
+        self.markCross(
+            x - screwsHorizontalDistance / 2,
+            y - screwsVerticalDistance / 2,
+        )
+        self.markCross(
+            x + screwsHorizontalDistance / 2,
+            y - screwsVerticalDistance / 2,
+        )
+        self.markCross(
+            x - screwsHorizontalDistance / 2,
+            y + screwsVerticalDistance / 2,
+        )
+        self.markCross(
+            x + screwsHorizontalDistance / 2,
+            y + screwsVerticalDistance / 2,
+        )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markHole"><code class="name flex">
+<span>def <span class="ident">markHole</span></span>(<span>self, x: float, y: float, diameter: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Marks a circular hole on the drill template.</p>
+<p>x, y define the center.</p>
+<p>FIXME: Nasty implementation, and requires marking circles before crosses</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markHole(self, x: float, y: float, diameter: float):
+    &#34;&#34;&#34;Marks a circular hole on the drill template.
+
+    x, y define the center.
+
+    FIXME: Nasty implementation, and requires marking circles before crosses
+
+    &#34;&#34;&#34;
+    self.drillTemplate = (
+        self.drillTemplate.moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .circle(diameter / 2)
+        .extrude(1)
+        .moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .circle(diameter / 2 - self.config[&#34;DrillTemplateMarkThickness&#34;])
+        .cutThruAll()
+    )
+    return</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markLed3mm"><code class="name flex">
+<span>def <span class="ident">markLed3mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markLed3mm(self, x: float, y: float):
+    self.markHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
+    self.markCross(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markLed5mm"><code class="name flex">
+<span>def <span class="ident">markLed5mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markLed5mm(self, x: float, y: float):
+    self.markHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
+    self.markCross(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markMiniJack"><code class="name flex">
+<span>def <span class="ident">markMiniJack</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markMiniJack(self, x: float, y: float):
+    self.markHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
+    self.markCross(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markMiniToggleSwitch"><code class="name flex">
+<span>def <span class="ident">markMiniToggleSwitch</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markMiniToggleSwitch(self, x: float, y: float):
+    self.markHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
+    self.markCross(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markOutline"><code class="name flex">
+<span>def <span class="ident">markOutline</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add an outline to the drill template layer. This ensures proper
+SVG export. This is automatically done when adding a panel.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markOutline(self):
+    &#34;&#34;&#34;Add an outline to the drill template layer. This ensures proper
+    SVG export. This is automatically done when adding a panel.&#34;&#34;&#34;
+
+    self.drillTemplate = (
+        self.drillTemplate.moveTo(  # Top
+            0,
+            -self.config[&#34;panelHeight&#34;] / 2
+            + self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+        )
+        .rect(
+            self.config[&#34;panelWidth&#34;],
+            self.config[&#34;DrillTemplateMarkThickness&#34;],
+        )
+        .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+        .moveTo(  # Bottom
+            0,
+            self.config[&#34;panelHeight&#34;] / 2
+            - self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+        )
+        .rect(
+            self.config[&#34;panelWidth&#34;],
+            self.config[&#34;DrillTemplateMarkThickness&#34;],
+        )
+        .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+        .moveTo(  # Left
+            -self.config[&#34;panelWidth&#34;] / 2
+            + self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+            0,
+        )
+        .rect(
+            self.config[&#34;DrillTemplateMarkThickness&#34;],
+            self.config[&#34;panelHeight&#34;],
+        )
+        .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+        .moveTo(  # Right
+            self.config[&#34;panelWidth&#34;] / 2
+            - self.config[&#34;DrillTemplateMarkThickness&#34;] / 2,
+            0,
+        )
+        .rect(
+            self.config[&#34;DrillTemplateMarkThickness&#34;],
+            self.config[&#34;panelHeight&#34;],
+        )
+        .extrude(self.config[&#34;DrillTemplateMarkThickness&#34;])
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markPotentiometer"><code class="name flex">
+<span>def <span class="ident">markPotentiometer</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markPotentiometer(self, x: float, y: float):
+    self.markHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
+    self.markCross(x, y)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markRect"><code class="name flex">
+<span>def <span class="ident">markRect</span></span>(<span>self, x: float, y: float, width: float, height: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Marks a rectangle on the drill template.</p>
+<p>x, y define the center.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markRect(self, x: float, y: float, width: float, height: float):
+    &#34;&#34;&#34;Marks a rectangle on the drill template.
+
+    x, y define the center.&#34;&#34;&#34;
+
+    self.drillTemplate = (
+        self.drillTemplate.moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .rect(width, height)
+        .extrude(1)
+        .moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .rect(
+            width - self.config[&#34;DrillTemplateMarkThickness&#34;] * 2,
+            height - self.config[&#34;DrillTemplateMarkThickness&#34;] * 2,
+        )
+        .cutThruAll()
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.markSlider"><code class="name flex">
+<span>def <span class="ident">markSlider</span></span>(<span>self, x: float, y: float, sliderWidth: float, sliderHeight: float, slotWidth: float, slotHeight: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def markSlider(
+    self,
+    x: float,
+    y: float,
+    sliderWidth: float,
+    sliderHeight: float,
+    slotWidth: float,
+    slotHeight: float,
+):
+    self.markRect(x, y, sliderWidth, sliderHeight)
+    self.markRect(x, y, slotWidth, slotHeight)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewArcadeButton24mm"><code class="name flex">
+<span>def <span class="ident">previewArcadeButton24mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewArcadeButton24mm(self, x: float, y: float):
+    self.previewCylinderOnFront(x, y, 27, 3.4)
+    self.previewCylinderOnFront(x, y, 22, 7)
+    self.previewCylinderOnBack(x, y, 24, 24.4)
+    self.previewCylinderOnBack(x, y, 28, 6)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewArcadeButton30mm"><code class="name flex">
+<span>def <span class="ident">previewArcadeButton30mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewArcadeButton30mm(self, x: float, y: float):
+    self.previewCylinderOnFront(x, y, 32.3, 3.4)
+    self.previewCylinderOnFront(x, y, 24, 7)
+    self.previewCylinderOnBack(x, y, 24, 24.4)
+    self.previewCylinderOnBack(x, y, 34.8, 6.5)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewBigJack"><code class="name flex">
+<span>def <span class="ident">previewBigJack</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewBigJack(self, x: float, y: float):
+    self.previewCylinderOnFront(x, y, 8.5, 7)
+    self.previewCylinderOnFront(x, y, 12.6, 2.2)
+    self.previewBoxOnBack(x, y, 16, 16, 27)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewBoxOnBack"><code class="name flex">
+<span>def <span class="ident">previewBoxOnBack</span></span>(<span>self, x: float, y: float, width: float, height: float, depth: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a box for preview on the back of the panel.
+It will be deeper by half the panel thickness.</p>
+<p>x, y define the center.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewBoxOnBack(
+    self, x: float, y: float, width: float, height: float, depth: float
+):
+    &#34;&#34;&#34;Adds a box for preview on the back of the panel.
+    It will be deeper by half the panel thickness.
+
+    x, y define the center.&#34;&#34;&#34;
+    self.preview = (
+        self.preview.moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .rect(width, height)
+        .extrude(depth + self.config[&#34;panelThickness&#34;] / 2)
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewBoxOnFront"><code class="name flex">
+<span>def <span class="ident">previewBoxOnFront</span></span>(<span>self, x: float, y: float, width: float, height: float, depth: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a box for preview on the front of the panel.
+It will be deeper by half the panel thickness.</p>
+<p>x, y define the center.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewBoxOnFront(
+    self, x: float, y: float, width: float, height: float, depth: float
+):
+    &#34;&#34;&#34;Adds a box for preview on the front of the panel.
+    It will be deeper by half the panel thickness.
+
+    x, y define the center.
+    &#34;&#34;&#34;
+    self.preview = (
+        self.preview.moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .rect(width, height)
+        .extrude(-depth - self.config[&#34;panelThickness&#34;] / 2)
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewCylinderOnBack"><code class="name flex">
+<span>def <span class="ident">previewCylinderOnBack</span></span>(<span>self, x: float, y: float, diameter: float, depth: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a cylinder for preview on the back of the panel.
+It will be deeper by half the panel thickness.</p>
+<p>x, y define the center.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
+    &#34;&#34;&#34;Adds a cylinder for preview on the back of the panel.
+    It will be deeper by half the panel thickness.
+
+    x, y define the center.&#34;&#34;&#34;
+    self.preview = (
+        self.preview.moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .circle(diameter / 2)
+        .extrude(depth + self.config[&#34;panelThickness&#34;] / 2)
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewCylinderOnFront"><code class="name flex">
+<span>def <span class="ident">previewCylinderOnFront</span></span>(<span>self, x: float, y: float, diameter: float, depth: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a cylinder for preview on the front of the panel.
+It will be deeper by half the panel thickness.</p>
+<p>x, y define the center.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewCylinderOnFront(self, x: float, y: float, diameter: float, depth: float):
+    &#34;&#34;&#34;Adds a cylinder for preview on the front of the panel.
+    It will be deeper by half the panel thickness.
+
+    x, y define the center.&#34;&#34;&#34;
+    self.preview = (
+        self.preview.moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x,
+            -self.config[&#34;panelHeight&#34;] / 2 + y,
+        )
+        .circle(diameter / 2)
+        .extrude(-depth - self.config[&#34;panelThickness&#34;] / 2)
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewKnob"><code class="name flex">
+<span>def <span class="ident">previewKnob</span></span>(<span>self, x: float, y: float, diameter: float, depth: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewKnob(self, x: float, y: float, diameter: float, depth: float):
+    self.previewCylinderOnFront(x, y, diameter, depth + 5)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewLed3mm"><code class="name flex">
+<span>def <span class="ident">previewLed3mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewLed3mm(self, x: float, y: float):
+    self.previewCylinderOnFront(x, y, 2.8, 1)
+    self.previewBoxOnBack(x, y, 2.7, 1, 17)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewLed5mm"><code class="name flex">
+<span>def <span class="ident">previewLed5mm</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewLed5mm(self, x: float, y: float):
+    self.previewCylinderOnFront(x, y, 4.7, 3)
+    self.previewBoxOnBack(x, y, 4, 1, 17)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewMiniJack"><code class="name flex">
+<span>def <span class="ident">previewMiniJack</span></span>(<span>self, x: float, y: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewMiniJack(self, x: float, y: float):
+    self.previewCylinderOnFront(x, y, 6, 5.5)
+    self.previewCylinderOnFront(x, y, 8, 2.2)
+    self.previewBoxOnBack(x, y, 9, 10.5, 12.5)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewMiniToggleSwitch"><code class="name flex">
+<span>def <span class="ident">previewMiniToggleSwitch</span></span>(<span>self, x: float, y: float, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewMiniToggleSwitch(
+    self, x: float, y: float, orientation: str = &#34;horizontal&#34;
+):
+    if orientation == &#34;horizontal&#34;:
+        width = self.config[&#34;miniToggleSwitchWidth&#34;]
+        length = self.config[&#34;miniToggleSwitchLength&#34;]
+    else:
+        width = self.config[&#34;miniToggleSwitchLength&#34;]
+        length = self.config[&#34;miniToggleSwitchWidth&#34;]
+    self.previewBoxOnBack(x, y, width, length, 13.6)
+    self.previewCylinderOnFront(x, y, self.config[&#34;miniToggleSwitchDiameter&#34;], 19)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewPotentiometer"><code class="name flex">
+<span>def <span class="ident">previewPotentiometer</span></span>(<span>self, x: float, y: float, lugsOrientation: str = 'all')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = &#34;all&#34;):
+    self.previewCylinderOnFront(x, y, 6, 21)
+    self.previewCylinderOnFront(x, y, 9.6, 1.6)
+    self.previewCylinderOnBack(x, y, 16, 8)
+    if lugsOrientation == &#34;all&#34; or lugsOrientation == &#34;bottom&#34;:
+        self.previewBoxOnBack(x, y + 10, 15, 18, 2.4)
+    if lugsOrientation == &#34;top&#34;:
+        self.previewBoxOnBack(x, y - 10, 15, 18, 2.4)
+    if lugsOrientation == &#34;left&#34;:
+        self.previewBoxOnBack(x - 10, y, 18, 15, 2.4)
+    if lugsOrientation == &#34;right&#34;:
+        self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewSlider"><code class="name flex">
+<span>def <span class="ident">previewSlider</span></span>(<span>self, x: float, y: float, sliderWidth: float, sliderHeight: float)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewSlider(
+    self, x: float, y: float, sliderWidth: float, sliderHeight: float
+):
+    self.previewCylinderOnFront(x, y, 15, 10)
+    self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>You must call this before displaying or exporting your panel
+to post-process it properly</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self):
+    &#34;&#34;&#34;You must call this before displaying or exporting your panel
+    to post-process it properly&#34;&#34;&#34;
+    # Move the supports where they belong
+    self.supports = self.supports.translate(
+        (0, 0, self.config[&#34;panelThickness&#34;] / 2)
+    )
+    # Move the drill template above the panel
+    self.drillTemplate = self.drillTemplate.translate(
+        (0, 0, self.config[&#34;DrillTemplateDistance&#34;])
+    )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.supportBar"><code class="name flex">
+<span>def <span class="ident">supportBar</span></span>(<span>self, x: float, y: float, width: float, height: float, depth: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a box on the supports layer.</p>
+<p>x, y define the top-left of the box as seen from the front</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def supportBar(self, x: float, y: float, width: float, height: float, depth: float):
+    &#34;&#34;&#34;Adds a box on the supports layer.
+
+    x, y define the top-left of the box as seen from the front
+    &#34;&#34;&#34;
+    self.supports = (
+        self.supports.moveTo(
+            -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
+            -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+        )
+        .rect(width, height)
+        .extrude(depth)
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="synthprinter.hp" href="#synthprinter.hp">hp</a></code></li>
+<li><code><a title="synthprinter.kcol" href="#synthprinter.kcol">kcol</a></code></li>
+<li><code><a title="synthprinter.khp" href="#synthprinter.khp">khp</a></code></li>
+<li><code><a title="synthprinter.krow" href="#synthprinter.krow">krow</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="synthprinter.SynthPrinter" href="#synthprinter.SynthPrinter">SynthPrinter</a></code></h4>
+<ul class="">
+<li><code><a title="synthprinter.SynthPrinter.add1UIJPanel" href="#synthprinter.SynthPrinter.add1UIJPanel">add1UIJPanel</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addArcadeButton24mm" href="#synthprinter.SynthPrinter.addArcadeButton24mm">addArcadeButton24mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addArcadeButton30mm" href="#synthprinter.SynthPrinter.addArcadeButton30mm">addArcadeButton30mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addBigJack" href="#synthprinter.SynthPrinter.addBigJack">addBigJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addDisplayWindow" href="#synthprinter.SynthPrinter.addDisplayWindow">addDisplayWindow</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addEurorackPanel" href="#synthprinter.SynthPrinter.addEurorackPanel">addEurorackPanel</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addKnob" href="#synthprinter.SynthPrinter.addKnob">addKnob</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addKosmoPanel" href="#synthprinter.SynthPrinter.addKosmoPanel">addKosmoPanel</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addLed3mm" href="#synthprinter.SynthPrinter.addLed3mm">addLed3mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addLed5mm" href="#synthprinter.SynthPrinter.addLed5mm">addLed5mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addMiniJack" href="#synthprinter.SynthPrinter.addMiniJack">addMiniJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addMiniToggleSwitch" href="#synthprinter.SynthPrinter.addMiniToggleSwitch">addMiniToggleSwitch</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addPanel" href="#synthprinter.SynthPrinter.addPanel">addPanel</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addPotentiometer" href="#synthprinter.SynthPrinter.addPotentiometer">addPotentiometer</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addSlider" href="#synthprinter.SynthPrinter.addSlider">addSlider</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutArcadeButton24mm" href="#synthprinter.SynthPrinter.cutArcadeButton24mm">cutArcadeButton24mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutArcadeButton30mm" href="#synthprinter.SynthPrinter.cutArcadeButton30mm">cutArcadeButton30mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutBigJack" href="#synthprinter.SynthPrinter.cutBigJack">cutBigJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutDisplayWindow" href="#synthprinter.SynthPrinter.cutDisplayWindow">cutDisplayWindow</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutHole" href="#synthprinter.SynthPrinter.cutHole">cutHole</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutLed3mm" href="#synthprinter.SynthPrinter.cutLed3mm">cutLed3mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutLed5mm" href="#synthprinter.SynthPrinter.cutLed5mm">cutLed5mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutMiniJack" href="#synthprinter.SynthPrinter.cutMiniJack">cutMiniJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutMiniToggleSwitch" href="#synthprinter.SynthPrinter.cutMiniToggleSwitch">cutMiniToggleSwitch</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutPotentiometer" href="#synthprinter.SynthPrinter.cutPotentiometer">cutPotentiometer</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutRect" href="#synthprinter.SynthPrinter.cutRect">cutRect</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutSlider" href="#synthprinter.SynthPrinter.cutSlider">cutSlider</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.defaultConfig" href="#synthprinter.SynthPrinter.defaultConfig">defaultConfig</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.engraveLine" href="#synthprinter.SynthPrinter.engraveLine">engraveLine</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markArcadeButton24mm" href="#synthprinter.SynthPrinter.markArcadeButton24mm">markArcadeButton24mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markArcadeButton30mm" href="#synthprinter.SynthPrinter.markArcadeButton30mm">markArcadeButton30mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markBigJack" href="#synthprinter.SynthPrinter.markBigJack">markBigJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markCross" href="#synthprinter.SynthPrinter.markCross">markCross</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markDisplayWindow" href="#synthprinter.SynthPrinter.markDisplayWindow">markDisplayWindow</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markHole" href="#synthprinter.SynthPrinter.markHole">markHole</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markLed3mm" href="#synthprinter.SynthPrinter.markLed3mm">markLed3mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markLed5mm" href="#synthprinter.SynthPrinter.markLed5mm">markLed5mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markMiniJack" href="#synthprinter.SynthPrinter.markMiniJack">markMiniJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markMiniToggleSwitch" href="#synthprinter.SynthPrinter.markMiniToggleSwitch">markMiniToggleSwitch</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markOutline" href="#synthprinter.SynthPrinter.markOutline">markOutline</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markPotentiometer" href="#synthprinter.SynthPrinter.markPotentiometer">markPotentiometer</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markRect" href="#synthprinter.SynthPrinter.markRect">markRect</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.markSlider" href="#synthprinter.SynthPrinter.markSlider">markSlider</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewArcadeButton24mm" href="#synthprinter.SynthPrinter.previewArcadeButton24mm">previewArcadeButton24mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewArcadeButton30mm" href="#synthprinter.SynthPrinter.previewArcadeButton30mm">previewArcadeButton30mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewBigJack" href="#synthprinter.SynthPrinter.previewBigJack">previewBigJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewBoxOnBack" href="#synthprinter.SynthPrinter.previewBoxOnBack">previewBoxOnBack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewBoxOnFront" href="#synthprinter.SynthPrinter.previewBoxOnFront">previewBoxOnFront</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewCylinderOnBack" href="#synthprinter.SynthPrinter.previewCylinderOnBack">previewCylinderOnBack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewCylinderOnFront" href="#synthprinter.SynthPrinter.previewCylinderOnFront">previewCylinderOnFront</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewKnob" href="#synthprinter.SynthPrinter.previewKnob">previewKnob</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewLed3mm" href="#synthprinter.SynthPrinter.previewLed3mm">previewLed3mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewLed5mm" href="#synthprinter.SynthPrinter.previewLed5mm">previewLed5mm</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewMiniJack" href="#synthprinter.SynthPrinter.previewMiniJack">previewMiniJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewMiniToggleSwitch" href="#synthprinter.SynthPrinter.previewMiniToggleSwitch">previewMiniToggleSwitch</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewPotentiometer" href="#synthprinter.SynthPrinter.previewPotentiometer">previewPotentiometer</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewSlider" href="#synthprinter.SynthPrinter.previewSlider">previewSlider</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.render" href="#synthprinter.SynthPrinter.render">render</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.supportBar" href="#synthprinter.SynthPrinter.supportBar">supportBar</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

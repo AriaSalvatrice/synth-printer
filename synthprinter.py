@@ -2,14 +2,37 @@ import cadquery as cq
 
 
 class SynthPrinter:
+    """Each SynthPrinter object corresponds to a panel.
+
+    The naming convention of methods is as follows:
+
+    - `addX`: calls the corresponding cutX, markX, and previewX methods
+    - `cutX`: makes a hole for X on the **panel** layer
+    - `markX`: draws marks for X on the **drillTemplate** layer
+    - `previewX`: draws boxes and cylinders to preview the size of footprints
+    on the **preview** layer
+    - `embossX`: creates an element on the **emboss** layer. You can only 3D print
+    embossings if you orient your panel with the back as the first layer.
+    **[Not implemented yet]**
+    - `engraveX`: carves an engraving that does not cut all the way through the
+    **panel** layer
+    - `supportX`: creates an element on the **supports** layer, used to strenghten
+    panels and hold in place PCBs. You can only 3D print supports if you orient
+    your panel with the front as the first layer.
+
+    You must call render() before exporting an object, to post-process things
+    correctly. Elements might be out of alignment if you skip this call.
+
+    Be sure to take a look at the bundled examples!
+    """
+
     defaultConfig = {
         ###########################################################
-        #
-        # You can override any of those settings by passing them as
-        # a parameter to the constructor - see examples.
+        # You can override any of these settings from the defaultConfig by
+        # passing them as a parameter to the constructor.
         #
         # Preview objects have their sizes hardcoded to keep
-        # the size of the config in check.
+        # the size of this config in check.
         #
         ###########################################################
         ### Common Dimensions
@@ -149,6 +172,22 @@ class SynthPrinter:
         "DrillTemplateMarkThickness": 0.2,
         "DrillTemplateDistance": -80,
     }
+    """
+    You can override any of the defaultConfig settings by passing them as a
+    parameter to the constructor. Look at the code for the full list of
+    settings. Some are dynamically calculated from other settings.
+
+    For example, to replace the default tolerance of 0.4mm, create a
+    new object as follows:
+
+        sp = SynthPrinter(
+            tolerance=0.6,
+        )
+
+    defaultConfig values are mostly dimensions that have been tested to
+    work well with 3D printing. You are encouraged to try out the defaults 
+    first. But with a different process than FDM 3D printing, you will want to
+    make your own configuration profile."""
 
     def __init__(self, **kwargs):
         self.config = self.defaultConfig.copy()
@@ -215,9 +254,12 @@ class SynthPrinter:
     ):
         """Cuts a rectangular shape through the panel.
 
-        x, y define the top-left."""
+        FIXME: Default to center for consistency, and change existing callers
 
-        # FIXME: Default to center for consistency, and change existing callers
+        x, y define the top-left.
+
+        **WARNING: This will be changed to center in the future!**
+        """
 
         if depth == 0:
             depth = self.config["panelThickness"]
@@ -306,9 +348,6 @@ class SynthPrinter:
     ### Panels
     #######################################################################
 
-    # TODO: Change the nomenclature from Notches to Slots
-    # TODO: Add Slots to the drill template
-
     def addPanel(
         self,
         width: float,
@@ -321,6 +360,10 @@ class SynthPrinter:
         Screw slots in the corners provide better tolerances than holes
         in a DIY printed system. If the panel is too small for four slots,
         there will be only two by default.
+
+
+        TODO: Add Slots to the drill template
+
 
         :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
@@ -688,8 +731,11 @@ class SynthPrinter:
     def markHole(self, x: float, y: float, diameter: float):
         """Marks a circular hole on the drill template.
 
-        x, y define the center."""
-        # FIXME: Nasty, and requires marking circles before crosses
+        x, y define the center.
+
+        FIXME: Nasty implementation, and requires marking circles before crosses
+
+        """
         self.drillTemplate = (
             self.drillTemplate.moveTo(
                 -self.config["panelWidth"] / 2 + x,
@@ -1088,6 +1134,9 @@ class SynthPrinter:
         diffuse a bit of light in the surrounding plastic.
 
         There is no mechanism to hold it in place, but hot glue will do the trick.
+
+        FIXME: This is the nastiest way possible to implement a fillet
+        but the only one I could figure out.
         """
         self.cutLed3mm(x, y)
         self.previewLed3mm(x, y)
@@ -1105,8 +1154,6 @@ class SynthPrinter:
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
     ):
-        # FIXME: This is the nastiest way possible to do a fillet
-        # but the only one i could figure out
         cutout = (
             cq.Workplane("XY")
             .box(
@@ -1281,7 +1328,7 @@ def hp(hp: float):
 
 def khp(khp: float):
     """Converts khp (Kosmo HP) to millimeters (1khp = 25mm).
-    Useful to align things to the grid."""
+    Useful to align things to the the custom kcol / krow grid."""
     return khp * 25
 
 
@@ -1294,6 +1341,8 @@ def krow(krow: float):
     """Custom Kosmo grid system: each krow is 25mm, first starts 25mm from top"""
     return (krow) * 25
 
+
+# To generate API reference: `pdoc --html --force synthprinter.py -o ./`
 
 #######################################################################
 ### TEST CODE

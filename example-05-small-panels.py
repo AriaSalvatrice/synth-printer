@@ -21,7 +21,7 @@ sp = SynthPrinter()
 #   4 slots. if not enough room, they will be merged.
 # none:
 #   yup
-sp.addEurorackPanel(3, screwslots="auto-trbl")
+sp.addEurorackPanel(3, screwSlots="auto-trbl")
 
 sp.addMiniJack(hp(1.5), 30)
 sp.addMiniJack(hp(1.5), 60)

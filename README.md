@@ -19,13 +19,16 @@ To get started, you need a way to use CadQuery. I strongly recommend you use [th
 
 After that, [download the Synth Printer repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples in that editor. Use the **▶ Render** button (F5) to run the code. Rotate the viewport, as you'll be seeing the panel from the back by default. You can toggle the preview layer in the outliner to see the panel better.
 
-You can edit code right from CQ-Editor, and design a panel simply by modifying an example, but you should also take a look at synthprinter.py: the functions are full of useful comments, telling you which hardware they fit, and why some values were chosen. 
-
 If you find CQ-editor limiting, you can enable autoreload in the preferences, and edit the files from an external editor, or for heavy usage, you can look into CadQuery VSCode integrations, which are more powerful, but more complex to install.
 
 My goal is to provide default settings that fit in most cases. But if stuff won't fit, you can override any default setting in the constructor, the examples will show you how.
 
 Once you're ready to export your panel, select it in the viewport, and pick "Tools➔Export as STL". Make sure not to also export the preview layer!
+
+# API Reference
+[synthprinter.html](synthprinter.html) provides an auto-generated API reference, full of useful info: which hardware footprints fit, and why some values were chosen. 
+
+
 
 # Gallery
 
