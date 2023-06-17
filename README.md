@@ -15,11 +15,13 @@ It's very much for the sort of DIY builds that use prototype boards, or PCBs mou
 
 Due to its very limited audience, this system is very minimal, hacky, and rough around the edges. Still, it should be easy to learn how to get it going, and I'm happy to help if it gives you trouble. Synth Printer mostly focuses on my own needs: I build in the Kosmo format, which is bigger than Eurorack, so I tend to use bigger hardware options, such as big 6.3mm jacks.
 
-To get started, you need a way to use CadQuery. I strongly recommend you simply use a [Cq-Editor binary release](https://github.com/CadQuery/CQ-editor/releases). It bundles all you need, there's nothing else to install.
+To get started, you need a way to use CadQuery. I strongly recommend you use [this recent fork of Cq-Editor](https://github.com/jdegenstein/jmwright-CQ-Editor/releases). It bundles all you need, there's nothing else to install.
 
-After that, [download this repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples in that editor. Use the **▶ Render** button (F5) to run the code. Rotate the viewport, as you'll be seeing the panel from the back by default. You can toggle the preview layer in the outliner to see the panel better.
+After that, [download the Synth Printer repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples in that editor. Use the **▶ Render** button (F5) to run the code. Rotate the viewport, as you'll be seeing the panel from the back by default. You can toggle the preview layer in the outliner to see the panel better.
 
-You can edit code right from CQ-Editor, but if you find it limiting, you can enable autoreload in the preferences, and edit the files from an external editor. You can  design a panel simply by modifying an example, but take a look at synthprinter.py: the functions are full of useful comments, telling you which hardware they fit, and why some values were chosen.
+You can edit code right from CQ-Editor, and design a panel simply by modifying an example, but you should also take a look at synthprinter.py: the functions are full of useful comments, telling you which hardware they fit, and why some values were chosen. 
+
+If you find CQ-editor limiting, you can enable autoreload in the preferences, and edit the files from an external editor, or for heavy usage, you can look into CadQuery VSCode integrations, which are more powerful, but more complex to install.
 
 My goal is to provide default settings that fit in most cases. But if stuff won't fit, you can override any default setting in the constructor, the examples will show you how.
 
