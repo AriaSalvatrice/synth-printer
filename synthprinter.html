@@ -988,6 +988,11 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, diameter, depth + 5)
 
     def addKnob(self, x: float, y: float, diameter: float, depth: float):
+        &#34;&#34;&#34;Adds a knob for preview only. Place it at the same location as
+        potentiometers and rotary encoders!
+
+        Since there is a lot of variation in knob sizes, and sometimes the
+        shaft is left exposed without a knob, it&#39;s not added automatically.&#34;&#34;&#34;
         self.previewKnob(x, y, diameter, depth)
 
     def cutSlider(
@@ -2447,6 +2452,11 @@ correctly. Elements might be out of alignment if you skip this call.</p>
         self.previewCylinderOnFront(x, y, diameter, depth + 5)
 
     def addKnob(self, x: float, y: float, diameter: float, depth: float):
+        &#34;&#34;&#34;Adds a knob for preview only. Place it at the same location as
+        potentiometers and rotary encoders!
+
+        Since there is a lot of variation in knob sizes, and sometimes the
+        shaft is left exposed without a knob, it&#39;s not added automatically.&#34;&#34;&#34;
         self.previewKnob(x, y, diameter, depth)
 
     def cutSlider(
@@ -3048,12 +3058,20 @@ there will be only two by default.</p>
 <span>def <span class="ident">addKnob</span></span>(<span>self, x: float, y: float, diameter: float, depth: float)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Adds a knob for preview only. Place it at the same location as
+potentiometers and rotary encoders!</p>
+<p>Since there is a lot of variation in knob sizes, and sometimes the
+shaft is left exposed without a knob, it's not added automatically.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def addKnob(self, x: float, y: float, diameter: float, depth: float):
+    &#34;&#34;&#34;Adds a knob for preview only. Place it at the same location as
+    potentiometers and rotary encoders!
+
+    Since there is a lot of variation in knob sizes, and sometimes the
+    shaft is left exposed without a knob, it&#39;s not added automatically.&#34;&#34;&#34;
     self.previewKnob(x, y, diameter, depth)</code></pre>
 </details>
 </dd>
