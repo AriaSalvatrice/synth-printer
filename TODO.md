@@ -25,6 +25,11 @@ Most of this should be addressed before I can call it version 1.
 - DPDT version of the MTS
 - Rectangular holes with rounded corners
 - Width tolerance for panels without messing up the user-facing coordinates. It's not really needed for Kosmo since it uses 5cm on a 5.08 grid, but it's required for Eurorack, especially due to thermal expansion.
+- Previews of the rails clearance
+
+## Eurorack-specific stuff
+- A grid system that makes sense for Eurorack
+- Shave off some millimeters from the sides of the panel during render
 
 ## Make new test prints
 

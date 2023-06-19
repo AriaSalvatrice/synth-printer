@@ -1330,7 +1330,7 @@ class SynthPrinter:
 
 
 def hp(hp: float):
-    """Converts Eurorack hp to millimeters (1hp = 0.2in = 5.08mm).
+    """Converts Eurorack Horizontal Pitch to millimeters (1hp = 0.2in = 5.08mm).
     Useful to align things to the grid."""
     return hp * 5.08
 
