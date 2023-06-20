@@ -17,7 +17,7 @@ Due to its very limited audience, this system is very minimal, hacky, and rough 
 
 To get started, you need a way to use CadQuery. I strongly recommend you use [this recent fork of Cq-Editor](https://github.com/jdegenstein/jmwright-CQ-Editor/releases). It bundles all you need, there's nothing else to install.
 
-After that, [download the Synth Printer repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples in that editor. Use the **▶ Render** button (F5) to run the code. Rotate the viewport, as you'll be seeing the panel from the back by default. You can toggle the preview layer in the outliner to see the panel better.
+After that, [download the Synth Printer repository](https://github.com/AriaSalvatrice/synth-printer/archive/refs/heads/master.zip), and load up one of the examples in that editor. Use the **▶ Render** button (F5) to run the code. You can toggle the preview layer in the outliner to see the panel better, or skip rendering it altogether in the code for performance.
 
 If you find CQ-editor limiting, you can enable autoreload in the preferences, and edit the files from an external editor, or for heavy usage, you can look into CadQuery VSCode integrations, which are more powerful, but more complex to install.
 
