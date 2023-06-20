@@ -2,8 +2,8 @@ import cadquery as cq
 from synthprinter import *
 
 sp = SynthPrinter(
-    drillTemplateShow=True,
-    previewShow=False,
+    drillTemplateRender=True,
+    previewRender=False,
 )
 
 sp.addKosmoPanel(10)
@@ -25,4 +25,4 @@ sp.addDisplayWindow(kcol(3), krow(1), 25, 15, 10, -5, 35, 35, True)
 
 sp.render(show_object)
 
-sp.exportDrillTemplate()
+sp.exportDrillTemplate("testDrillTemplate.svg")

@@ -55,16 +55,16 @@ class SynthPrinter:
         ###########################################################
         ### Visualization in CQ Editor
         ###########################################################
-        "panelShow": True,
-        "supportsShow": True,
-        "embossShow": True,
-        "previewShow": True,  # Disable to improve render performance
-        "drillTemplateShow": False,
+        "panelRender": True,
+        "supportsRender": True,
+        "embossRender": True,
+        "previewRender": True,  # Disable to improve render performance
+        "drillTemplateRender": False,
         "panelShowOptions": {"alpha": 0.2, "color": (0, 180, 230)},
         "supportsShowOptions": {"alpha": 0.1, "color": (180, 230, 0)},
         "embossShowOptions": {"alpha": 0.2, "color": (50, 180, 230)},
         "previewShowOptions": {"alpha": 0.65, "color": (100, 30, 30)},
-        "drillTemplateShowOptions": {"alpha": 0.1, "color": (50, 200, 50)},
+        "drillTemplateShowOptions": {"alpha": 0.1, "color": (20, 20, 20)},
         ###########################################################
         ### Screws
         ###########################################################
@@ -257,31 +257,31 @@ class SynthPrinter:
         self.supports = self.supports.rotate((0, 0, 0), (1, 0, 0), 180)
         self.drillTemplate = self.drillTemplate.rotate((0, 0, 0), (1, 0, 0), 180)
         # Display the layers if we're in CQ Editor
-        if show_object and self.config["panelShow"]:
+        if show_object and self.config["panelRender"]:
             show_object(
                 self.panel,
                 name="panel",
                 options=self.config["panelShowOptions"],
             )
-        if show_object and self.config["supportsShow"]:
+        if show_object and self.config["supportsRender"]:
             show_object(
                 self.supports,
                 name="supports",
                 options=self.config["supportsShowOptions"],
             )
-        if show_object and self.config["embossShow"]:
+        if show_object and self.config["embossRender"]:
             show_object(
                 self.emboss,
                 name="emboss",
                 options=self.config["embossShowOptions"],
             )
-        if show_object and self.config["previewShow"]:
+        if show_object and self.config["previewRender"]:
             show_object(
                 self.preview,
                 name="preview",
                 options=self.config["previewShowOptions"],
             )
-        if show_object and self.config["drillTemplateShow"]:
+        if show_object and self.config["drillTemplateRender"]:
             show_object(
                 self.drillTemplate,
                 name="drillTemplate",
@@ -667,6 +667,8 @@ class SynthPrinter:
         Be sure to inspect both sides of the print to make sure there aren't
         any sections that are too thin!
         """
+        if not self.config["panelRender"]:
+            return
         if depth == 0:
             depth = self.config["panelEngravingDepth"]
         cutout = (
@@ -705,6 +707,8 @@ class SynthPrinter:
 
         x, y define the top-left of the box as seen from the front
         """
+        if not self.config["supportsRender"]:
+            return
         self.supports = (
             self.supports.moveTo(
                 -self.config["panelWidth"] / 2 + x + width / 2,
@@ -850,15 +854,21 @@ class SynthPrinter:
     #######################################################################
 
     def cutArcadeButton30mm(self, x: float, y: float):
+        if not self.config["panelRender"]:
+            return
         self.cutHole(x, y, self.config["arcade30mmButtonWithTolerance"])
 
     def previewArcadeButton30mm(self, x: float, y: float):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, 32.3, 3.4)
         self.previewCylinderOnFront(x, y, 24, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)
         self.previewCylinderOnBack(x, y, 34.8, 6.5)
 
     def markArcadeButton30mm(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markHole(x, y, self.config["arcade30mmButtonWithTolerance"])
         self.markCross(x, y)
 
@@ -882,6 +892,8 @@ class SynthPrinter:
         self.markArcadeButton30mm(x, y)
 
     def cutArcadeButton24mm(self, x: float, y: float):
+        if not self.config["panelRender"]:
+            return
         self.cutHole(x, y, self.config["arcade24mmButtonWithTolerance"])
         self.cutHole(
             x,
@@ -891,12 +903,16 @@ class SynthPrinter:
         )
 
     def previewArcadeButton24mm(self, x: float, y: float):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, 27, 3.4)
         self.previewCylinderOnFront(x, y, 22, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)
         self.previewCylinderOnBack(x, y, 28, 6)
 
     def markArcadeButton24mm(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markHole(x, y, self.config["arcade24mmButtonWithTolerance"])
         self.markCross(x, y)
 
@@ -916,6 +932,8 @@ class SynthPrinter:
         self.markArcadeButton24mm(x, y)
 
     def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
+        if not self.config["panelRender"]:
+            return
         if orientation == "horizontal":
             width = self.config["miniToggleSwitchWidthWithTolerance"]
             length = self.config["miniToggleSwitchLengthWithTolerance"]
@@ -936,6 +954,8 @@ class SynthPrinter:
     def previewMiniToggleSwitch(
         self, x: float, y: float, orientation: str = "horizontal"
     ):
+        if not self.config["previewRender"]:
+            return
         if orientation == "horizontal":
             width = self.config["miniToggleSwitchWidth"]
             length = self.config["miniToggleSwitchLength"]
@@ -946,6 +966,8 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, self.config["miniToggleSwitchDiameter"], 19)
 
     def markMiniToggleSwitch(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markHole(x, y, self.config["miniToggleSwitchDiameterWithTolerance"])
         self.markCross(x, y)
 
@@ -972,6 +994,8 @@ class SynthPrinter:
         y: float,
         notchOrientation: str = "all",
     ):
+        if not self.config["panelRender"]:
+            return
         self.cutHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
         # Add the notches
 
@@ -999,6 +1023,8 @@ class SynthPrinter:
         )
 
     def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = "all"):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, 6, 21)
         self.previewCylinderOnFront(x, y, 9.6, 1.6)
         self.previewCylinderOnBack(x, y, 16, 8)
@@ -1012,6 +1038,8 @@ class SynthPrinter:
             self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)
 
     def markPotentiometer(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
         self.markCross(x, y)
 
@@ -1046,6 +1074,8 @@ class SynthPrinter:
         self.markPotentiometer(x, y)
 
     def previewKnob(self, x: float, y: float, diameter: float, depth: float):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, diameter, depth + 5)
 
     def addKnob(self, x: float, y: float, diameter: float, depth: float):
@@ -1065,6 +1095,8 @@ class SynthPrinter:
         slotWidth: float,
         slotHeight: float,
     ):
+        if not self.config["panelRender"]:
+            return
         self.panel = (
             self.panel.faces(">Z")
             .vertices("<XY")
@@ -1086,6 +1118,8 @@ class SynthPrinter:
     def previewSlider(
         self, x: float, y: float, sliderWidth: float, sliderHeight: float
     ):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, 15, 10)
         self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)
 
@@ -1098,6 +1132,8 @@ class SynthPrinter:
         slotWidth: float,
         slotHeight: float,
     ):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markRect(x, y, sliderWidth, sliderHeight)
         self.markRect(x, y, slotWidth, slotHeight)
 
@@ -1127,6 +1163,8 @@ class SynthPrinter:
     #######################################################################
 
     def cutBigJack(self, x: float, y: float):
+        if not self.config["panelRender"]:
+            return
         self.cutHole(x, y, self.config["bigJackDiameterWithTolerance"])
         self.panel = (
             self.panel.faces(">Z")
@@ -1141,11 +1179,15 @@ class SynthPrinter:
         )
 
     def previewBigJack(self, x: float, y: float):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, 8.5, 7)
         self.previewCylinderOnFront(x, y, 12.6, 2.2)
         self.previewBoxOnBack(x, y, 16, 16, 27)
 
     def markBigJack(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markHole(x, y, self.config["bigJackDiameterWithTolerance"])
         self.markCross(x, y)
 
@@ -1160,6 +1202,8 @@ class SynthPrinter:
         self.markBigJack(x, y)
 
     def cutMiniJack(self, x: float, y: float):
+        if not self.config["panelRender"]:
+            return
         self.cutHole(x, y, self.config["miniJackDiameterWithTolerance"])
         self.panel = (
             self.panel.faces(">Z")
@@ -1174,11 +1218,15 @@ class SynthPrinter:
         )
 
     def previewMiniJack(self, x: float, y: float):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, 6, 5.5)
         self.previewCylinderOnFront(x, y, 8, 2.2)
         self.previewBoxOnBack(x, y, 9, 10.5, 12.5)
 
     def markMiniJack(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markHole(x, y, self.config["miniJackDiameterWithTolerance"])
         self.markCross(x, y)
 
@@ -1196,13 +1244,19 @@ class SynthPrinter:
     #######################################################################
 
     def cutLed5mm(self, x: float, y: float):
+        if not self.config["panelRender"]:
+            return
         self.cutHole(x, y, self.config["5mmLedWithTolerance"])
 
     def previewLed5mm(self, x: float, y: float):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, 4.7, 3)
         self.previewBoxOnBack(x, y, 4, 1, 17)
 
     def markLed5mm(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markHole(x, y, self.config["5mmLedWithTolerance"])
         self.markCross(x, y)
 
@@ -1216,13 +1270,19 @@ class SynthPrinter:
         self.markLed5mm(x, y)
 
     def cutLed3mm(self, x: float, y: float):
+        if not self.config["panelRender"]:
+            return
         self.cutHole(x, y, self.config["3mmLedWithTolerance"])
 
     def previewLed3mm(self, x: float, y: float):
+        if not self.config["previewRender"]:
+            return
         self.previewCylinderOnFront(x, y, 2.8, 1)
         self.previewBoxOnBack(x, y, 2.7, 1, 17)
 
     def markLed3mm(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markHole(x, y, self.config["3mmLedWithTolerance"])
         self.markCross(x, y)
 
@@ -1315,6 +1375,8 @@ class SynthPrinter:
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
     ):
+        if not self.config["drillTemplateRender"]:
+            return
         self.markRect(
             x + windowHorizontalOffset,
             y + windowVerticalOffset,
