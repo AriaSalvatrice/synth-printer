@@ -33,8 +33,8 @@ sp.addKnob(hp(8) - 10, 9.25 + 43.25, 12, 16)
 # breadboards. It's glued in place and wired to the PCB.
 # The switch cover was printed using this STL as base:
 # https://www.thingiverse.com/thing:493729
-sp.cutRect(10, 9.25 + 58.75 + 3, 12.2, 12.2)
-sp.cutRect(hp(8) - 10, 9.25 + 58.75 + 3, 12.2, 12.2)
+sp.cutRect(10, 9.25 + 58.75 + 3, 12.2, 12.2, False)
+sp.cutRect(hp(8) - 10, 9.25 + 58.75 + 3, 12.2, 12.2, False)
 
 sp.addLed3mm(7.5, 9.25 + 74.5)
 sp.addLed3mm(hp(4), 9.25 + 74.5)

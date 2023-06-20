@@ -87,10 +87,11 @@ class SynthPrinter:
         ###########################################################
         "eurorackHeight": 128.5,  # Modules are smaller than the full 3U
         "eurorackWidthTolerance": lambda config: config["tolerance"],
-        "i1UIJHeight": 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
-        "i1UIJWidthTolerance": lambda config: config["tolerance"],
+        "1UIJHeight": 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
+        "1UIJWidthTolerance": lambda config: config["tolerance"],
         "kosmoHeight": 200.0,
-        "kosmoWidthTolerance": 0,  # Kosmo needs no additional tolerance due to fitting HP rails
+        "kosmoWidthTolerance": 0,  # Kosmo needs no additional tolerance as HP rails are larger
+        "panelWidthTolerance": 0,  # Set when adding the panel
         ###########################################################
         ### Panel engravings
         ###########################################################
@@ -242,6 +243,8 @@ class SynthPrinter:
         argument, it will also display the object. When using Synth Printer
         from a different environment, just call without any argument.
         """
+        # Shave off the sides of the panel if needed
+        self.cutPanelWidthTolerance()
         # Move the supports where they belong
         self.supports = self.supports.translate(
             (0, 0, self.config["panelThickness"] / 2)
@@ -344,30 +347,32 @@ class SynthPrinter:
         width: float,
         height: float,
         depth: float = 0,
+        centered: bool = True,
     ):
         """Cuts a rectangular shape through the panel.
 
-        FIXME: Default to center for consistency, and change existing callers
+        x, y define the center
 
-        x, y define the top-left.
+        FIXME: Top-Left behavior consistency)
 
-        **WARNING: This will be changed to center in the future!**
+        `depth = 0` cuts through all.
         """
 
         if depth == 0:
             depth = self.config["panelThickness"]
 
-        cutout = (
-            cq.Workplane("XY")
-            .box(width, height, depth)
-            .translate(
+        cutout = cq.Workplane("XY").box(width, height, depth)
+
+        if centered:
+            cutout = cutout.translate((x, y, 0))
+        else:
+            cutout = cutout.translate(
                 (
                     -self.config["panelWidth"] / 2 + x,
                     -self.config["panelHeight"] / 2 + y,
                     0,
                 )
             )
-        )
 
         self.panel = (
             self.panel.faces(">Z")
@@ -605,6 +610,7 @@ class SynthPrinter:
 
         screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
+        self.config["panelWidthTolerance"] = self.config["eurorackWidthTolerance"]
         self.addPanel(self.config["hp"] * hp, self.config["eurorackHeight"], screwSlots)
 
     def add1UIJPanel(
@@ -622,7 +628,8 @@ class SynthPrinter:
 
         screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
-        self.addPanel(self.config["hp"] * hp, self.config["i1UIJHeight"], screwSlots)
+        self.config["panelWidthTolerance"] = self.config["1UIJWidthTolerance"]
+        self.addPanel(self.config["hp"] * hp, self.config["1UIJHeight"], screwSlots)
 
     def addKosmoPanel(
         self,
@@ -641,10 +648,31 @@ class SynthPrinter:
 
         screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
+        self.config["panelWidthTolerance"] = self.config["kosmoWidthTolerance"]
         self.addPanel(
             self.config["khp"] * khp,
             self.config["kosmoHeight"],
             screwSlots=screwSlots,
+        )
+
+    def cutPanelWidthTolerance(self):
+        """Automatically called during `render()`, makes the panel a bit smaller than
+        their nominal size laterally to account for thermal expansion and misaligned
+        neighboring panels."""
+        if self.config["panelWidthTolerance"] == 0:
+            return
+        self.cutRect(
+            -self.config["panelWidth"] / 2 + self.config["panelWidthTolerance"] / 2,
+            0,
+            self.config["panelWidthTolerance"],
+            self.config["panelHeight"],
+        )
+
+        self.cutRect(
+            self.config["panelWidth"] / 2 - self.config["panelWidthTolerance"] / 2,
+            0,
+            self.config["panelWidthTolerance"],
+            self.config["panelHeight"],
         )
 
     #######################################################################
@@ -1108,12 +1136,7 @@ class SynthPrinter:
             )
             .cutBlind(-self.config["sliderNotchDepth"])
         )
-        self.cutRect(
-            x,
-            y,
-            slotWidth,
-            slotHeight,
-        )
+        self.cutRect(x, y, slotWidth, slotHeight, 0, False)
 
     def previewSlider(
         self, x: float, y: float, sliderWidth: float, sliderHeight: float

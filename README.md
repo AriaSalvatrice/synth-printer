@@ -86,6 +86,11 @@ Let's review what goes into making a solid front plate:
 - The recessed areas on the back will look visually nastier, and be less deep, but shouldn't require supports.
 - Of course, you can't add supports in the back with this orientation. 
 
+### Printing vertically
+
+- No reason it can't be done with proper supports, but almost certainly a bad idea.
+
+
 ## Printing knobs
 
 I had good results with [Sebajom's OpenSCAD knob generators on thingiverse](https://www.thingiverse.com/sebajom/designs).

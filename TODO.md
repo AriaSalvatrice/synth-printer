@@ -28,8 +28,7 @@ Most of this should be addressed before I can call it version 1.
 
 ## Eurorack-specific stuff
 - A grid system that makes sense for Eurorack
-- Width tolerance for panels without messing up the user-facing coordinates. It's not really needed for Kosmo since it uses 5cm on a 5.08 grid, but it's required for Eurorack, especially due to thermal expansion.
-
+  
 ## Make new test prints
 
 - Mini Jack 
