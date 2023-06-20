@@ -52,10 +52,4 @@ sp.supportBar(48, 59, 5, 130, 6)
 sp.supportBar(48, 59, -20, 5, 6)
 sp.supportBar(37.5, 9, 5, 50, 6)
 
-sp.render()
-
-show_object(sp.panel, name="panel", options={"alpha": 0.2, "color": (0, 180, 230)})
-show_object(
-    sp.supports, name="supports", options={"alpha": 0.1, "color": (180, 230, 0)}
-)
-show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
+sp.render(show_object)

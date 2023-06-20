@@ -27,7 +27,4 @@ sp.addMiniJack(hp(1.5), 30)
 sp.addMiniJack(hp(1.5), 60)
 sp.addLed5mm(hp(1.5), 90)
 
-sp.render()
-
-show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
-show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
+sp.render(show_object)

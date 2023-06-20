@@ -52,8 +52,4 @@ sp.addMiniJack(7.5, 9.25 + 102)
 sp.addMiniJack(hp(4), 9.25 + 102)
 sp.addMiniJack(hp(8) - 7.5, 9.25 + 102)
 
-
-sp.render()
-
-show_object(sp.panel, name="panel", options={"alpha": 0.2, "color": (0, 180, 230)})
-show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
+sp.render(show_object)

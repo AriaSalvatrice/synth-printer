@@ -2,7 +2,12 @@ import cadquery as cq
 
 
 class SynthPrinter:
-    """Each SynthPrinter object corresponds to a panel.
+    """Each SynthPrinter object corresponds to a panel. You must add one, and
+    only one panel, before performing operations on it.
+
+    Once you're done placing elements, you must call render() before
+    exporting your work, to post-process things correctly.
+    Elements will be aligned and oriented wrong if you skip this call.
 
     The naming convention of methods is as follows:
 
@@ -22,9 +27,6 @@ class SynthPrinter:
     - `supportX`: creates an element on the **supports** layer, used to strenghten
     panels and hold in place PCBs. You can only 3D print supports if you orient
     your panel with the front as the first layer.
-
-    You must call render() before exporting an object, to post-process things
-    correctly. Elements might be out of alignment if you skip this call.
 
     Be sure to take a look at the bundled examples!
     """
@@ -51,10 +53,18 @@ class SynthPrinter:
         # better at keeping things in place.
         "retainingNotchDepth": lambda config: config["panelThickness"] / 3.9,
         ###########################################################
-        ### Visualization
+        ### Visualization in CQ Editor
         ###########################################################
-        "panelColorRGBA": cq.Color(0, 0.7, 0.7, 0.9),
-        "previewColorRGBA": cq.Color(0.7, 0.2, 0.2, 0.4),
+        "panelShow": True,
+        "supportsShow": True,
+        "embossShow": True,
+        "previewShow": True,  # Disable to improve render performance
+        "drillTemplateShow": False,
+        "panelShowOptions": {"alpha": 0.2, "color": (0, 180, 230)},
+        "supportsShowOptions": {"alpha": 0.1, "color": (180, 230, 0)},
+        "embossShowOptions": {"alpha": 0.2, "color": (50, 180, 230)},
+        "previewShowOptions": {"alpha": 0.65, "color": (100, 30, 30)},
+        "drillTemplateShowOptions": {"alpha": 0.1, "color": (50, 200, 50)},
         ###########################################################
         ### Screws
         ###########################################################
@@ -208,15 +218,30 @@ class SynthPrinter:
         # Create layers
         self.panel = cq.Workplane("XY")
         self.preview = cq.Workplane("XY")
-        self.supports = cq.Workplane("XY")
         self.emboss = cq.Workplane("XY")
+        self.supports = cq.Workplane("XY")
         self.drillTemplate = cq.Workplane("XY")
 
         self.panelAdded = False  # We can only have one or horrible things happen
 
-    def render(self):
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+    #######################################################################
+
+    #######################################################################
+    ### Rendering & Export
+    #######################################################################
+
+    def render(self, show_object=False):
         """You must call this before displaying or exporting your panel
-        to post-process it properly"""
+        to post-process it properly.
+
+        If you give it the show_object function from Cq Editor as an
+        argument, it will also display the object. When using Synth Printer
+        from a different environment, just call without any argument.
+        """
         # Move the supports where they belong
         self.supports = self.supports.translate(
             (0, 0, self.config["panelThickness"] / 2)
@@ -224,6 +249,70 @@ class SynthPrinter:
         # Move the drill template above the panel
         self.drillTemplate = self.drillTemplate.translate(
             (0, 0, self.config["DrillTemplateDistance"])
+        )
+        # Rotate the layers for viewing
+        self.panel = self.panel.rotate((0, 0, 0), (1, 0, 0), 180)
+        self.preview = self.preview.rotate((0, 0, 0), (1, 0, 0), 180)
+        self.emboss = self.emboss.rotate((0, 0, 0), (1, 0, 0), 180)
+        self.supports = self.supports.rotate((0, 0, 0), (1, 0, 0), 180)
+        self.drillTemplate = self.drillTemplate.rotate((0, 0, 0), (1, 0, 0), 180)
+        # Display the layers if we're in CQ Editor
+        if show_object and self.config["panelShow"]:
+            show_object(
+                self.panel,
+                name="panel",
+                options=self.config["panelShowOptions"],
+            )
+        if show_object and self.config["supportsShow"]:
+            show_object(
+                self.supports,
+                name="supports",
+                options=self.config["supportsShowOptions"],
+            )
+        if show_object and self.config["embossShow"]:
+            show_object(
+                self.emboss,
+                name="emboss",
+                options=self.config["embossShowOptions"],
+            )
+        if show_object and self.config["previewShow"]:
+            show_object(
+                self.preview,
+                name="preview",
+                options=self.config["previewShowOptions"],
+            )
+        if show_object and self.config["drillTemplateShow"]:
+            show_object(
+                self.drillTemplate,
+                name="drillTemplate",
+                options=self.config["drillTemplateShowOptions"],
+            )
+
+    def exportDrillTemplate(self, filename: str = "DrillTemplate.svg"):
+        """Exports the drill template as a SVG file.
+
+        Before you print it, crop and scale it up or down in image editing
+        software to match the size of one side!
+
+        TODO: Make it the perfect size out of the box.
+
+        You must activate the layer in the constructor first! Otherwise,
+        drill marks are not rendered, for performance."""
+        cq.exporters.export(
+            self.drillTemplate,
+            filename,
+            opt={
+                "width": 2000,
+                "height": 2000,
+                "marginLeft": 0,
+                "marginTop": 0,
+                "showAxes": False,
+                "projectionDir": (0.0, 0.0, 1.0),
+                "strokeWidth": 0.25,
+                "strokeColor": (255, 0, 0),
+                "hiddenColor": (0, 0, 255),
+                "showHidden": False,
+            },
         )
 
     #######################################################################
@@ -369,7 +458,7 @@ class SynthPrinter:
         TODO: Add Slots to the drill template
 
 
-        :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
 
         if self.panelAdded == True:
@@ -514,7 +603,7 @@ class SynthPrinter:
         in a DIY printed system. If the panel is too small for four slots,
         there will be only two by default.
 
-        :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
         self.addPanel(self.config["hp"] * hp, self.config["eurorackHeight"], screwSlots)
 
@@ -531,7 +620,7 @@ class SynthPrinter:
         in a DIY printed system. If the panel is too small for four slots,
         there will be only two by default.
 
-        :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
         self.addPanel(self.config["hp"] * hp, self.config["i1UIJHeight"], screwSlots)
 
@@ -550,7 +639,7 @@ class SynthPrinter:
         in a DIY printed system. Kosmo panels are always large enough for four slots,
         but you can explicitly set a different configuration of slots.
 
-        :param screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
+        screwSlots: options are "auto", "auto-tlbr", "auto-trbl", "auto-center", "none", "all", "tlbr", "trbl", "center"
         """
         self.addPanel(
             self.config["khp"] * khp,
@@ -867,7 +956,7 @@ class SynthPrinter:
 
         It will not fit DPDT switches that have two rows of pins, those are bigger.
 
-        :param orientation: "horizontal" (default) or "vertical".
+        orientation: "horizontal" (default) or "vertical".
         """
         self.cutMiniToggleSwitch(x, y, orientation)
         self.previewMiniToggleSwitch(x, y, orientation)
@@ -1352,10 +1441,3 @@ def krow(krow: float):
 
 
 # To generate API reference: `pdoc --html --force synthprinter.py -o ./`
-
-#######################################################################
-### TEST CODE
-#######################################################################
-# CQ-Editor can't autoreload modules, so placing test code here
-# is simpler than figuring out a workaround.
-# Try not to commit it. It's embarrassing.

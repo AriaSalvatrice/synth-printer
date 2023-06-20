@@ -24,12 +24,11 @@ Most of this should be addressed before I can call it version 1.
 - More types of common buttons and switches
 - DPDT version of the MTS
 - Rectangular holes with rounded corners
-- Width tolerance for panels without messing up the user-facing coordinates. It's not really needed for Kosmo since it uses 5cm on a 5.08 grid, but it's required for Eurorack, especially due to thermal expansion.
 - Previews of the rails clearance
 
 ## Eurorack-specific stuff
 - A grid system that makes sense for Eurorack
-- Shave off some millimeters from the sides of the panel during render
+- Width tolerance for panels without messing up the user-facing coordinates. It's not really needed for Kosmo since it uses 5cm on a 5.08 grid, but it's required for Eurorack, especially due to thermal expansion.
 
 ## Make new test prints
 
@@ -54,6 +53,7 @@ Most of this should be addressed before I can call it version 1.
 ## Drill Templates
 
 - Clean SVG Export for drill templates ready to print at 1:1 size
+- Display the mounting slots on the drill template
 
 ## KiCAD Templates
 
@@ -80,7 +80,6 @@ Most of this should be addressed before I can call it version 1.
 - Move the documentation to its own website / integrated to Jupyter thing
 - Provide more examples
 - Have a better logical progression of examples
-- Export an API documentation. There's already detailed docstrings so i can prolly just use some off the shelf system.
 - Record a demo video for version 1
 - Politely ask for monies why the hell not
 

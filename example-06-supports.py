@@ -19,13 +19,4 @@ sp.supportBar(0, 190, 200, 5, 6)
 sp.supportBar(10, 10, 5, 180, 6)
 sp.supportBar(190, 10, 5, 180, 6)
 
-sp.render()
-
-# If you add supports, you must also display this layer.
-# To export as a single STL, in CQ-editor, simply shift-click both
-# "panel" and "supports" in the Objects outliner, then right-click and export as STL.
-show_object(sp.panel, name="panel", options={"alpha": 0.1, "color": (0, 180, 230)})
-show_object(
-    sp.supports, name="supports", options={"alpha": 0.1, "color": (180, 230, 0)}
-)
-show_object(sp.preview, name="preview", options={"alpha": 0.65, "color": (100, 30, 30)})
+sp.render(show_object)
