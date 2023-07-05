@@ -56,13 +56,14 @@ Personally, I use PLA. It looks great and is easy to print. But if I were to lea
 
 ## Solidity
 
-I picked the default thickness of 4mm for a reason! Even at 100% infill, it still bends a little when I unplug jacks. Still, it's solid enough.
+I picked the default thickness of 4mm for a reason! Even at 100% infill, without support bars, it bends a little when I unplug jacks. Once I add support bars to reinforce it, the solodity feels perfectly satisfactory.
 
 Let's review what goes into making a solid front plate:
 
 - Print orientation: 3D prints are weaker to shearing forces along their vertical layer lines. Not a problem for a panel printed flat, but that means any vertical supports added in the back will be particularly weak.
 - Shell thickness: Probably even more important than infill. You might want to have 5 of them.
 - Infill: Not every infill type is resistant to the same type of forces. I generally use 100% infill anyway, except for translucent filaments where I want to achieve a special texture when it's backlit.
+- Support bars: they should be tall and thick enough, and span enough of the width and height of the back of the panel. 
 
 ## Choosing the best orientation
 

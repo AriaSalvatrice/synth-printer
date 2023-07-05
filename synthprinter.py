@@ -95,10 +95,18 @@ class SynthPrinter:
         ###########################################################
         ### Panel engravings
         ###########################################################
-        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
-        # it engraves 5 layers instead of 4. This greatly helps with color
-        # changes, with fewer layers, the first color might be a bit translucent.
-        "panelEngravingDepth": lambda config: config["panelThickness"] / 3.9,
+        "panelEngravingDepth": lambda config: config["panelThickness"] / 3,
+        ###########################################################
+        ### Rails
+        ###########################################################
+        "railsFrontRecess": 1.6,  # PCB width
+        "railsSupportDepthBack": 3.0,  # How much to protrude behind panel, not full depth
+        "railsHeight": 8,
+        "railsScrewDiameter": lambda config: config[
+            "m3Diameter"
+        ],  # Not adding the tolerance holds better
+        "railsEurorackScrewVerticalDistance": lambda config: config["eurorackHeight"]
+        - 6,
         ###########################################################
         ### Buttons and switches
         ###########################################################
@@ -353,8 +361,6 @@ class SynthPrinter:
 
         x, y define the center
 
-        FIXME: Top-Left behavior consistency)
-
         `depth = 0` cuts through all.
         """
 
@@ -364,12 +370,18 @@ class SynthPrinter:
         cutout = cq.Workplane("XY").box(width, height, depth)
 
         if centered:
-            cutout = cutout.translate((x, y, 0))
-        else:
             cutout = cutout.translate(
                 (
                     -self.config["panelWidth"] / 2 + x,
                     -self.config["panelHeight"] / 2 + y,
+                    0,
+                )
+            )
+        else:
+            cutout = cutout.translate(
+                (
+                    -self.config["panelWidth"] / 2 + x + width / 2,
+                    -self.config["panelHeight"] / 2 + y + height / 2,
                     0,
                 )
             )
@@ -656,23 +668,32 @@ class SynthPrinter:
         )
 
     def cutPanelWidthTolerance(self):
-        """Automatically called during `render()`, makes the panel a bit smaller than
-        their nominal size laterally to account for thermal expansion and misaligned
-        neighboring panels."""
+        """Automatically called during `render()` for Eurorack and 1UIJ:
+        makes the panel a bit smaller than its nominal size laterally to account
+        for thermal expansion and misaligned neighboring panels.
+        Kosmo panels are naturally a bit smaller than the hp grid (they are on a
+        25mm grid, while hp are on a 5.08mm grid), as a result, they don't need
+        this shave.
+        """
+        # FIXME: Trial and error values that make no sense.
+        # Something's broken elsewhere!
+        # FIXME: Test print Euro / IJ: Do the tolerances provide enough extrusions?
         if self.config["panelWidthTolerance"] == 0:
             return
         self.cutRect(
-            -self.config["panelWidth"] / 2 + self.config["panelWidthTolerance"] / 2,
+            0,
             0,
             self.config["panelWidthTolerance"],
-            self.config["panelHeight"],
+            self.config["panelHeight"] * 2,
+            False,
         )
 
         self.cutRect(
-            self.config["panelWidth"] / 2 - self.config["panelWidthTolerance"] / 2,
+            self.config["panelWidth"] - self.config["panelWidthTolerance"] / 2,
             0,
             self.config["panelWidthTolerance"],
-            self.config["panelHeight"],
+            self.config["panelHeight"] * 2,
+            False,
         )
 
     #######################################################################
@@ -724,23 +745,260 @@ class SynthPrinter:
         )
 
     #######################################################################
+    ### Rails
+    #######################################################################
+
+    # All this stuff is some real spaghetti.
+    # It deserves a complete rewrite, and could take 1/5th the code.
+    # But it works, so rewrite it yourself if you care.
+    # Otherwise, don't bother me about it.
+
+    def cutRail(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int = 4,
+        centered: bool = True,
+        orientation: str = "horizontal",
+    ):
+        """Make a hole for a hp rail. The rail is added to the supports layer,
+        not the panel layer."""
+        if not self.config["panelRender"]:
+            return
+        width = hp(hpWidth)  # to mm
+        height = self.config["railsHeight"]
+        if orientation == "vertical":
+            width, height = height, width
+        self.cutRect(x, y, width, height, 0, centered)
+
+    def supportRail(
+        self,
+        _x: float,
+        _y: float,
+        hpWidth: int = 4,
+        centered: bool = True,
+        orientation: str = "horizontal",
+    ):
+        """Adds a hp rail to the support layer. Requires a hole from cutRail()."""
+        if not self.config["supportsRender"]:
+            return
+        width = hp(hpWidth)  # to mm
+        height = self.config["railsHeight"]
+        if orientation != "horizontal":
+            width, height = height, width
+
+        if centered:
+            x = -self.config["panelWidth"] / 2 + _x
+            y = -self.config["panelHeight"] / 2 + _y
+        else:
+            x = -self.config["panelWidth"] / 2 + _x + width / 2
+            y = -self.config["panelHeight"] / 2 + _y + height / 2
+
+        self.supports = (
+            # Extrude on the inside
+            self.supports.moveTo(x, y)
+            .rect(width, height)
+            .extrude(-self.config["panelThickness"] + self.config["railsFrontRecess"])
+            # Extrude on the back
+            .moveTo(x, y)
+            .rect(width, height)
+            .extrude(self.config["railsSupportDepthBack"])
+        )
+
+        if orientation == "horizontal":
+            x = (
+                -self.config["panelWidth"] / 2
+                + _x
+                + (self.config["hp"] - self.config["railsScrewDiameter"]) / 2
+                + self.config["railsScrewDiameter"] / 2
+            )
+            if centered:
+                x = x - hp(hpWidth) / 2
+        else:
+            y = (
+                -self.config["panelHeight"] / 2
+                + _y
+                + (self.config["hp"] - self.config["railsScrewDiameter"]) / 2
+                + self.config["railsScrewDiameter"] / 2
+            )
+            if centered:
+                y = y - hp(hpWidth) / 2
+
+        # Can't get rarray to work here.
+        if orientation == "horizontal":
+            for n in range(hpWidth):
+                self.supports = (
+                    self.supports.moveTo(x + n * self.config["hp"], y)
+                    .circle(self.config["railsScrewDiameter"] / 2)
+                    .cutThruAll()
+                )
+        else:
+            for n in range(hpWidth):
+                self.supports = (
+                    self.supports.moveTo(x, y + n * self.config["hp"])
+                    .circle(self.config["railsScrewDiameter"] / 2)
+                    .cutThruAll()
+                )
+
+    def addRail(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int = 4,
+        centered: bool = True,
+        orientation: str = "horizontal",
+    ):
+        """Adds a recessed hp rail. The rail is added to the supports layer,
+         not the panel layer. Good to build cradles: put a Eurorack modules on
+        a Kosmo faceplate, or 1U on a Eurorack one.
+
+        x, y define the center.
+        orientation is "horizontal" by default, otherwise "vertical"
+        """
+        self.cutRail(x, y, hpWidth, centered, orientation)
+        self.supportRail(x, y, hpWidth, centered, orientation)
+
+    def addEurorackCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int = 4,
+        centered: bool = True,
+        orientation: str = "horizontal",
+    ):
+        # TODO: Make it generic
+        # TODO: Centered / not centered support
+        # TODO: Add some tolerance!!!
+        # FIXME: CURRENTLY ALL BROKEN!!
+        # FIXME: Centered is confused: center of top rails or center of footprint?
+        """Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        Screw holes are spaced 122.5mm for Eurorack.
+        There are supports around the cradle for increased strength.
+
+        x, y define the center hole of the top rail if centered, that is,
+        if the rail is 3hp, the coordinates define the center of the 2nd hole.
+        If not centered, the coordinates define the top-left of the
+        opening window.
+
+        orientation is "horizontal" by default, otherwise "vertical"
+        """
+        # Add the two rails
+        self.addRail(x, y, hpWidth, centered, orientation)
+        if orientation == "horizontal":
+            self.addRail(
+                x,
+                y + self.config["railsEurorackScrewVerticalDistance"],
+                hpWidth,
+                centered,
+                orientation,
+            )
+        else:
+            self.addRail(
+                x + self.config["railsEurorackScrewVerticalDistance"],
+                y,
+                hpWidth,
+                centered,
+                orientation,
+            )
+        # Cut a hole between those rails
+        if orientation == "horizontal":
+            if centered:
+                self.cutRect(
+                    x,
+                    y
+                    + self.config["eurorackHeight"] / 2
+                    - self.config["railsHeight"] / 2,
+                    hp(hpWidth),
+                    self.config["eurorackHeight"],
+                    0,
+                    centered,
+                )
+                offset = -hp(hpWidth) / 2
+                x1 = x - 3 + offset
+                x2 = x + hp(hpWidth) + offset
+                y1 = y - self.config["railsHeight"] / 2 - 3
+                y2 = y + self.config["eurorackHeight"] - 2
+            else:
+                self.cutRect(
+                    x,
+                    y,
+                    hp(hpWidth),
+                    self.config["eurorackHeight"],
+                    0,
+                    centered,
+                )
+                offset = 0
+                x1 = x - 3 + offset
+                x2 = x + hp(hpWidth) + offset
+                y1 = y - 3
+                y2 = y + self.config["eurorackHeight"] + 2
+            w = hp(hpWidth) + 6
+            h = self.config["eurorackHeight"] + 6
+        else:  # vertical
+            if centered:
+                self.cutRect(
+                    x
+                    + self.config["eurorackHeight"] / 2
+                    - self.config["railsHeight"] / 2,
+                    y,
+                    self.config["eurorackHeight"],
+                    hp(hpWidth),
+                    0,
+                    centered,
+                )
+                x1 = x - 5
+                x2 = x + self.config["eurorackHeight"] - 2
+                y1 = y - hp(hpWidth) / 2 - 3
+                y2 = y + hp(hpWidth) / 2
+            else:
+                self.cutRect(
+                    x, y, self.config["eurorackHeight"], hp(hpWidth), 0, centered
+                )
+                x1 = x - 3
+                x2 = x + self.config["eurorackHeight"] + 2
+                y1 = y - 3
+                y2 = y + hp(hpWidth)
+            w = self.config["eurorackHeight"] + 6
+            h = hp(hpWidth) + 6
+
+        self.supportBar(x1, y1, w, 3, self.config["railsSupportDepthBack"], False)
+        self.supportBar(x1, y2, w, 3, self.config["railsSupportDepthBack"], False)
+        self.supportBar(x1, y1, 3, h, self.config["railsSupportDepthBack"], False)
+        self.supportBar(x2, y1, 3, h, self.config["railsSupportDepthBack"], False)
+
+    #######################################################################
     ### Support structures
     #######################################################################
 
     # Every function adding to the supports layer has support at the
     # start of the name.
 
-    def supportBar(self, x: float, y: float, width: float, height: float, depth: float):
+    def supportBar(
+        self,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        depth: float,
+        centered: bool = False,
+    ):
         """Adds a box on the supports layer.
 
         x, y define the top-left of the box as seen from the front
         """
         if not self.config["supportsRender"]:
             return
+        if centered:
+            x = -self.config["panelWidth"] / 2 + x
+            y = -self.config["panelHeight"] / 2 + y
+        else:
+            x = -self.config["panelWidth"] / 2 + x + width / 2
+            y = -self.config["panelHeight"] / 2 + y + height / 2
         self.supports = (
             self.supports.moveTo(
-                -self.config["panelWidth"] / 2 + x + width / 2,
-                -self.config["panelHeight"] / 2 + y + height / 2,
+                x,
+                y,
             )
             .rect(width, height)
             .extrude(depth)
@@ -1136,7 +1394,7 @@ class SynthPrinter:
             )
             .cutBlind(-self.config["sliderNotchDepth"])
         )
-        self.cutRect(x, y, slotWidth, slotHeight, 0, False)
+        self.cutRect(x, y, slotWidth, slotHeight, 0, True)
 
     def previewSlider(
         self, x: float, y: float, sliderWidth: float, sliderHeight: float
