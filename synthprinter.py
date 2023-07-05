@@ -11,8 +11,10 @@ class SynthPrinter:
 
     The naming convention of methods is as follows:
 
-    - `addX`: calls the corresponding cutX, markX, and previewX methods.
-    In most cases, you want to call that instead of making individual calls.
+    - `addX`: calls methods such as cutX, previewX, etc, operating on multiple
+    layers. Skips drawing to disabled layers for performance.
+    In most cases, you want to call that instead of making the individual calls
+    bundled in the `addX` methods.
     - `cutX`: makes a hole for X on the **panel** layer
     - `markX`: draws marks for X on the **drillTemplate** layer.
     _[Exporting a drill template is a WIP, it still takes a bit of tinkering to
@@ -105,8 +107,6 @@ class SynthPrinter:
         "railsScrewDiameter": lambda config: config[
             "m3Diameter"
         ],  # Not adding the tolerance holds better
-        "railsEurorackScrewVerticalDistance": lambda config: config["eurorackHeight"]
-        - 6,
         "cradleTolerance": lambda config: config["tolerance"],
         ###########################################################
         ### Buttons and switches
@@ -759,7 +759,7 @@ class SynthPrinter:
         self,
         x: float,
         y: float,
-        hpWidth: int = 4,
+        hpWidth: int,
         centered: bool = True,
         orientation: str = "horizontal",
     ):
@@ -787,7 +787,7 @@ class SynthPrinter:
         self,
         _x: float,
         _y: float,
-        hpWidth: int = 4,
+        hpWidth: int,
         centered: bool = True,
         orientation: str = "horizontal",
     ):
@@ -856,7 +856,7 @@ class SynthPrinter:
         self,
         x: float,
         y: float,
-        hpWidth: int = 4,
+        hpWidth: int,
         centered: bool = True,
         orientation: str = "horizontal",
     ):
@@ -865,16 +865,18 @@ class SynthPrinter:
         a Kosmo faceplate, or 1U on a Eurorack one.
 
         x, y define the center.
+
         orientation is "horizontal" by default, otherwise "vertical"
         """
         self.cutRail(x, y, hpWidth, centered, orientation)
         self.supportRail(x, y, hpWidth, centered, orientation)
 
-    def previewEurorackPanel(
+    def previewPanel(
         self,
         x: float,
         y: float,
-        hpWidth: int = 4,
+        hpWidth: int,
+        height: float,
         centered: bool = True,
         orientation: str = "horizontal",
     ):
@@ -885,55 +887,153 @@ class SynthPrinter:
                 self.previewBoxOnFront(
                     x + self.config["cradleTolerance"],
                     y
-                    + self.config["eurorackHeight"] / 2
+                    + height / 2
                     - self.config["railsHeight"] / 2
                     + self.config["cradleTolerance"] * 2,
                     hp(hpWidth),
-                    self.config["eurorackHeight"],
+                    height,
                     1.6,
                 )
             else:
                 self.previewBoxOnFront(
                     x + hp(hpWidth) / 2 + self.config["cradleTolerance"],
-                    y
-                    + self.config["eurorackHeight"] / 2
-                    + self.config["cradleTolerance"] * 2,
+                    y + height / 2 + self.config["cradleTolerance"] * 2,
                     hp(hpWidth),
-                    self.config["eurorackHeight"],
+                    height,
                     1.6,
                 )
         else:  # vertical
             if centered:
                 self.previewBoxOnFront(
                     x
-                    + self.config["eurorackHeight"] / 2
+                    + height / 2
                     - self.config["railsHeight"] / 2
-                    + self.config["cradleTolerance"],
+                    + self.config["cradleTolerance"] * 2,
                     y + self.config["cradleTolerance"],
-                    self.config["eurorackHeight"],
+                    height,
                     hp(hpWidth),
                     1.6,
                 )
             else:
                 self.previewBoxOnFront(
-                    x
-                    + self.config["eurorackHeight"] / 2
-                    + self.config["cradleTolerance"],
+                    x + height / 2 + self.config["cradleTolerance"] * 2,
                     y + hp(hpWidth) / 2 + self.config["cradleTolerance"],
-                    self.config["eurorackHeight"],
+                    height,
                     hp(hpWidth),
                     1.6,
                 )
+
+    def addCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        height: float,
+        centered: bool = True,
+        orientation: str = "horizontal",
+    ):
+        """Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        You probably want to use `addEurorackCradle()` or
+        `add1UIJCradle()` instead.
+        """
+        # Add the two rails
+        self.addRail(x, y, hpWidth, centered, orientation)
+        if orientation == "horizontal":
+            self.addRail(
+                x,
+                y + height - self.config["m3Diameter"] * 2,
+                hpWidth,
+                centered,
+                orientation,
+            )
+        else:
+            self.addRail(
+                x + height - self.config["m3Diameter"] * 2,
+                y,
+                hpWidth,
+                centered,
+                orientation,
+            )
+        # Cut a hole between those rails
+        if orientation == "horizontal":
+            if centered:
+                self.cutRect(
+                    x,
+                    y + height / 2 - self.config["railsHeight"] / 2,
+                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
+                    height + self.config["cradleTolerance"] * 2,
+                    0,
+                    centered,
+                )
+                offset = -hp(hpWidth) / 2
+                x1 = x - 3 + offset
+                x2 = x + hp(hpWidth) + offset
+                y1 = y - self.config["railsHeight"] / 2 - 3
+                y2 = y + height - 2
+            else:
+                self.cutRect(
+                    x - self.config["cradleTolerance"],
+                    y - self.config["cradleTolerance"],
+                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
+                    height + self.config["cradleTolerance"] * 2,
+                    0,
+                    centered,
+                )
+                offset = 0
+                x1 = x - 3 + offset
+                x2 = x + hp(hpWidth) + offset
+                y1 = y - 3
+                y2 = y + height + 2
+            w = hp(hpWidth) + 6
+            h = height + 6
+        else:  # vertical
+            if centered:
+                self.cutRect(
+                    x + height / 2 - self.config["railsHeight"] / 2,
+                    y,
+                    height + self.config["cradleTolerance"] * 2,
+                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
+                    0,
+                    centered,
+                )
+                x1 = (
+                    x - self.config["railsHeight"] * 0.7
+                )  # FIXME: IDK why it needs this number. This prolly breaks alt values.
+                x2 = x + height - 2
+                y1 = y - hp(hpWidth) / 2 - 3
+                y2 = y + hp(hpWidth) / 2
+            else:
+                self.cutRect(
+                    x - self.config["cradleTolerance"],
+                    y - self.config["cradleTolerance"],
+                    height + self.config["cradleTolerance"] * 2,
+                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
+                    0,
+                    centered,
+                )
+                x1 = x - 3
+                x2 = x + height + 2
+                y1 = y - 3
+                y2 = y + hp(hpWidth)
+            w = height + 6
+            h = hp(hpWidth) + 6
+
+        self.supportBar(x1, y1, w, 3, self.config["railsSupportDepthBack"], False)
+        self.supportBar(x1, y2, w, 3, self.config["railsSupportDepthBack"], False)
+        self.supportBar(x1, y1, 3, h, self.config["railsSupportDepthBack"], False)
+        self.supportBar(x2, y1, 3, h, self.config["railsSupportDepthBack"], False)
+
+        self.previewPanel(x, y, hpWidth, height, centered, orientation)
 
     def addEurorackCradle(
         self,
         x: float,
         y: float,
-        hpWidth: int = 4,
+        hpWidth: int,
         centered: bool = True,
         orientation: str = "horizontal",
     ):
-        # TODO: Make it generic
         """Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
         Screw holes are spaced 122.5mm for Eurorack.
@@ -948,98 +1048,33 @@ class SynthPrinter:
 
         Note: This footprint is currently untested.
         """
-        # Add the two rails
-        self.addRail(x, y, hpWidth, centered, orientation)
-        if orientation == "horizontal":
-            self.addRail(
-                x,
-                y + self.config["railsEurorackScrewVerticalDistance"],
-                hpWidth,
-                centered,
-                orientation,
-            )
-        else:
-            self.addRail(
-                x + self.config["railsEurorackScrewVerticalDistance"],
-                y,
-                hpWidth,
-                centered,
-                orientation,
-            )
-        # Cut a hole between those rails
-        if orientation == "horizontal":
-            if centered:
-                self.cutRect(
-                    x,
-                    y
-                    + self.config["eurorackHeight"] / 2
-                    - self.config["railsHeight"] / 2,
-                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
-                    self.config["eurorackHeight"] + self.config["cradleTolerance"] * 2,
-                    0,
-                    centered,
-                )
-                offset = -hp(hpWidth) / 2
-                x1 = x - 3 + offset
-                x2 = x + hp(hpWidth) + offset
-                y1 = y - self.config["railsHeight"] / 2 - 3
-                y2 = y + self.config["eurorackHeight"] - 2
-            else:
-                self.cutRect(
-                    x - self.config["cradleTolerance"],
-                    y - self.config["cradleTolerance"],
-                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
-                    self.config["eurorackHeight"] + self.config["cradleTolerance"] * 2,
-                    0,
-                    centered,
-                )
-                offset = 0
-                x1 = x - 3 + offset
-                x2 = x + hp(hpWidth) + offset
-                y1 = y - 3
-                y2 = y + self.config["eurorackHeight"] + 2
-            w = hp(hpWidth) + 6
-            h = self.config["eurorackHeight"] + 6
-        else:  # vertical
-            if centered:
-                self.cutRect(
-                    x
-                    + self.config["eurorackHeight"] / 2
-                    - self.config["railsHeight"] / 2,
-                    y,
-                    self.config["eurorackHeight"] + self.config["cradleTolerance"] * 2,
-                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
-                    0,
-                    centered,
-                )
-                x1 = (
-                    x - self.config["railsHeight"] * 0.7
-                )  # FIXME: IDK why it needs this number. This prolly breaks alt values.
-                x2 = x + self.config["eurorackHeight"] - 2
-                y1 = y - hp(hpWidth) / 2 - 3
-                y2 = y + hp(hpWidth) / 2
-            else:
-                self.cutRect(
-                    x - self.config["cradleTolerance"],
-                    y - self.config["cradleTolerance"],
-                    self.config["eurorackHeight"] + self.config["cradleTolerance"] * 2,
-                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
-                    0,
-                    centered,
-                )
-                x1 = x - 3
-                x2 = x + self.config["eurorackHeight"] + 2
-                y1 = y - 3
-                y2 = y + hp(hpWidth)
-            w = self.config["eurorackHeight"] + 6
-            h = hp(hpWidth) + 6
+        self.addCradle(
+            x, y, hpWidth, self.config["eurorackHeight"], centered, orientation
+        )
 
-        self.supportBar(x1, y1, w, 3, self.config["railsSupportDepthBack"], False)
-        self.supportBar(x1, y2, w, 3, self.config["railsSupportDepthBack"], False)
-        self.supportBar(x1, y1, 3, h, self.config["railsSupportDepthBack"], False)
-        self.supportBar(x2, y1, 3, h, self.config["railsSupportDepthBack"], False)
+    def add1UIJCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = "horizontal",
+    ):
+        """Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        Screw holes are spaced 33.65mm apart for 1U (Intellijel).
+        There are supports around the cradle for increased strength.
 
-        self.previewEurorackPanel(x, y, hpWidth, centered, orientation)
+        x, y define the center hole of the top rail if centered, that is,
+        if the rail is 3hp, the coordinates define the center of the 2nd hole.
+        If not centered, the coordinates define the top-left of the
+        opening window.
+
+        orientation is "horizontal" by default, otherwise "vertical"
+
+        Note: This footprint is currently untested.
+        """
+        self.addCradle(x, y, hpWidth, self.config["1UIJHeight"], centered, orientation)
 
     #######################################################################
     ### Support structures

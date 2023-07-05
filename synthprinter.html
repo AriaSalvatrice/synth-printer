@@ -39,8 +39,10 @@ class SynthPrinter:
 
     The naming convention of methods is as follows:
 
-    - `addX`: calls the corresponding cutX, markX, and previewX methods.
-    In most cases, you want to call that instead of making individual calls.
+    - `addX`: calls methods such as cutX, previewX, etc, operating on multiple
+    layers. Skips drawing to disabled layers for performance.
+    In most cases, you want to call that instead of making the individual calls
+    bundled in the `addX` methods.
     - `cutX`: makes a hole for X on the **panel** layer
     - `markX`: draws marks for X on the **drillTemplate** layer.
     _[Exporting a drill template is a WIP, it still takes a bit of tinkering to
@@ -83,16 +85,16 @@ class SynthPrinter:
         ###########################################################
         ### Visualization in CQ Editor
         ###########################################################
-        &#34;panelShow&#34;: True,
-        &#34;supportsShow&#34;: True,
-        &#34;embossShow&#34;: True,
-        &#34;previewShow&#34;: True,  # Disable to improve render performance
-        &#34;drillTemplateShow&#34;: False,
+        &#34;panelRender&#34;: True,
+        &#34;supportsRender&#34;: True,
+        &#34;embossRender&#34;: True,
+        &#34;previewRender&#34;: True,  # Disable to improve render performance
+        &#34;drillTemplateRender&#34;: False,
         &#34;panelShowOptions&#34;: {&#34;alpha&#34;: 0.2, &#34;color&#34;: (0, 180, 230)},
         &#34;supportsShowOptions&#34;: {&#34;alpha&#34;: 0.1, &#34;color&#34;: (180, 230, 0)},
         &#34;embossShowOptions&#34;: {&#34;alpha&#34;: 0.2, &#34;color&#34;: (50, 180, 230)},
         &#34;previewShowOptions&#34;: {&#34;alpha&#34;: 0.65, &#34;color&#34;: (100, 30, 30)},
-        &#34;drillTemplateShowOptions&#34;: {&#34;alpha&#34;: 0.1, &#34;color&#34;: (50, 200, 50)},
+        &#34;drillTemplateShowOptions&#34;: {&#34;alpha&#34;: 0.1, &#34;color&#34;: (20, 20, 20)},
         ###########################################################
         ### Screws
         ###########################################################
@@ -115,17 +117,25 @@ class SynthPrinter:
         ###########################################################
         &#34;eurorackHeight&#34;: 128.5,  # Modules are smaller than the full 3U
         &#34;eurorackWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
-        &#34;i1UIJHeight&#34;: 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
-        &#34;i1UIJWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
+        &#34;1UIJHeight&#34;: 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
+        &#34;1UIJWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
         &#34;kosmoHeight&#34;: 200.0,
-        &#34;kosmoWidthTolerance&#34;: 0,  # Kosmo needs no additional tolerance due to fitting HP rails
+        &#34;kosmoWidthTolerance&#34;: 0,  # Kosmo needs no additional tolerance as HP rails are larger
+        &#34;panelWidthTolerance&#34;: 0,  # Set when adding the panel
         ###########################################################
         ### Panel engravings
         ###########################################################
-        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
-        # it engraves 5 layers instead of 4. This greatly helps with color
-        # changes, with fewer layers, the first color might be a bit translucent.
-        &#34;panelEngravingDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 3.9,
+        &#34;panelEngravingDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 3,
+        ###########################################################
+        ### Rails &amp; Cradles
+        ###########################################################
+        &#34;railsFrontRecess&#34;: 1.6,  # PCB width
+        &#34;railsSupportDepthBack&#34;: 3.0,  # How much to protrude behind panel, not full depth
+        &#34;railsHeight&#34;: 8,
+        &#34;railsScrewDiameter&#34;: lambda config: config[
+            &#34;m3Diameter&#34;
+        ],  # Not adding the tolerance holds better
+        &#34;cradleTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
         ###########################################################
         ### Buttons and switches
         ###########################################################
@@ -270,6 +280,8 @@ class SynthPrinter:
         argument, it will also display the object. When using Synth Printer
         from a different environment, just call without any argument.
         &#34;&#34;&#34;
+        # Shave off the sides of the panel if needed
+        self.cutPanelWidthTolerance()
         # Move the supports where they belong
         self.supports = self.supports.translate(
             (0, 0, self.config[&#34;panelThickness&#34;] / 2)
@@ -285,31 +297,31 @@ class SynthPrinter:
         self.supports = self.supports.rotate((0, 0, 0), (1, 0, 0), 180)
         self.drillTemplate = self.drillTemplate.rotate((0, 0, 0), (1, 0, 0), 180)
         # Display the layers if we&#39;re in CQ Editor
-        if show_object and self.config[&#34;panelShow&#34;]:
+        if show_object and self.config[&#34;panelRender&#34;]:
             show_object(
                 self.panel,
                 name=&#34;panel&#34;,
                 options=self.config[&#34;panelShowOptions&#34;],
             )
-        if show_object and self.config[&#34;supportsShow&#34;]:
+        if show_object and self.config[&#34;supportsRender&#34;]:
             show_object(
                 self.supports,
                 name=&#34;supports&#34;,
                 options=self.config[&#34;supportsShowOptions&#34;],
             )
-        if show_object and self.config[&#34;embossShow&#34;]:
+        if show_object and self.config[&#34;embossRender&#34;]:
             show_object(
                 self.emboss,
                 name=&#34;emboss&#34;,
                 options=self.config[&#34;embossShowOptions&#34;],
             )
-        if show_object and self.config[&#34;previewShow&#34;]:
+        if show_object and self.config[&#34;previewRender&#34;]:
             show_object(
                 self.preview,
                 name=&#34;preview&#34;,
                 options=self.config[&#34;previewShowOptions&#34;],
             )
-        if show_object and self.config[&#34;drillTemplateShow&#34;]:
+        if show_object and self.config[&#34;drillTemplateRender&#34;]:
             show_object(
                 self.drillTemplate,
                 name=&#34;drillTemplate&#34;,
@@ -372,30 +384,36 @@ class SynthPrinter:
         width: float,
         height: float,
         depth: float = 0,
+        centered: bool = True,
     ):
         &#34;&#34;&#34;Cuts a rectangular shape through the panel.
 
-        FIXME: Default to center for consistency, and change existing callers
+        x, y define the center
 
-        x, y define the top-left.
-
-        **WARNING: This will be changed to center in the future!**
+        `depth = 0` cuts through all.
         &#34;&#34;&#34;
 
         if depth == 0:
             depth = self.config[&#34;panelThickness&#34;]
 
-        cutout = (
-            cq.Workplane(&#34;XY&#34;)
-            .box(width, height, depth)
-            .translate(
+        cutout = cq.Workplane(&#34;XY&#34;).box(width, height, depth)
+
+        if centered:
+            cutout = cutout.translate(
                 (
                     -self.config[&#34;panelWidth&#34;] / 2 + x,
                     -self.config[&#34;panelHeight&#34;] / 2 + y,
                     0,
                 )
             )
-        )
+        else:
+            cutout = cutout.translate(
+                (
+                    -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
+                    -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+                    0,
+                )
+            )
 
         self.panel = (
             self.panel.faces(&#34;&gt;Z&#34;)
@@ -404,6 +422,7 @@ class SynthPrinter:
             .cut(cutout)
         )
 
+    # TODO: Top-left support!
     def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
         &#34;&#34;&#34;Adds a cylinder for preview on the back of the panel.
         It will be deeper by half the panel thickness.
@@ -633,6 +652,7 @@ class SynthPrinter:
 
         screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
         &#34;&#34;&#34;
+        self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;eurorackWidthTolerance&#34;]
         self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;eurorackHeight&#34;], screwSlots)
 
     def add1UIJPanel(
@@ -650,7 +670,8 @@ class SynthPrinter:
 
         screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
         &#34;&#34;&#34;
-        self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;i1UIJHeight&#34;], screwSlots)
+        self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;1UIJWidthTolerance&#34;]
+        self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;1UIJHeight&#34;], screwSlots)
 
     def addKosmoPanel(
         self,
@@ -669,10 +690,40 @@ class SynthPrinter:
 
         screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
         &#34;&#34;&#34;
+        self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;kosmoWidthTolerance&#34;]
         self.addPanel(
             self.config[&#34;khp&#34;] * khp,
             self.config[&#34;kosmoHeight&#34;],
             screwSlots=screwSlots,
+        )
+
+    def cutPanelWidthTolerance(self):
+        &#34;&#34;&#34;Automatically called during `render()` for Eurorack and 1UIJ:
+        makes the panel a bit smaller than its nominal size laterally to account
+        for thermal expansion and misaligned neighboring panels.
+        Kosmo panels are naturally a bit smaller than the hp grid (they are on a
+        25mm grid, while hp are on a 5.08mm grid), as a result, they don&#39;t need
+        this shave.
+        &#34;&#34;&#34;
+        # FIXME: Trial and error values that make no sense.
+        # Something&#39;s broken elsewhere!
+        # FIXME: Test print Euro / IJ: Do the tolerances provide enough extrusions?
+        if self.config[&#34;panelWidthTolerance&#34;] == 0:
+            return
+        self.cutRect(
+            0,
+            0,
+            self.config[&#34;panelWidthTolerance&#34;],
+            self.config[&#34;panelHeight&#34;] * 2,
+            False,
+        )
+
+        self.cutRect(
+            self.config[&#34;panelWidth&#34;] - self.config[&#34;panelWidthTolerance&#34;] / 2,
+            0,
+            self.config[&#34;panelWidthTolerance&#34;],
+            self.config[&#34;panelHeight&#34;] * 2,
+            False,
         )
 
     #######################################################################
@@ -695,6 +746,8 @@ class SynthPrinter:
         Be sure to inspect both sides of the print to make sure there aren&#39;t
         any sections that are too thin!
         &#34;&#34;&#34;
+        if not self.config[&#34;panelRender&#34;]:
+            return
         if depth == 0:
             depth = self.config[&#34;panelEngravingDepth&#34;]
         cutout = (
@@ -722,21 +775,367 @@ class SynthPrinter:
         )
 
     #######################################################################
+    ### Rails
+    #######################################################################
+
+    # All this stuff is some real spaghetti.
+    # It deserves a complete rewrite, and could take 1/5th the code.
+    # But it works, so rewrite it yourself if you care.
+    # Otherwise, don&#39;t bother me about it.
+
+    def cutRail(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Make a hole for a hp rail. The rail is added to the supports layer,
+        not the panel layer.&#34;&#34;&#34;
+        if not self.config[&#34;panelRender&#34;]:
+            return
+        width = hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2
+        height = self.config[&#34;railsHeight&#34;] + self.config[&#34;cradleTolerance&#34;] * 2
+        if orientation == &#34;vertical&#34;:
+            width, height = height, width
+        if centered:
+            self.cutRect(x, y, width, height, 0, centered)
+        else:
+            self.cutRect(
+                x - self.config[&#34;cradleTolerance&#34;],
+                y - self.config[&#34;cradleTolerance&#34;],
+                width,
+                height,
+                0,
+                centered,
+            )
+
+    def supportRail(
+        self,
+        _x: float,
+        _y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a hp rail to the support layer. Requires a hole from cutRail().&#34;&#34;&#34;
+        if not self.config[&#34;supportsRender&#34;]:
+            return
+        width = hp(hpWidth)  # to mm
+        height = self.config[&#34;railsHeight&#34;]
+        if orientation != &#34;horizontal&#34;:
+            width, height = height, width
+
+        if centered:
+            x = -self.config[&#34;panelWidth&#34;] / 2 + _x
+            y = -self.config[&#34;panelHeight&#34;] / 2 + _y
+        else:
+            x = -self.config[&#34;panelWidth&#34;] / 2 + _x + width / 2
+            y = -self.config[&#34;panelHeight&#34;] / 2 + _y + height / 2
+
+        self.supports = (
+            # Extrude on the inside
+            self.supports.moveTo(x, y)
+            .rect(width, height)
+            .extrude(-self.config[&#34;panelThickness&#34;] + self.config[&#34;railsFrontRecess&#34;])
+            # Extrude on the back
+            .moveTo(x, y)
+            .rect(width, height)
+            .extrude(self.config[&#34;railsSupportDepthBack&#34;])
+        )
+
+        if orientation == &#34;horizontal&#34;:
+            x = (
+                -self.config[&#34;panelWidth&#34;] / 2
+                + _x
+                + (self.config[&#34;hp&#34;] - self.config[&#34;railsScrewDiameter&#34;]) / 2
+                + self.config[&#34;railsScrewDiameter&#34;] / 2
+            )
+            if centered:
+                x = x - hp(hpWidth) / 2
+        else:
+            y = (
+                -self.config[&#34;panelHeight&#34;] / 2
+                + _y
+                + (self.config[&#34;hp&#34;] - self.config[&#34;railsScrewDiameter&#34;]) / 2
+                + self.config[&#34;railsScrewDiameter&#34;] / 2
+            )
+            if centered:
+                y = y - hp(hpWidth) / 2
+
+        # Can&#39;t get rarray to work here.
+        if orientation == &#34;horizontal&#34;:
+            for n in range(hpWidth):
+                self.supports = (
+                    self.supports.moveTo(x + n * self.config[&#34;hp&#34;], y)
+                    .circle(self.config[&#34;railsScrewDiameter&#34;] / 2)
+                    .cutThruAll()
+                )
+        else:
+            for n in range(hpWidth):
+                self.supports = (
+                    self.supports.moveTo(x, y + n * self.config[&#34;hp&#34;])
+                    .circle(self.config[&#34;railsScrewDiameter&#34;] / 2)
+                    .cutThruAll()
+                )
+
+    def addRail(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a recessed hp rail. The rail is added to the supports layer,
+         not the panel layer. Good to build cradles: put a Eurorack modules on
+        a Kosmo faceplate, or 1U on a Eurorack one.
+
+        x, y define the center.
+
+        orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+        &#34;&#34;&#34;
+        self.cutRail(x, y, hpWidth, centered, orientation)
+        self.supportRail(x, y, hpWidth, centered, orientation)
+
+    def previewPanel(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        height: float,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        if not self.config[&#34;previewRender&#34;]:
+            return
+        if orientation == &#34;horizontal&#34;:
+            if centered:
+                self.previewBoxOnFront(
+                    x + self.config[&#34;cradleTolerance&#34;],
+                    y
+                    + height / 2
+                    - self.config[&#34;railsHeight&#34;] / 2
+                    + self.config[&#34;cradleTolerance&#34;] * 2,
+                    hp(hpWidth),
+                    height,
+                    1.6,
+                )
+            else:
+                self.previewBoxOnFront(
+                    x + hp(hpWidth) / 2 + self.config[&#34;cradleTolerance&#34;],
+                    y + height / 2 + self.config[&#34;cradleTolerance&#34;] * 2,
+                    hp(hpWidth),
+                    height,
+                    1.6,
+                )
+        else:  # vertical
+            if centered:
+                self.previewBoxOnFront(
+                    x
+                    + height / 2
+                    - self.config[&#34;railsHeight&#34;] / 2
+                    + self.config[&#34;cradleTolerance&#34;] * 2,
+                    y + self.config[&#34;cradleTolerance&#34;],
+                    height,
+                    hp(hpWidth),
+                    1.6,
+                )
+            else:
+                self.previewBoxOnFront(
+                    x + height / 2 + self.config[&#34;cradleTolerance&#34;] * 2,
+                    y + hp(hpWidth) / 2 + self.config[&#34;cradleTolerance&#34;],
+                    height,
+                    hp(hpWidth),
+                    1.6,
+                )
+
+    def addCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        height: float,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        You probably want to use `addEurorackCradle()` or
+        `add1UIJCradle()` instead.
+        &#34;&#34;&#34;
+        # Add the two rails
+        self.addRail(x, y, hpWidth, centered, orientation)
+        if orientation == &#34;horizontal&#34;:
+            self.addRail(
+                x,
+                y + height - self.config[&#34;m3Diameter&#34;] * 2,
+                hpWidth,
+                centered,
+                orientation,
+            )
+        else:
+            self.addRail(
+                x + height - self.config[&#34;m3Diameter&#34;] * 2,
+                y,
+                hpWidth,
+                centered,
+                orientation,
+            )
+        # Cut a hole between those rails
+        if orientation == &#34;horizontal&#34;:
+            if centered:
+                self.cutRect(
+                    x,
+                    y + height / 2 - self.config[&#34;railsHeight&#34;] / 2,
+                    hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                    height + self.config[&#34;cradleTolerance&#34;] * 2,
+                    0,
+                    centered,
+                )
+                offset = -hp(hpWidth) / 2
+                x1 = x - 3 + offset
+                x2 = x + hp(hpWidth) + offset
+                y1 = y - self.config[&#34;railsHeight&#34;] / 2 - 3
+                y2 = y + height - 2
+            else:
+                self.cutRect(
+                    x - self.config[&#34;cradleTolerance&#34;],
+                    y - self.config[&#34;cradleTolerance&#34;],
+                    hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                    height + self.config[&#34;cradleTolerance&#34;] * 2,
+                    0,
+                    centered,
+                )
+                offset = 0
+                x1 = x - 3 + offset
+                x2 = x + hp(hpWidth) + offset
+                y1 = y - 3
+                y2 = y + height + 2
+            w = hp(hpWidth) + 6
+            h = height + 6
+        else:  # vertical
+            if centered:
+                self.cutRect(
+                    x + height / 2 - self.config[&#34;railsHeight&#34;] / 2,
+                    y,
+                    height + self.config[&#34;cradleTolerance&#34;] * 2,
+                    hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                    0,
+                    centered,
+                )
+                x1 = (
+                    x - self.config[&#34;railsHeight&#34;] * 0.7
+                )  # FIXME: IDK why it needs this number. This prolly breaks alt values.
+                x2 = x + height - 2
+                y1 = y - hp(hpWidth) / 2 - 3
+                y2 = y + hp(hpWidth) / 2
+            else:
+                self.cutRect(
+                    x - self.config[&#34;cradleTolerance&#34;],
+                    y - self.config[&#34;cradleTolerance&#34;],
+                    height + self.config[&#34;cradleTolerance&#34;] * 2,
+                    hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                    0,
+                    centered,
+                )
+                x1 = x - 3
+                x2 = x + height + 2
+                y1 = y - 3
+                y2 = y + hp(hpWidth)
+            w = height + 6
+            h = hp(hpWidth) + 6
+
+        self.supportBar(x1, y1, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
+        self.supportBar(x1, y2, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
+        self.supportBar(x1, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+        self.supportBar(x2, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+
+        self.previewPanel(x, y, hpWidth, height, centered, orientation)
+
+    def addEurorackCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        Screw holes are spaced 122.5mm for Eurorack.
+        There are supports around the cradle for increased strength.
+
+        x, y define the center hole of the top rail if centered, that is,
+        if the rail is 3hp, the coordinates define the center of the 2nd hole.
+        If not centered, the coordinates define the top-left of the
+        opening window.
+
+        orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+
+        Note: This footprint is currently untested.
+        &#34;&#34;&#34;
+        self.addCradle(
+            x, y, hpWidth, self.config[&#34;eurorackHeight&#34;], centered, orientation
+        )
+
+    def add1UIJCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        Screw holes are spaced 33.65mm apart for 1U (Intellijel).
+        There are supports around the cradle for increased strength.
+
+        x, y define the center hole of the top rail if centered, that is,
+        if the rail is 3hp, the coordinates define the center of the 2nd hole.
+        If not centered, the coordinates define the top-left of the
+        opening window.
+
+        orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+
+        Note: This footprint is currently untested.
+        &#34;&#34;&#34;
+        self.addCradle(x, y, hpWidth, self.config[&#34;1UIJHeight&#34;], centered, orientation)
+
+    #######################################################################
     ### Support structures
     #######################################################################
 
     # Every function adding to the supports layer has support at the
     # start of the name.
 
-    def supportBar(self, x: float, y: float, width: float, height: float, depth: float):
+    def supportBar(
+        self,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        depth: float,
+        centered: bool = False,
+    ):
         &#34;&#34;&#34;Adds a box on the supports layer.
 
         x, y define the top-left of the box as seen from the front
         &#34;&#34;&#34;
+        if not self.config[&#34;supportsRender&#34;]:
+            return
+        if centered:
+            x = -self.config[&#34;panelWidth&#34;] / 2 + x
+            y = -self.config[&#34;panelHeight&#34;] / 2 + y
+        else:
+            x = -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2
+            y = -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2
         self.supports = (
             self.supports.moveTo(
-                -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
-                -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+                x,
+                y,
             )
             .rect(width, height)
             .extrude(depth)
@@ -878,15 +1277,21 @@ class SynthPrinter:
     #######################################################################
 
     def cutArcadeButton30mm(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
 
     def previewArcadeButton30mm(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 32.3, 3.4)
         self.previewCylinderOnFront(x, y, 24, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)
         self.previewCylinderOnBack(x, y, 34.8, 6.5)
 
     def markArcadeButton30mm(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -910,6 +1315,8 @@ class SynthPrinter:
         self.markArcadeButton30mm(x, y)
 
     def cutArcadeButton24mm(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
         self.cutHole(
             x,
@@ -919,12 +1326,16 @@ class SynthPrinter:
         )
 
     def previewArcadeButton24mm(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 27, 3.4)
         self.previewCylinderOnFront(x, y, 22, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)
         self.previewCylinderOnBack(x, y, 28, 6)
 
     def markArcadeButton24mm(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -944,6 +1355,8 @@ class SynthPrinter:
         self.markArcadeButton24mm(x, y)
 
     def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         if orientation == &#34;horizontal&#34;:
             width = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
             length = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
@@ -964,6 +1377,8 @@ class SynthPrinter:
     def previewMiniToggleSwitch(
         self, x: float, y: float, orientation: str = &#34;horizontal&#34;
     ):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         if orientation == &#34;horizontal&#34;:
             width = self.config[&#34;miniToggleSwitchWidth&#34;]
             length = self.config[&#34;miniToggleSwitchLength&#34;]
@@ -974,6 +1389,8 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, self.config[&#34;miniToggleSwitchDiameter&#34;], 19)
 
     def markMiniToggleSwitch(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -1000,6 +1417,8 @@ class SynthPrinter:
         y: float,
         notchOrientation: str = &#34;all&#34;,
     ):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
         # Add the notches
 
@@ -1027,6 +1446,8 @@ class SynthPrinter:
         )
 
     def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = &#34;all&#34;):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 6, 21)
         self.previewCylinderOnFront(x, y, 9.6, 1.6)
         self.previewCylinderOnBack(x, y, 16, 8)
@@ -1040,6 +1461,8 @@ class SynthPrinter:
             self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)
 
     def markPotentiometer(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -1074,6 +1497,8 @@ class SynthPrinter:
         self.markPotentiometer(x, y)
 
     def previewKnob(self, x: float, y: float, diameter: float, depth: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, diameter, depth + 5)
 
     def addKnob(self, x: float, y: float, diameter: float, depth: float):
@@ -1093,6 +1518,8 @@ class SynthPrinter:
         slotWidth: float,
         slotHeight: float,
     ):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.panel = (
             self.panel.faces(&#34;&gt;Z&#34;)
             .vertices(&#34;&lt;XY&#34;)
@@ -1104,16 +1531,13 @@ class SynthPrinter:
             )
             .cutBlind(-self.config[&#34;sliderNotchDepth&#34;])
         )
-        self.cutRect(
-            x,
-            y,
-            slotWidth,
-            slotHeight,
-        )
+        self.cutRect(x, y, slotWidth, slotHeight, 0, True)
 
     def previewSlider(
         self, x: float, y: float, sliderWidth: float, sliderHeight: float
     ):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 15, 10)
         self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)
 
@@ -1126,6 +1550,8 @@ class SynthPrinter:
         slotWidth: float,
         slotHeight: float,
     ):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markRect(x, y, sliderWidth, sliderHeight)
         self.markRect(x, y, slotWidth, slotHeight)
 
@@ -1155,6 +1581,8 @@ class SynthPrinter:
     #######################################################################
 
     def cutBigJack(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
         self.panel = (
             self.panel.faces(&#34;&gt;Z&#34;)
@@ -1169,11 +1597,15 @@ class SynthPrinter:
         )
 
     def previewBigJack(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 8.5, 7)
         self.previewCylinderOnFront(x, y, 12.6, 2.2)
         self.previewBoxOnBack(x, y, 16, 16, 27)
 
     def markBigJack(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -1188,6 +1620,8 @@ class SynthPrinter:
         self.markBigJack(x, y)
 
     def cutMiniJack(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
         self.panel = (
             self.panel.faces(&#34;&gt;Z&#34;)
@@ -1202,11 +1636,15 @@ class SynthPrinter:
         )
 
     def previewMiniJack(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 6, 5.5)
         self.previewCylinderOnFront(x, y, 8, 2.2)
         self.previewBoxOnBack(x, y, 9, 10.5, 12.5)
 
     def markMiniJack(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -1224,13 +1662,19 @@ class SynthPrinter:
     #######################################################################
 
     def cutLed5mm(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
 
     def previewLed5mm(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 4.7, 3)
         self.previewBoxOnBack(x, y, 4, 1, 17)
 
     def markLed5mm(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -1244,13 +1688,19 @@ class SynthPrinter:
         self.markLed5mm(x, y)
 
     def cutLed3mm(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
 
     def previewLed3mm(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 2.8, 1)
         self.previewBoxOnBack(x, y, 2.7, 1, 17)
 
     def markLed3mm(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -1343,6 +1793,8 @@ class SynthPrinter:
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
     ):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markRect(
             x + windowHorizontalOffset,
             y + windowVerticalOffset,
@@ -1555,8 +2007,10 @@ exporting your work, to post-process things correctly.
 Elements will be aligned and oriented wrong if you skip this call.</p>
 <p>The naming convention of methods is as follows:</p>
 <ul>
-<li><code>addX</code>: calls the corresponding cutX, markX, and previewX methods.
-In most cases, you want to call that instead of making individual calls.</li>
+<li><code>addX</code>: calls methods such as cutX, previewX, etc, operating on multiple
+layers. Skips drawing to disabled layers for performance.
+In most cases, you want to call that instead of making the individual calls
+bundled in the <code>addX</code> methods.</li>
 <li><code>cutX</code>: makes a hole for X on the <strong>panel</strong> layer</li>
 <li><code>markX</code>: draws marks for X on the <strong>drillTemplate</strong> layer.
 <em>[Exporting a drill template is a WIP, it still takes a bit of tinkering to
@@ -1587,8 +2041,10 @@ your panel with the front as the first layer.</li>
 
     The naming convention of methods is as follows:
 
-    - `addX`: calls the corresponding cutX, markX, and previewX methods.
-    In most cases, you want to call that instead of making individual calls.
+    - `addX`: calls methods such as cutX, previewX, etc, operating on multiple
+    layers. Skips drawing to disabled layers for performance.
+    In most cases, you want to call that instead of making the individual calls
+    bundled in the `addX` methods.
     - `cutX`: makes a hole for X on the **panel** layer
     - `markX`: draws marks for X on the **drillTemplate** layer.
     _[Exporting a drill template is a WIP, it still takes a bit of tinkering to
@@ -1631,16 +2087,16 @@ your panel with the front as the first layer.</li>
         ###########################################################
         ### Visualization in CQ Editor
         ###########################################################
-        &#34;panelShow&#34;: True,
-        &#34;supportsShow&#34;: True,
-        &#34;embossShow&#34;: True,
-        &#34;previewShow&#34;: True,  # Disable to improve render performance
-        &#34;drillTemplateShow&#34;: False,
+        &#34;panelRender&#34;: True,
+        &#34;supportsRender&#34;: True,
+        &#34;embossRender&#34;: True,
+        &#34;previewRender&#34;: True,  # Disable to improve render performance
+        &#34;drillTemplateRender&#34;: False,
         &#34;panelShowOptions&#34;: {&#34;alpha&#34;: 0.2, &#34;color&#34;: (0, 180, 230)},
         &#34;supportsShowOptions&#34;: {&#34;alpha&#34;: 0.1, &#34;color&#34;: (180, 230, 0)},
         &#34;embossShowOptions&#34;: {&#34;alpha&#34;: 0.2, &#34;color&#34;: (50, 180, 230)},
         &#34;previewShowOptions&#34;: {&#34;alpha&#34;: 0.65, &#34;color&#34;: (100, 30, 30)},
-        &#34;drillTemplateShowOptions&#34;: {&#34;alpha&#34;: 0.1, &#34;color&#34;: (50, 200, 50)},
+        &#34;drillTemplateShowOptions&#34;: {&#34;alpha&#34;: 0.1, &#34;color&#34;: (20, 20, 20)},
         ###########################################################
         ### Screws
         ###########################################################
@@ -1663,17 +2119,25 @@ your panel with the front as the first layer.</li>
         ###########################################################
         &#34;eurorackHeight&#34;: 128.5,  # Modules are smaller than the full 3U
         &#34;eurorackWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
-        &#34;i1UIJHeight&#34;: 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
-        &#34;i1UIJWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
+        &#34;1UIJHeight&#34;: 39.65,  # Itellijel 1U - for our purposes, normal Euro but 1U tall
+        &#34;1UIJWidthTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
         &#34;kosmoHeight&#34;: 200.0,
-        &#34;kosmoWidthTolerance&#34;: 0,  # Kosmo needs no additional tolerance due to fitting HP rails
+        &#34;kosmoWidthTolerance&#34;: 0,  # Kosmo needs no additional tolerance as HP rails are larger
+        &#34;panelWidthTolerance&#34;: 0,  # Set when adding the panel
         ###########################################################
         ### Panel engravings
         ###########################################################
-        # default depth of 1.02mm, to ensure that at 0.20mm print settings,
-        # it engraves 5 layers instead of 4. This greatly helps with color
-        # changes, with fewer layers, the first color might be a bit translucent.
-        &#34;panelEngravingDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 3.9,
+        &#34;panelEngravingDepth&#34;: lambda config: config[&#34;panelThickness&#34;] / 3,
+        ###########################################################
+        ### Rails &amp; Cradles
+        ###########################################################
+        &#34;railsFrontRecess&#34;: 1.6,  # PCB width
+        &#34;railsSupportDepthBack&#34;: 3.0,  # How much to protrude behind panel, not full depth
+        &#34;railsHeight&#34;: 8,
+        &#34;railsScrewDiameter&#34;: lambda config: config[
+            &#34;m3Diameter&#34;
+        ],  # Not adding the tolerance holds better
+        &#34;cradleTolerance&#34;: lambda config: config[&#34;tolerance&#34;],
         ###########################################################
         ### Buttons and switches
         ###########################################################
@@ -1818,6 +2282,8 @@ your panel with the front as the first layer.</li>
         argument, it will also display the object. When using Synth Printer
         from a different environment, just call without any argument.
         &#34;&#34;&#34;
+        # Shave off the sides of the panel if needed
+        self.cutPanelWidthTolerance()
         # Move the supports where they belong
         self.supports = self.supports.translate(
             (0, 0, self.config[&#34;panelThickness&#34;] / 2)
@@ -1833,31 +2299,31 @@ your panel with the front as the first layer.</li>
         self.supports = self.supports.rotate((0, 0, 0), (1, 0, 0), 180)
         self.drillTemplate = self.drillTemplate.rotate((0, 0, 0), (1, 0, 0), 180)
         # Display the layers if we&#39;re in CQ Editor
-        if show_object and self.config[&#34;panelShow&#34;]:
+        if show_object and self.config[&#34;panelRender&#34;]:
             show_object(
                 self.panel,
                 name=&#34;panel&#34;,
                 options=self.config[&#34;panelShowOptions&#34;],
             )
-        if show_object and self.config[&#34;supportsShow&#34;]:
+        if show_object and self.config[&#34;supportsRender&#34;]:
             show_object(
                 self.supports,
                 name=&#34;supports&#34;,
                 options=self.config[&#34;supportsShowOptions&#34;],
             )
-        if show_object and self.config[&#34;embossShow&#34;]:
+        if show_object and self.config[&#34;embossRender&#34;]:
             show_object(
                 self.emboss,
                 name=&#34;emboss&#34;,
                 options=self.config[&#34;embossShowOptions&#34;],
             )
-        if show_object and self.config[&#34;previewShow&#34;]:
+        if show_object and self.config[&#34;previewRender&#34;]:
             show_object(
                 self.preview,
                 name=&#34;preview&#34;,
                 options=self.config[&#34;previewShowOptions&#34;],
             )
-        if show_object and self.config[&#34;drillTemplateShow&#34;]:
+        if show_object and self.config[&#34;drillTemplateRender&#34;]:
             show_object(
                 self.drillTemplate,
                 name=&#34;drillTemplate&#34;,
@@ -1920,30 +2386,36 @@ your panel with the front as the first layer.</li>
         width: float,
         height: float,
         depth: float = 0,
+        centered: bool = True,
     ):
         &#34;&#34;&#34;Cuts a rectangular shape through the panel.
 
-        FIXME: Default to center for consistency, and change existing callers
+        x, y define the center
 
-        x, y define the top-left.
-
-        **WARNING: This will be changed to center in the future!**
+        `depth = 0` cuts through all.
         &#34;&#34;&#34;
 
         if depth == 0:
             depth = self.config[&#34;panelThickness&#34;]
 
-        cutout = (
-            cq.Workplane(&#34;XY&#34;)
-            .box(width, height, depth)
-            .translate(
+        cutout = cq.Workplane(&#34;XY&#34;).box(width, height, depth)
+
+        if centered:
+            cutout = cutout.translate(
                 (
                     -self.config[&#34;panelWidth&#34;] / 2 + x,
                     -self.config[&#34;panelHeight&#34;] / 2 + y,
                     0,
                 )
             )
-        )
+        else:
+            cutout = cutout.translate(
+                (
+                    -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
+                    -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+                    0,
+                )
+            )
 
         self.panel = (
             self.panel.faces(&#34;&gt;Z&#34;)
@@ -1952,6 +2424,7 @@ your panel with the front as the first layer.</li>
             .cut(cutout)
         )
 
+    # TODO: Top-left support!
     def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
         &#34;&#34;&#34;Adds a cylinder for preview on the back of the panel.
         It will be deeper by half the panel thickness.
@@ -2181,6 +2654,7 @@ your panel with the front as the first layer.</li>
 
         screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
         &#34;&#34;&#34;
+        self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;eurorackWidthTolerance&#34;]
         self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;eurorackHeight&#34;], screwSlots)
 
     def add1UIJPanel(
@@ -2198,7 +2672,8 @@ your panel with the front as the first layer.</li>
 
         screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
         &#34;&#34;&#34;
-        self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;i1UIJHeight&#34;], screwSlots)
+        self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;1UIJWidthTolerance&#34;]
+        self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;1UIJHeight&#34;], screwSlots)
 
     def addKosmoPanel(
         self,
@@ -2217,10 +2692,40 @@ your panel with the front as the first layer.</li>
 
         screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
         &#34;&#34;&#34;
+        self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;kosmoWidthTolerance&#34;]
         self.addPanel(
             self.config[&#34;khp&#34;] * khp,
             self.config[&#34;kosmoHeight&#34;],
             screwSlots=screwSlots,
+        )
+
+    def cutPanelWidthTolerance(self):
+        &#34;&#34;&#34;Automatically called during `render()` for Eurorack and 1UIJ:
+        makes the panel a bit smaller than its nominal size laterally to account
+        for thermal expansion and misaligned neighboring panels.
+        Kosmo panels are naturally a bit smaller than the hp grid (they are on a
+        25mm grid, while hp are on a 5.08mm grid), as a result, they don&#39;t need
+        this shave.
+        &#34;&#34;&#34;
+        # FIXME: Trial and error values that make no sense.
+        # Something&#39;s broken elsewhere!
+        # FIXME: Test print Euro / IJ: Do the tolerances provide enough extrusions?
+        if self.config[&#34;panelWidthTolerance&#34;] == 0:
+            return
+        self.cutRect(
+            0,
+            0,
+            self.config[&#34;panelWidthTolerance&#34;],
+            self.config[&#34;panelHeight&#34;] * 2,
+            False,
+        )
+
+        self.cutRect(
+            self.config[&#34;panelWidth&#34;] - self.config[&#34;panelWidthTolerance&#34;] / 2,
+            0,
+            self.config[&#34;panelWidthTolerance&#34;],
+            self.config[&#34;panelHeight&#34;] * 2,
+            False,
         )
 
     #######################################################################
@@ -2243,6 +2748,8 @@ your panel with the front as the first layer.</li>
         Be sure to inspect both sides of the print to make sure there aren&#39;t
         any sections that are too thin!
         &#34;&#34;&#34;
+        if not self.config[&#34;panelRender&#34;]:
+            return
         if depth == 0:
             depth = self.config[&#34;panelEngravingDepth&#34;]
         cutout = (
@@ -2270,21 +2777,367 @@ your panel with the front as the first layer.</li>
         )
 
     #######################################################################
+    ### Rails
+    #######################################################################
+
+    # All this stuff is some real spaghetti.
+    # It deserves a complete rewrite, and could take 1/5th the code.
+    # But it works, so rewrite it yourself if you care.
+    # Otherwise, don&#39;t bother me about it.
+
+    def cutRail(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Make a hole for a hp rail. The rail is added to the supports layer,
+        not the panel layer.&#34;&#34;&#34;
+        if not self.config[&#34;panelRender&#34;]:
+            return
+        width = hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2
+        height = self.config[&#34;railsHeight&#34;] + self.config[&#34;cradleTolerance&#34;] * 2
+        if orientation == &#34;vertical&#34;:
+            width, height = height, width
+        if centered:
+            self.cutRect(x, y, width, height, 0, centered)
+        else:
+            self.cutRect(
+                x - self.config[&#34;cradleTolerance&#34;],
+                y - self.config[&#34;cradleTolerance&#34;],
+                width,
+                height,
+                0,
+                centered,
+            )
+
+    def supportRail(
+        self,
+        _x: float,
+        _y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a hp rail to the support layer. Requires a hole from cutRail().&#34;&#34;&#34;
+        if not self.config[&#34;supportsRender&#34;]:
+            return
+        width = hp(hpWidth)  # to mm
+        height = self.config[&#34;railsHeight&#34;]
+        if orientation != &#34;horizontal&#34;:
+            width, height = height, width
+
+        if centered:
+            x = -self.config[&#34;panelWidth&#34;] / 2 + _x
+            y = -self.config[&#34;panelHeight&#34;] / 2 + _y
+        else:
+            x = -self.config[&#34;panelWidth&#34;] / 2 + _x + width / 2
+            y = -self.config[&#34;panelHeight&#34;] / 2 + _y + height / 2
+
+        self.supports = (
+            # Extrude on the inside
+            self.supports.moveTo(x, y)
+            .rect(width, height)
+            .extrude(-self.config[&#34;panelThickness&#34;] + self.config[&#34;railsFrontRecess&#34;])
+            # Extrude on the back
+            .moveTo(x, y)
+            .rect(width, height)
+            .extrude(self.config[&#34;railsSupportDepthBack&#34;])
+        )
+
+        if orientation == &#34;horizontal&#34;:
+            x = (
+                -self.config[&#34;panelWidth&#34;] / 2
+                + _x
+                + (self.config[&#34;hp&#34;] - self.config[&#34;railsScrewDiameter&#34;]) / 2
+                + self.config[&#34;railsScrewDiameter&#34;] / 2
+            )
+            if centered:
+                x = x - hp(hpWidth) / 2
+        else:
+            y = (
+                -self.config[&#34;panelHeight&#34;] / 2
+                + _y
+                + (self.config[&#34;hp&#34;] - self.config[&#34;railsScrewDiameter&#34;]) / 2
+                + self.config[&#34;railsScrewDiameter&#34;] / 2
+            )
+            if centered:
+                y = y - hp(hpWidth) / 2
+
+        # Can&#39;t get rarray to work here.
+        if orientation == &#34;horizontal&#34;:
+            for n in range(hpWidth):
+                self.supports = (
+                    self.supports.moveTo(x + n * self.config[&#34;hp&#34;], y)
+                    .circle(self.config[&#34;railsScrewDiameter&#34;] / 2)
+                    .cutThruAll()
+                )
+        else:
+            for n in range(hpWidth):
+                self.supports = (
+                    self.supports.moveTo(x, y + n * self.config[&#34;hp&#34;])
+                    .circle(self.config[&#34;railsScrewDiameter&#34;] / 2)
+                    .cutThruAll()
+                )
+
+    def addRail(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a recessed hp rail. The rail is added to the supports layer,
+         not the panel layer. Good to build cradles: put a Eurorack modules on
+        a Kosmo faceplate, or 1U on a Eurorack one.
+
+        x, y define the center.
+
+        orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+        &#34;&#34;&#34;
+        self.cutRail(x, y, hpWidth, centered, orientation)
+        self.supportRail(x, y, hpWidth, centered, orientation)
+
+    def previewPanel(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        height: float,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        if not self.config[&#34;previewRender&#34;]:
+            return
+        if orientation == &#34;horizontal&#34;:
+            if centered:
+                self.previewBoxOnFront(
+                    x + self.config[&#34;cradleTolerance&#34;],
+                    y
+                    + height / 2
+                    - self.config[&#34;railsHeight&#34;] / 2
+                    + self.config[&#34;cradleTolerance&#34;] * 2,
+                    hp(hpWidth),
+                    height,
+                    1.6,
+                )
+            else:
+                self.previewBoxOnFront(
+                    x + hp(hpWidth) / 2 + self.config[&#34;cradleTolerance&#34;],
+                    y + height / 2 + self.config[&#34;cradleTolerance&#34;] * 2,
+                    hp(hpWidth),
+                    height,
+                    1.6,
+                )
+        else:  # vertical
+            if centered:
+                self.previewBoxOnFront(
+                    x
+                    + height / 2
+                    - self.config[&#34;railsHeight&#34;] / 2
+                    + self.config[&#34;cradleTolerance&#34;] * 2,
+                    y + self.config[&#34;cradleTolerance&#34;],
+                    height,
+                    hp(hpWidth),
+                    1.6,
+                )
+            else:
+                self.previewBoxOnFront(
+                    x + height / 2 + self.config[&#34;cradleTolerance&#34;] * 2,
+                    y + hp(hpWidth) / 2 + self.config[&#34;cradleTolerance&#34;],
+                    height,
+                    hp(hpWidth),
+                    1.6,
+                )
+
+    def addCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        height: float,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        You probably want to use `addEurorackCradle()` or
+        `add1UIJCradle()` instead.
+        &#34;&#34;&#34;
+        # Add the two rails
+        self.addRail(x, y, hpWidth, centered, orientation)
+        if orientation == &#34;horizontal&#34;:
+            self.addRail(
+                x,
+                y + height - self.config[&#34;m3Diameter&#34;] * 2,
+                hpWidth,
+                centered,
+                orientation,
+            )
+        else:
+            self.addRail(
+                x + height - self.config[&#34;m3Diameter&#34;] * 2,
+                y,
+                hpWidth,
+                centered,
+                orientation,
+            )
+        # Cut a hole between those rails
+        if orientation == &#34;horizontal&#34;:
+            if centered:
+                self.cutRect(
+                    x,
+                    y + height / 2 - self.config[&#34;railsHeight&#34;] / 2,
+                    hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                    height + self.config[&#34;cradleTolerance&#34;] * 2,
+                    0,
+                    centered,
+                )
+                offset = -hp(hpWidth) / 2
+                x1 = x - 3 + offset
+                x2 = x + hp(hpWidth) + offset
+                y1 = y - self.config[&#34;railsHeight&#34;] / 2 - 3
+                y2 = y + height - 2
+            else:
+                self.cutRect(
+                    x - self.config[&#34;cradleTolerance&#34;],
+                    y - self.config[&#34;cradleTolerance&#34;],
+                    hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                    height + self.config[&#34;cradleTolerance&#34;] * 2,
+                    0,
+                    centered,
+                )
+                offset = 0
+                x1 = x - 3 + offset
+                x2 = x + hp(hpWidth) + offset
+                y1 = y - 3
+                y2 = y + height + 2
+            w = hp(hpWidth) + 6
+            h = height + 6
+        else:  # vertical
+            if centered:
+                self.cutRect(
+                    x + height / 2 - self.config[&#34;railsHeight&#34;] / 2,
+                    y,
+                    height + self.config[&#34;cradleTolerance&#34;] * 2,
+                    hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                    0,
+                    centered,
+                )
+                x1 = (
+                    x - self.config[&#34;railsHeight&#34;] * 0.7
+                )  # FIXME: IDK why it needs this number. This prolly breaks alt values.
+                x2 = x + height - 2
+                y1 = y - hp(hpWidth) / 2 - 3
+                y2 = y + hp(hpWidth) / 2
+            else:
+                self.cutRect(
+                    x - self.config[&#34;cradleTolerance&#34;],
+                    y - self.config[&#34;cradleTolerance&#34;],
+                    height + self.config[&#34;cradleTolerance&#34;] * 2,
+                    hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                    0,
+                    centered,
+                )
+                x1 = x - 3
+                x2 = x + height + 2
+                y1 = y - 3
+                y2 = y + hp(hpWidth)
+            w = height + 6
+            h = hp(hpWidth) + 6
+
+        self.supportBar(x1, y1, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
+        self.supportBar(x1, y2, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
+        self.supportBar(x1, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+        self.supportBar(x2, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+
+        self.previewPanel(x, y, hpWidth, height, centered, orientation)
+
+    def addEurorackCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        Screw holes are spaced 122.5mm for Eurorack.
+        There are supports around the cradle for increased strength.
+
+        x, y define the center hole of the top rail if centered, that is,
+        if the rail is 3hp, the coordinates define the center of the 2nd hole.
+        If not centered, the coordinates define the top-left of the
+        opening window.
+
+        orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+
+        Note: This footprint is currently untested.
+        &#34;&#34;&#34;
+        self.addCradle(
+            x, y, hpWidth, self.config[&#34;eurorackHeight&#34;], centered, orientation
+        )
+
+    def add1UIJCradle(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int,
+        centered: bool = True,
+        orientation: str = &#34;horizontal&#34;,
+    ):
+        &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+        The rail is added to the supports layer, not the panel layer.
+        Screw holes are spaced 33.65mm apart for 1U (Intellijel).
+        There are supports around the cradle for increased strength.
+
+        x, y define the center hole of the top rail if centered, that is,
+        if the rail is 3hp, the coordinates define the center of the 2nd hole.
+        If not centered, the coordinates define the top-left of the
+        opening window.
+
+        orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+
+        Note: This footprint is currently untested.
+        &#34;&#34;&#34;
+        self.addCradle(x, y, hpWidth, self.config[&#34;1UIJHeight&#34;], centered, orientation)
+
+    #######################################################################
     ### Support structures
     #######################################################################
 
     # Every function adding to the supports layer has support at the
     # start of the name.
 
-    def supportBar(self, x: float, y: float, width: float, height: float, depth: float):
+    def supportBar(
+        self,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        depth: float,
+        centered: bool = False,
+    ):
         &#34;&#34;&#34;Adds a box on the supports layer.
 
         x, y define the top-left of the box as seen from the front
         &#34;&#34;&#34;
+        if not self.config[&#34;supportsRender&#34;]:
+            return
+        if centered:
+            x = -self.config[&#34;panelWidth&#34;] / 2 + x
+            y = -self.config[&#34;panelHeight&#34;] / 2 + y
+        else:
+            x = -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2
+            y = -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2
         self.supports = (
             self.supports.moveTo(
-                -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
-                -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+                x,
+                y,
             )
             .rect(width, height)
             .extrude(depth)
@@ -2426,15 +3279,21 @@ your panel with the front as the first layer.</li>
     #######################################################################
 
     def cutArcadeButton30mm(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
 
     def previewArcadeButton30mm(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 32.3, 3.4)
         self.previewCylinderOnFront(x, y, 24, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)
         self.previewCylinderOnBack(x, y, 34.8, 6.5)
 
     def markArcadeButton30mm(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -2458,6 +3317,8 @@ your panel with the front as the first layer.</li>
         self.markArcadeButton30mm(x, y)
 
     def cutArcadeButton24mm(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
         self.cutHole(
             x,
@@ -2467,12 +3328,16 @@ your panel with the front as the first layer.</li>
         )
 
     def previewArcadeButton24mm(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 27, 3.4)
         self.previewCylinderOnFront(x, y, 22, 7)
         self.previewCylinderOnBack(x, y, 24, 24.4)
         self.previewCylinderOnBack(x, y, 28, 6)
 
     def markArcadeButton24mm(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -2492,6 +3357,8 @@ your panel with the front as the first layer.</li>
         self.markArcadeButton24mm(x, y)
 
     def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         if orientation == &#34;horizontal&#34;:
             width = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
             length = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
@@ -2512,6 +3379,8 @@ your panel with the front as the first layer.</li>
     def previewMiniToggleSwitch(
         self, x: float, y: float, orientation: str = &#34;horizontal&#34;
     ):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         if orientation == &#34;horizontal&#34;:
             width = self.config[&#34;miniToggleSwitchWidth&#34;]
             length = self.config[&#34;miniToggleSwitchLength&#34;]
@@ -2522,6 +3391,8 @@ your panel with the front as the first layer.</li>
         self.previewCylinderOnFront(x, y, self.config[&#34;miniToggleSwitchDiameter&#34;], 19)
 
     def markMiniToggleSwitch(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -2548,6 +3419,8 @@ your panel with the front as the first layer.</li>
         y: float,
         notchOrientation: str = &#34;all&#34;,
     ):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
         # Add the notches
 
@@ -2575,6 +3448,8 @@ your panel with the front as the first layer.</li>
         )
 
     def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = &#34;all&#34;):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 6, 21)
         self.previewCylinderOnFront(x, y, 9.6, 1.6)
         self.previewCylinderOnBack(x, y, 16, 8)
@@ -2588,6 +3463,8 @@ your panel with the front as the first layer.</li>
             self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)
 
     def markPotentiometer(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -2622,6 +3499,8 @@ your panel with the front as the first layer.</li>
         self.markPotentiometer(x, y)
 
     def previewKnob(self, x: float, y: float, diameter: float, depth: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, diameter, depth + 5)
 
     def addKnob(self, x: float, y: float, diameter: float, depth: float):
@@ -2641,6 +3520,8 @@ your panel with the front as the first layer.</li>
         slotWidth: float,
         slotHeight: float,
     ):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.panel = (
             self.panel.faces(&#34;&gt;Z&#34;)
             .vertices(&#34;&lt;XY&#34;)
@@ -2652,16 +3533,13 @@ your panel with the front as the first layer.</li>
             )
             .cutBlind(-self.config[&#34;sliderNotchDepth&#34;])
         )
-        self.cutRect(
-            x,
-            y,
-            slotWidth,
-            slotHeight,
-        )
+        self.cutRect(x, y, slotWidth, slotHeight, 0, True)
 
     def previewSlider(
         self, x: float, y: float, sliderWidth: float, sliderHeight: float
     ):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 15, 10)
         self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)
 
@@ -2674,6 +3552,8 @@ your panel with the front as the first layer.</li>
         slotWidth: float,
         slotHeight: float,
     ):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markRect(x, y, sliderWidth, sliderHeight)
         self.markRect(x, y, slotWidth, slotHeight)
 
@@ -2703,6 +3583,8 @@ your panel with the front as the first layer.</li>
     #######################################################################
 
     def cutBigJack(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
         self.panel = (
             self.panel.faces(&#34;&gt;Z&#34;)
@@ -2717,11 +3599,15 @@ your panel with the front as the first layer.</li>
         )
 
     def previewBigJack(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 8.5, 7)
         self.previewCylinderOnFront(x, y, 12.6, 2.2)
         self.previewBoxOnBack(x, y, 16, 16, 27)
 
     def markBigJack(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -2736,6 +3622,8 @@ your panel with the front as the first layer.</li>
         self.markBigJack(x, y)
 
     def cutMiniJack(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
         self.panel = (
             self.panel.faces(&#34;&gt;Z&#34;)
@@ -2750,11 +3638,15 @@ your panel with the front as the first layer.</li>
         )
 
     def previewMiniJack(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 6, 5.5)
         self.previewCylinderOnFront(x, y, 8, 2.2)
         self.previewBoxOnBack(x, y, 9, 10.5, 12.5)
 
     def markMiniJack(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -2772,13 +3664,19 @@ your panel with the front as the first layer.</li>
     #######################################################################
 
     def cutLed5mm(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
 
     def previewLed5mm(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 4.7, 3)
         self.previewBoxOnBack(x, y, 4, 1, 17)
 
     def markLed5mm(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -2792,13 +3690,19 @@ your panel with the front as the first layer.</li>
         self.markLed5mm(x, y)
 
     def cutLed3mm(self, x: float, y: float):
+        if not self.config[&#34;panelRender&#34;]:
+            return
         self.cutHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
 
     def previewLed3mm(self, x: float, y: float):
+        if not self.config[&#34;previewRender&#34;]:
+            return
         self.previewCylinderOnFront(x, y, 2.8, 1)
         self.previewBoxOnBack(x, y, 2.7, 1, 17)
 
     def markLed3mm(self, x: float, y: float):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
         self.markCross(x, y)
 
@@ -2891,6 +3795,8 @@ your panel with the front as the first layer.</li>
         screwsVerticalDistance: float = 40,
         addScrews: bool = True,
     ):
+        if not self.config[&#34;drillTemplateRender&#34;]:
+            return
         self.markRect(
             x + windowHorizontalOffset,
             y + windowVerticalOffset,
@@ -3009,6 +3915,49 @@ make your own configuration profile.</p></div>
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="synthprinter.SynthPrinter.add1UIJCradle"><code class="name flex">
+<span>def <span class="ident">add1UIJCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a pair of recessed hp rails and a hole for modules.
+The rail is added to the supports layer, not the panel layer.
+Screw holes are spaced 33.65mm apart for 1U (Intellijel).
+There are supports around the cradle for increased strength.</p>
+<p>x, y define the center hole of the top rail if centered, that is,
+if the rail is 3hp, the coordinates define the center of the 2nd hole.
+If not centered, the coordinates define the top-left of the
+opening window.</p>
+<p>orientation is "horizontal" by default, otherwise "vertical"</p>
+<p>Note: This footprint is currently untested.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add1UIJCradle(
+    self,
+    x: float,
+    y: float,
+    hpWidth: int,
+    centered: bool = True,
+    orientation: str = &#34;horizontal&#34;,
+):
+    &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+    The rail is added to the supports layer, not the panel layer.
+    Screw holes are spaced 33.65mm apart for 1U (Intellijel).
+    There are supports around the cradle for increased strength.
+
+    x, y define the center hole of the top rail if centered, that is,
+    if the rail is 3hp, the coordinates define the center of the 2nd hole.
+    If not centered, the coordinates define the top-left of the
+    opening window.
+
+    orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+
+    Note: This footprint is currently untested.
+    &#34;&#34;&#34;
+    self.addCradle(x, y, hpWidth, self.config[&#34;1UIJHeight&#34;], centered, orientation)</code></pre>
+</details>
+</dd>
 <dt id="synthprinter.SynthPrinter.add1UIJPanel"><code class="name flex">
 <span>def <span class="ident">add1UIJPanel</span></span>(<span>self, hp: int, screwSlots='auto')</span>
 </code></dt>
@@ -3038,7 +3987,8 @@ there will be only two by default.</p>
 
     screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
     &#34;&#34;&#34;
-    self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;i1UIJHeight&#34;], screwSlots)</code></pre>
+    self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;1UIJWidthTolerance&#34;]
+    self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;1UIJHeight&#34;], screwSlots)</code></pre>
 </details>
 </dd>
 <dt id="synthprinter.SynthPrinter.addArcadeButton24mm"><code class="name flex">
@@ -3130,6 +4080,122 @@ in Kosmo builds.</p>
     self.markBigJack(x, y)</code></pre>
 </details>
 </dd>
+<dt id="synthprinter.SynthPrinter.addCradle"><code class="name flex">
+<span>def <span class="ident">addCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, height: float, centered: bool = True, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a pair of recessed hp rails and a hole for modules.
+The rail is added to the supports layer, not the panel layer.
+You probably want to use <code>addEurorackCradle()</code> or
+<code>add1UIJCradle()</code> instead.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addCradle(
+    self,
+    x: float,
+    y: float,
+    hpWidth: int,
+    height: float,
+    centered: bool = True,
+    orientation: str = &#34;horizontal&#34;,
+):
+    &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+    The rail is added to the supports layer, not the panel layer.
+    You probably want to use `addEurorackCradle()` or
+    `add1UIJCradle()` instead.
+    &#34;&#34;&#34;
+    # Add the two rails
+    self.addRail(x, y, hpWidth, centered, orientation)
+    if orientation == &#34;horizontal&#34;:
+        self.addRail(
+            x,
+            y + height - self.config[&#34;m3Diameter&#34;] * 2,
+            hpWidth,
+            centered,
+            orientation,
+        )
+    else:
+        self.addRail(
+            x + height - self.config[&#34;m3Diameter&#34;] * 2,
+            y,
+            hpWidth,
+            centered,
+            orientation,
+        )
+    # Cut a hole between those rails
+    if orientation == &#34;horizontal&#34;:
+        if centered:
+            self.cutRect(
+                x,
+                y + height / 2 - self.config[&#34;railsHeight&#34;] / 2,
+                hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                height + self.config[&#34;cradleTolerance&#34;] * 2,
+                0,
+                centered,
+            )
+            offset = -hp(hpWidth) / 2
+            x1 = x - 3 + offset
+            x2 = x + hp(hpWidth) + offset
+            y1 = y - self.config[&#34;railsHeight&#34;] / 2 - 3
+            y2 = y + height - 2
+        else:
+            self.cutRect(
+                x - self.config[&#34;cradleTolerance&#34;],
+                y - self.config[&#34;cradleTolerance&#34;],
+                hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                height + self.config[&#34;cradleTolerance&#34;] * 2,
+                0,
+                centered,
+            )
+            offset = 0
+            x1 = x - 3 + offset
+            x2 = x + hp(hpWidth) + offset
+            y1 = y - 3
+            y2 = y + height + 2
+        w = hp(hpWidth) + 6
+        h = height + 6
+    else:  # vertical
+        if centered:
+            self.cutRect(
+                x + height / 2 - self.config[&#34;railsHeight&#34;] / 2,
+                y,
+                height + self.config[&#34;cradleTolerance&#34;] * 2,
+                hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                0,
+                centered,
+            )
+            x1 = (
+                x - self.config[&#34;railsHeight&#34;] * 0.7
+            )  # FIXME: IDK why it needs this number. This prolly breaks alt values.
+            x2 = x + height - 2
+            y1 = y - hp(hpWidth) / 2 - 3
+            y2 = y + hp(hpWidth) / 2
+        else:
+            self.cutRect(
+                x - self.config[&#34;cradleTolerance&#34;],
+                y - self.config[&#34;cradleTolerance&#34;],
+                height + self.config[&#34;cradleTolerance&#34;] * 2,
+                hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2,
+                0,
+                centered,
+            )
+            x1 = x - 3
+            x2 = x + height + 2
+            y1 = y - 3
+            y2 = y + hp(hpWidth)
+        w = height + 6
+        h = hp(hpWidth) + 6
+
+    self.supportBar(x1, y1, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
+    self.supportBar(x1, y2, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
+    self.supportBar(x1, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+    self.supportBar(x2, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+
+    self.previewPanel(x, y, hpWidth, height, centered, orientation)</code></pre>
+</details>
+</dd>
 <dt id="synthprinter.SynthPrinter.addDisplayWindow"><code class="name flex">
 <span>def <span class="ident">addDisplayWindow</span></span>(<span>self, x: float, y: float, windowWidth: float = 30, windowHeight: float = 15, windowHorizontalOffset: float = 0, windowVerticalOffset: float = -5, screwsHorizontalDistance: float = 40, screwsVerticalDistance: float = 40, addScrews: bool = True)</span>
 </code></dt>
@@ -3193,6 +4259,51 @@ Provide your own measurements instead!</p>
     )</code></pre>
 </details>
 </dd>
+<dt id="synthprinter.SynthPrinter.addEurorackCradle"><code class="name flex">
+<span>def <span class="ident">addEurorackCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a pair of recessed hp rails and a hole for modules.
+The rail is added to the supports layer, not the panel layer.
+Screw holes are spaced 122.5mm for Eurorack.
+There are supports around the cradle for increased strength.</p>
+<p>x, y define the center hole of the top rail if centered, that is,
+if the rail is 3hp, the coordinates define the center of the 2nd hole.
+If not centered, the coordinates define the top-left of the
+opening window.</p>
+<p>orientation is "horizontal" by default, otherwise "vertical"</p>
+<p>Note: This footprint is currently untested.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addEurorackCradle(
+    self,
+    x: float,
+    y: float,
+    hpWidth: int,
+    centered: bool = True,
+    orientation: str = &#34;horizontal&#34;,
+):
+    &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
+    The rail is added to the supports layer, not the panel layer.
+    Screw holes are spaced 122.5mm for Eurorack.
+    There are supports around the cradle for increased strength.
+
+    x, y define the center hole of the top rail if centered, that is,
+    if the rail is 3hp, the coordinates define the center of the 2nd hole.
+    If not centered, the coordinates define the top-left of the
+    opening window.
+
+    orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+
+    Note: This footprint is currently untested.
+    &#34;&#34;&#34;
+    self.addCradle(
+        x, y, hpWidth, self.config[&#34;eurorackHeight&#34;], centered, orientation
+    )</code></pre>
+</details>
+</dd>
 <dt id="synthprinter.SynthPrinter.addEurorackPanel"><code class="name flex">
 <span>def <span class="ident">addEurorackPanel</span></span>(<span>self, hp: int, screwSlots='auto')</span>
 </code></dt>
@@ -3224,6 +4335,7 @@ there will be only two by default.</p>
 
     screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
     &#34;&#34;&#34;
+    self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;eurorackWidthTolerance&#34;]
     self.addPanel(self.config[&#34;hp&#34;] * hp, self.config[&#34;eurorackHeight&#34;], screwSlots)</code></pre>
 </details>
 </dd>
@@ -3281,6 +4393,7 @@ but you can explicitly set a different configuration of slots.</p>
 
     screwSlots: options are &#34;auto&#34;, &#34;auto-tlbr&#34;, &#34;auto-trbl&#34;, &#34;auto-center&#34;, &#34;none&#34;, &#34;all&#34;, &#34;tlbr&#34;, &#34;trbl&#34;, &#34;center&#34;
     &#34;&#34;&#34;
+    self.config[&#34;panelWidthTolerance&#34;] = self.config[&#34;kosmoWidthTolerance&#34;]
     self.addPanel(
         self.config[&#34;khp&#34;] * khp,
         self.config[&#34;kosmoHeight&#34;],
@@ -3593,6 +4706,39 @@ so it might be safe to have this area overlap other stuff a little.</p></div>
     self.markPotentiometer(x, y)</code></pre>
 </details>
 </dd>
+<dt id="synthprinter.SynthPrinter.addRail"><code class="name flex">
+<span>def <span class="ident">addRail</span></span>(<span>self, x: float, y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a recessed hp rail. The rail is added to the supports layer,
+not the panel layer. Good to build cradles: put a Eurorack modules on
+a Kosmo faceplate, or 1U on a Eurorack one.</p>
+<p>x, y define the center.</p>
+<p>orientation is "horizontal" by default, otherwise "vertical"</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addRail(
+    self,
+    x: float,
+    y: float,
+    hpWidth: int,
+    centered: bool = True,
+    orientation: str = &#34;horizontal&#34;,
+):
+    &#34;&#34;&#34;Adds a recessed hp rail. The rail is added to the supports layer,
+     not the panel layer. Good to build cradles: put a Eurorack modules on
+    a Kosmo faceplate, or 1U on a Eurorack one.
+
+    x, y define the center.
+
+    orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
+    &#34;&#34;&#34;
+    self.cutRail(x, y, hpWidth, centered, orientation)
+    self.supportRail(x, y, hpWidth, centered, orientation)</code></pre>
+</details>
+</dd>
 <dt id="synthprinter.SynthPrinter.addSlider"><code class="name flex">
 <span>def <span class="ident">addSlider</span></span>(<span>self, x: float, y: float, sliderWidth: float, sliderHeight: float, slotWidth: float, slotHeight: float)</span>
 </code></dt>
@@ -3638,6 +4784,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cutArcadeButton24mm(self, x: float, y: float):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     self.cutHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
     self.cutHole(
         x,
@@ -3657,6 +4805,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cutArcadeButton30mm(self, x: float, y: float):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     self.cutHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])</code></pre>
 </details>
 </dd>
@@ -3670,6 +4820,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cutBigJack(self, x: float, y: float):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     self.cutHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
     self.panel = (
         self.panel.faces(&#34;&gt;Z&#34;)
@@ -3793,6 +4945,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cutLed3mm(self, x: float, y: float):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     self.cutHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])</code></pre>
 </details>
 </dd>
@@ -3806,6 +4960,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cutLed5mm(self, x: float, y: float):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     self.cutHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])</code></pre>
 </details>
 </dd>
@@ -3819,6 +4975,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cutMiniJack(self, x: float, y: float):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     self.cutHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
     self.panel = (
         self.panel.faces(&#34;&gt;Z&#34;)
@@ -3843,6 +5001,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = &#34;horizontal&#34;):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     if orientation == &#34;horizontal&#34;:
         width = self.config[&#34;miniToggleSwitchWidthWithTolerance&#34;]
         length = self.config[&#34;miniToggleSwitchLengthWithTolerance&#34;]
@@ -3861,6 +5021,50 @@ have a PCB or are will add some glue or something similarly nasty.</p>
     )</code></pre>
 </details>
 </dd>
+<dt id="synthprinter.SynthPrinter.cutPanelWidthTolerance"><code class="name flex">
+<span>def <span class="ident">cutPanelWidthTolerance</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Automatically called during <code>render()</code> for Eurorack and 1UIJ:
+makes the panel a bit smaller than its nominal size laterally to account
+for thermal expansion and misaligned neighboring panels.
+Kosmo panels are naturally a bit smaller than the hp grid (they are on a
+25mm grid, while hp are on a 5.08mm grid), as a result, they don't need
+this shave.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutPanelWidthTolerance(self):
+    &#34;&#34;&#34;Automatically called during `render()` for Eurorack and 1UIJ:
+    makes the panel a bit smaller than its nominal size laterally to account
+    for thermal expansion and misaligned neighboring panels.
+    Kosmo panels are naturally a bit smaller than the hp grid (they are on a
+    25mm grid, while hp are on a 5.08mm grid), as a result, they don&#39;t need
+    this shave.
+    &#34;&#34;&#34;
+    # FIXME: Trial and error values that make no sense.
+    # Something&#39;s broken elsewhere!
+    # FIXME: Test print Euro / IJ: Do the tolerances provide enough extrusions?
+    if self.config[&#34;panelWidthTolerance&#34;] == 0:
+        return
+    self.cutRect(
+        0,
+        0,
+        self.config[&#34;panelWidthTolerance&#34;],
+        self.config[&#34;panelHeight&#34;] * 2,
+        False,
+    )
+
+    self.cutRect(
+        self.config[&#34;panelWidth&#34;] - self.config[&#34;panelWidthTolerance&#34;] / 2,
+        0,
+        self.config[&#34;panelWidthTolerance&#34;],
+        self.config[&#34;panelHeight&#34;] * 2,
+        False,
+    )</code></pre>
+</details>
+</dd>
 <dt id="synthprinter.SynthPrinter.cutPotentiometer"><code class="name flex">
 <span>def <span class="ident">cutPotentiometer</span></span>(<span>self, x: float, y: float, notchOrientation: str = 'all')</span>
 </code></dt>
@@ -3876,6 +5080,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
     y: float,
     notchOrientation: str = &#34;all&#34;,
 ):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     self.cutHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
     # Add the notches
 
@@ -3903,14 +5109,52 @@ have a PCB or are will add some glue or something similarly nasty.</p>
     )</code></pre>
 </details>
 </dd>
+<dt id="synthprinter.SynthPrinter.cutRail"><code class="name flex">
+<span>def <span class="ident">cutRail</span></span>(<span>self, x: float, y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Make a hole for a hp rail. The rail is added to the supports layer,
+not the panel layer.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cutRail(
+    self,
+    x: float,
+    y: float,
+    hpWidth: int,
+    centered: bool = True,
+    orientation: str = &#34;horizontal&#34;,
+):
+    &#34;&#34;&#34;Make a hole for a hp rail. The rail is added to the supports layer,
+    not the panel layer.&#34;&#34;&#34;
+    if not self.config[&#34;panelRender&#34;]:
+        return
+    width = hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2
+    height = self.config[&#34;railsHeight&#34;] + self.config[&#34;cradleTolerance&#34;] * 2
+    if orientation == &#34;vertical&#34;:
+        width, height = height, width
+    if centered:
+        self.cutRect(x, y, width, height, 0, centered)
+    else:
+        self.cutRect(
+            x - self.config[&#34;cradleTolerance&#34;],
+            y - self.config[&#34;cradleTolerance&#34;],
+            width,
+            height,
+            0,
+            centered,
+        )</code></pre>
+</details>
+</dd>
 <dt id="synthprinter.SynthPrinter.cutRect"><code class="name flex">
-<span>def <span class="ident">cutRect</span></span>(<span>self, x: float, y: float, width: float, height: float, depth: float = 0)</span>
+<span>def <span class="ident">cutRect</span></span>(<span>self, x: float, y: float, width: float, height: float, depth: float = 0, centered: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Cuts a rectangular shape through the panel.</p>
-<p>FIXME: Default to center for consistency, and change existing callers</p>
-<p>x, y define the top-left.</p>
-<p><strong>WARNING: This will be changed to center in the future!</strong></p></div>
+<p>x, y define the center</p>
+<p><code>depth = 0</code> cuts through all.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3922,30 +5166,36 @@ have a PCB or are will add some glue or something similarly nasty.</p>
     width: float,
     height: float,
     depth: float = 0,
+    centered: bool = True,
 ):
     &#34;&#34;&#34;Cuts a rectangular shape through the panel.
 
-    FIXME: Default to center for consistency, and change existing callers
+    x, y define the center
 
-    x, y define the top-left.
-
-    **WARNING: This will be changed to center in the future!**
+    `depth = 0` cuts through all.
     &#34;&#34;&#34;
 
     if depth == 0:
         depth = self.config[&#34;panelThickness&#34;]
 
-    cutout = (
-        cq.Workplane(&#34;XY&#34;)
-        .box(width, height, depth)
-        .translate(
+    cutout = cq.Workplane(&#34;XY&#34;).box(width, height, depth)
+
+    if centered:
+        cutout = cutout.translate(
             (
                 -self.config[&#34;panelWidth&#34;] / 2 + x,
                 -self.config[&#34;panelHeight&#34;] / 2 + y,
                 0,
             )
         )
-    )
+    else:
+        cutout = cutout.translate(
+            (
+                -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
+                -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+                0,
+            )
+        )
 
     self.panel = (
         self.panel.faces(&#34;&gt;Z&#34;)
@@ -3973,6 +5223,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
     slotWidth: float,
     slotHeight: float,
 ):
+    if not self.config[&#34;panelRender&#34;]:
+        return
     self.panel = (
         self.panel.faces(&#34;&gt;Z&#34;)
         .vertices(&#34;&lt;XY&#34;)
@@ -3984,12 +5236,7 @@ have a PCB or are will add some glue or something similarly nasty.</p>
         )
         .cutBlind(-self.config[&#34;sliderNotchDepth&#34;])
     )
-    self.cutRect(
-        x,
-        y,
-        slotWidth,
-        slotHeight,
-    )</code></pre>
+    self.cutRect(x, y, slotWidth, slotHeight, 0, True)</code></pre>
 </details>
 </dd>
 <dt id="synthprinter.SynthPrinter.engraveLine"><code class="name flex">
@@ -4020,6 +5267,8 @@ any sections that are too thin!</p></div>
     Be sure to inspect both sides of the print to make sure there aren&#39;t
     any sections that are too thin!
     &#34;&#34;&#34;
+    if not self.config[&#34;panelRender&#34;]:
+        return
     if depth == 0:
         depth = self.config[&#34;panelEngravingDepth&#34;]
     cutout = (
@@ -4099,6 +5348,8 @@ drill marks are not rendered, for performance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def markArcadeButton24mm(self, x: float, y: float):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markHole(x, y, self.config[&#34;arcade24mmButtonWithTolerance&#34;])
     self.markCross(x, y)</code></pre>
 </details>
@@ -4113,6 +5364,8 @@ drill marks are not rendered, for performance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def markArcadeButton30mm(self, x: float, y: float):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markHole(x, y, self.config[&#34;arcade30mmButtonWithTolerance&#34;])
     self.markCross(x, y)</code></pre>
 </details>
@@ -4127,6 +5380,8 @@ drill marks are not rendered, for performance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def markBigJack(self, x: float, y: float):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markHole(x, y, self.config[&#34;bigJackDiameterWithTolerance&#34;])
     self.markCross(x, y)</code></pre>
 </details>
@@ -4193,6 +5448,8 @@ using as a drill template.</p>
     screwsVerticalDistance: float = 40,
     addScrews: bool = True,
 ):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markRect(
         x + windowHorizontalOffset,
         y + windowVerticalOffset,
@@ -4284,6 +5541,8 @@ using as a drill template.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def markLed3mm(self, x: float, y: float):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markHole(x, y, self.config[&#34;3mmLedWithTolerance&#34;])
     self.markCross(x, y)</code></pre>
 </details>
@@ -4298,6 +5557,8 @@ using as a drill template.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def markLed5mm(self, x: float, y: float):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markHole(x, y, self.config[&#34;5mmLedWithTolerance&#34;])
     self.markCross(x, y)</code></pre>
 </details>
@@ -4312,6 +5573,8 @@ using as a drill template.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def markMiniJack(self, x: float, y: float):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markHole(x, y, self.config[&#34;miniJackDiameterWithTolerance&#34;])
     self.markCross(x, y)</code></pre>
 </details>
@@ -4326,6 +5589,8 @@ using as a drill template.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def markMiniToggleSwitch(self, x: float, y: float):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markHole(x, y, self.config[&#34;miniToggleSwitchDiameterWithTolerance&#34;])
     self.markCross(x, y)</code></pre>
 </details>
@@ -4398,6 +5663,8 @@ SVG export. This is automatically done when adding a panel.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def markPotentiometer(self, x: float, y: float):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markHole(x, y, self.config[&#34;potentiometerHoleDiameterWithTolerance&#34;])
     self.markCross(x, y)</code></pre>
 </details>
@@ -4454,6 +5721,8 @@ SVG export. This is automatically done when adding a panel.</p></div>
     slotWidth: float,
     slotHeight: float,
 ):
+    if not self.config[&#34;drillTemplateRender&#34;]:
+        return
     self.markRect(x, y, sliderWidth, sliderHeight)
     self.markRect(x, y, slotWidth, slotHeight)</code></pre>
 </details>
@@ -4468,6 +5737,8 @@ SVG export. This is automatically done when adding a panel.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def previewArcadeButton24mm(self, x: float, y: float):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, 27, 3.4)
     self.previewCylinderOnFront(x, y, 22, 7)
     self.previewCylinderOnBack(x, y, 24, 24.4)
@@ -4484,6 +5755,8 @@ SVG export. This is automatically done when adding a panel.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def previewArcadeButton30mm(self, x: float, y: float):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, 32.3, 3.4)
     self.previewCylinderOnFront(x, y, 24, 7)
     self.previewCylinderOnBack(x, y, 24, 24.4)
@@ -4500,6 +5773,8 @@ SVG export. This is automatically done when adding a panel.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def previewBigJack(self, x: float, y: float):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, 8.5, 7)
     self.previewCylinderOnFront(x, y, 12.6, 2.2)
     self.previewBoxOnBack(x, y, 16, 16, 27)</code></pre>
@@ -4624,6 +5899,8 @@ It will be deeper by half the panel thickness.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def previewKnob(self, x: float, y: float, diameter: float, depth: float):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, diameter, depth + 5)</code></pre>
 </details>
 </dd>
@@ -4637,6 +5914,8 @@ It will be deeper by half the panel thickness.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def previewLed3mm(self, x: float, y: float):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, 2.8, 1)
     self.previewBoxOnBack(x, y, 2.7, 1, 17)</code></pre>
 </details>
@@ -4651,6 +5930,8 @@ It will be deeper by half the panel thickness.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def previewLed5mm(self, x: float, y: float):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, 4.7, 3)
     self.previewBoxOnBack(x, y, 4, 1, 17)</code></pre>
 </details>
@@ -4665,6 +5946,8 @@ It will be deeper by half the panel thickness.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def previewMiniJack(self, x: float, y: float):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, 6, 5.5)
     self.previewCylinderOnFront(x, y, 8, 2.2)
     self.previewBoxOnBack(x, y, 9, 10.5, 12.5)</code></pre>
@@ -4682,6 +5965,8 @@ It will be deeper by half the panel thickness.</p>
 <pre><code class="python">def previewMiniToggleSwitch(
     self, x: float, y: float, orientation: str = &#34;horizontal&#34;
 ):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     if orientation == &#34;horizontal&#34;:
         width = self.config[&#34;miniToggleSwitchWidth&#34;]
         length = self.config[&#34;miniToggleSwitchLength&#34;]
@@ -4690,6 +5975,68 @@ It will be deeper by half the panel thickness.</p>
         length = self.config[&#34;miniToggleSwitchWidth&#34;]
     self.previewBoxOnBack(x, y, width, length, 13.6)
     self.previewCylinderOnFront(x, y, self.config[&#34;miniToggleSwitchDiameter&#34;], 19)</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.previewPanel"><code class="name flex">
+<span>def <span class="ident">previewPanel</span></span>(<span>self, x: float, y: float, hpWidth: int, height: float, centered: bool = True, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def previewPanel(
+    self,
+    x: float,
+    y: float,
+    hpWidth: int,
+    height: float,
+    centered: bool = True,
+    orientation: str = &#34;horizontal&#34;,
+):
+    if not self.config[&#34;previewRender&#34;]:
+        return
+    if orientation == &#34;horizontal&#34;:
+        if centered:
+            self.previewBoxOnFront(
+                x + self.config[&#34;cradleTolerance&#34;],
+                y
+                + height / 2
+                - self.config[&#34;railsHeight&#34;] / 2
+                + self.config[&#34;cradleTolerance&#34;] * 2,
+                hp(hpWidth),
+                height,
+                1.6,
+            )
+        else:
+            self.previewBoxOnFront(
+                x + hp(hpWidth) / 2 + self.config[&#34;cradleTolerance&#34;],
+                y + height / 2 + self.config[&#34;cradleTolerance&#34;] * 2,
+                hp(hpWidth),
+                height,
+                1.6,
+            )
+    else:  # vertical
+        if centered:
+            self.previewBoxOnFront(
+                x
+                + height / 2
+                - self.config[&#34;railsHeight&#34;] / 2
+                + self.config[&#34;cradleTolerance&#34;] * 2,
+                y + self.config[&#34;cradleTolerance&#34;],
+                height,
+                hp(hpWidth),
+                1.6,
+            )
+        else:
+            self.previewBoxOnFront(
+                x + height / 2 + self.config[&#34;cradleTolerance&#34;] * 2,
+                y + hp(hpWidth) / 2 + self.config[&#34;cradleTolerance&#34;],
+                height,
+                hp(hpWidth),
+                1.6,
+            )</code></pre>
 </details>
 </dd>
 <dt id="synthprinter.SynthPrinter.previewPotentiometer"><code class="name flex">
@@ -4702,6 +6049,8 @@ It will be deeper by half the panel thickness.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = &#34;all&#34;):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, 6, 21)
     self.previewCylinderOnFront(x, y, 9.6, 1.6)
     self.previewCylinderOnBack(x, y, 16, 8)
@@ -4727,6 +6076,8 @@ It will be deeper by half the panel thickness.</p>
 <pre><code class="python">def previewSlider(
     self, x: float, y: float, sliderWidth: float, sliderHeight: float
 ):
+    if not self.config[&#34;previewRender&#34;]:
+        return
     self.previewCylinderOnFront(x, y, 15, 10)
     self.previewBoxOnBack(x, y, sliderWidth, sliderHeight, 22)</code></pre>
 </details>
@@ -4752,6 +6103,8 @@ from a different environment, just call without any argument.</p></div>
     argument, it will also display the object. When using Synth Printer
     from a different environment, just call without any argument.
     &#34;&#34;&#34;
+    # Shave off the sides of the panel if needed
+    self.cutPanelWidthTolerance()
     # Move the supports where they belong
     self.supports = self.supports.translate(
         (0, 0, self.config[&#34;panelThickness&#34;] / 2)
@@ -4767,31 +6120,31 @@ from a different environment, just call without any argument.</p></div>
     self.supports = self.supports.rotate((0, 0, 0), (1, 0, 0), 180)
     self.drillTemplate = self.drillTemplate.rotate((0, 0, 0), (1, 0, 0), 180)
     # Display the layers if we&#39;re in CQ Editor
-    if show_object and self.config[&#34;panelShow&#34;]:
+    if show_object and self.config[&#34;panelRender&#34;]:
         show_object(
             self.panel,
             name=&#34;panel&#34;,
             options=self.config[&#34;panelShowOptions&#34;],
         )
-    if show_object and self.config[&#34;supportsShow&#34;]:
+    if show_object and self.config[&#34;supportsRender&#34;]:
         show_object(
             self.supports,
             name=&#34;supports&#34;,
             options=self.config[&#34;supportsShowOptions&#34;],
         )
-    if show_object and self.config[&#34;embossShow&#34;]:
+    if show_object and self.config[&#34;embossRender&#34;]:
         show_object(
             self.emboss,
             name=&#34;emboss&#34;,
             options=self.config[&#34;embossShowOptions&#34;],
         )
-    if show_object and self.config[&#34;previewShow&#34;]:
+    if show_object and self.config[&#34;previewRender&#34;]:
         show_object(
             self.preview,
             name=&#34;preview&#34;,
             options=self.config[&#34;previewShowOptions&#34;],
         )
-    if show_object and self.config[&#34;drillTemplateShow&#34;]:
+    if show_object and self.config[&#34;drillTemplateRender&#34;]:
         show_object(
             self.drillTemplate,
             name=&#34;drillTemplate&#34;,
@@ -4800,7 +6153,7 @@ from a different environment, just call without any argument.</p></div>
 </details>
 </dd>
 <dt id="synthprinter.SynthPrinter.supportBar"><code class="name flex">
-<span>def <span class="ident">supportBar</span></span>(<span>self, x: float, y: float, width: float, height: float, depth: float)</span>
+<span>def <span class="ident">supportBar</span></span>(<span>self, x: float, y: float, width: float, height: float, depth: float, centered: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds a box on the supports layer.</p>
@@ -4809,19 +6162,114 @@ from a different environment, just call without any argument.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def supportBar(self, x: float, y: float, width: float, height: float, depth: float):
+<pre><code class="python">def supportBar(
+    self,
+    x: float,
+    y: float,
+    width: float,
+    height: float,
+    depth: float,
+    centered: bool = False,
+):
     &#34;&#34;&#34;Adds a box on the supports layer.
 
     x, y define the top-left of the box as seen from the front
     &#34;&#34;&#34;
+    if not self.config[&#34;supportsRender&#34;]:
+        return
+    if centered:
+        x = -self.config[&#34;panelWidth&#34;] / 2 + x
+        y = -self.config[&#34;panelHeight&#34;] / 2 + y
+    else:
+        x = -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2
+        y = -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2
     self.supports = (
         self.supports.moveTo(
-            -self.config[&#34;panelWidth&#34;] / 2 + x + width / 2,
-            -self.config[&#34;panelHeight&#34;] / 2 + y + height / 2,
+            x,
+            y,
         )
         .rect(width, height)
         .extrude(depth)
     )</code></pre>
+</details>
+</dd>
+<dt id="synthprinter.SynthPrinter.supportRail"><code class="name flex">
+<span>def <span class="ident">supportRail</span></span>(<span>self, _x: float, _y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a hp rail to the support layer. Requires a hole from cutRail().</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def supportRail(
+    self,
+    _x: float,
+    _y: float,
+    hpWidth: int,
+    centered: bool = True,
+    orientation: str = &#34;horizontal&#34;,
+):
+    &#34;&#34;&#34;Adds a hp rail to the support layer. Requires a hole from cutRail().&#34;&#34;&#34;
+    if not self.config[&#34;supportsRender&#34;]:
+        return
+    width = hp(hpWidth)  # to mm
+    height = self.config[&#34;railsHeight&#34;]
+    if orientation != &#34;horizontal&#34;:
+        width, height = height, width
+
+    if centered:
+        x = -self.config[&#34;panelWidth&#34;] / 2 + _x
+        y = -self.config[&#34;panelHeight&#34;] / 2 + _y
+    else:
+        x = -self.config[&#34;panelWidth&#34;] / 2 + _x + width / 2
+        y = -self.config[&#34;panelHeight&#34;] / 2 + _y + height / 2
+
+    self.supports = (
+        # Extrude on the inside
+        self.supports.moveTo(x, y)
+        .rect(width, height)
+        .extrude(-self.config[&#34;panelThickness&#34;] + self.config[&#34;railsFrontRecess&#34;])
+        # Extrude on the back
+        .moveTo(x, y)
+        .rect(width, height)
+        .extrude(self.config[&#34;railsSupportDepthBack&#34;])
+    )
+
+    if orientation == &#34;horizontal&#34;:
+        x = (
+            -self.config[&#34;panelWidth&#34;] / 2
+            + _x
+            + (self.config[&#34;hp&#34;] - self.config[&#34;railsScrewDiameter&#34;]) / 2
+            + self.config[&#34;railsScrewDiameter&#34;] / 2
+        )
+        if centered:
+            x = x - hp(hpWidth) / 2
+    else:
+        y = (
+            -self.config[&#34;panelHeight&#34;] / 2
+            + _y
+            + (self.config[&#34;hp&#34;] - self.config[&#34;railsScrewDiameter&#34;]) / 2
+            + self.config[&#34;railsScrewDiameter&#34;] / 2
+        )
+        if centered:
+            y = y - hp(hpWidth) / 2
+
+    # Can&#39;t get rarray to work here.
+    if orientation == &#34;horizontal&#34;:
+        for n in range(hpWidth):
+            self.supports = (
+                self.supports.moveTo(x + n * self.config[&#34;hp&#34;], y)
+                .circle(self.config[&#34;railsScrewDiameter&#34;] / 2)
+                .cutThruAll()
+            )
+    else:
+        for n in range(hpWidth):
+            self.supports = (
+                self.supports.moveTo(x, y + n * self.config[&#34;hp&#34;])
+                .circle(self.config[&#34;railsScrewDiameter&#34;] / 2)
+                .cutThruAll()
+            )</code></pre>
 </details>
 </dd>
 </dl>
@@ -4848,11 +6296,14 @@ from a different environment, just call without any argument.</p></div>
 <li>
 <h4><code><a title="synthprinter.SynthPrinter" href="#synthprinter.SynthPrinter">SynthPrinter</a></code></h4>
 <ul class="">
+<li><code><a title="synthprinter.SynthPrinter.add1UIJCradle" href="#synthprinter.SynthPrinter.add1UIJCradle">add1UIJCradle</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.add1UIJPanel" href="#synthprinter.SynthPrinter.add1UIJPanel">add1UIJPanel</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addArcadeButton24mm" href="#synthprinter.SynthPrinter.addArcadeButton24mm">addArcadeButton24mm</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addArcadeButton30mm" href="#synthprinter.SynthPrinter.addArcadeButton30mm">addArcadeButton30mm</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addBigJack" href="#synthprinter.SynthPrinter.addBigJack">addBigJack</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addCradle" href="#synthprinter.SynthPrinter.addCradle">addCradle</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addDisplayWindow" href="#synthprinter.SynthPrinter.addDisplayWindow">addDisplayWindow</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addEurorackCradle" href="#synthprinter.SynthPrinter.addEurorackCradle">addEurorackCradle</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addEurorackPanel" href="#synthprinter.SynthPrinter.addEurorackPanel">addEurorackPanel</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addKnob" href="#synthprinter.SynthPrinter.addKnob">addKnob</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addKosmoPanel" href="#synthprinter.SynthPrinter.addKosmoPanel">addKosmoPanel</a></code></li>
@@ -4862,6 +6313,7 @@ from a different environment, just call without any argument.</p></div>
 <li><code><a title="synthprinter.SynthPrinter.addMiniToggleSwitch" href="#synthprinter.SynthPrinter.addMiniToggleSwitch">addMiniToggleSwitch</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addPanel" href="#synthprinter.SynthPrinter.addPanel">addPanel</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addPotentiometer" href="#synthprinter.SynthPrinter.addPotentiometer">addPotentiometer</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.addRail" href="#synthprinter.SynthPrinter.addRail">addRail</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.addSlider" href="#synthprinter.SynthPrinter.addSlider">addSlider</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.cutArcadeButton24mm" href="#synthprinter.SynthPrinter.cutArcadeButton24mm">cutArcadeButton24mm</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.cutArcadeButton30mm" href="#synthprinter.SynthPrinter.cutArcadeButton30mm">cutArcadeButton30mm</a></code></li>
@@ -4872,7 +6324,9 @@ from a different environment, just call without any argument.</p></div>
 <li><code><a title="synthprinter.SynthPrinter.cutLed5mm" href="#synthprinter.SynthPrinter.cutLed5mm">cutLed5mm</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.cutMiniJack" href="#synthprinter.SynthPrinter.cutMiniJack">cutMiniJack</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.cutMiniToggleSwitch" href="#synthprinter.SynthPrinter.cutMiniToggleSwitch">cutMiniToggleSwitch</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutPanelWidthTolerance" href="#synthprinter.SynthPrinter.cutPanelWidthTolerance">cutPanelWidthTolerance</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.cutPotentiometer" href="#synthprinter.SynthPrinter.cutPotentiometer">cutPotentiometer</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.cutRail" href="#synthprinter.SynthPrinter.cutRail">cutRail</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.cutRect" href="#synthprinter.SynthPrinter.cutRect">cutRect</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.cutSlider" href="#synthprinter.SynthPrinter.cutSlider">cutSlider</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.defaultConfig" href="#synthprinter.SynthPrinter.defaultConfig">defaultConfig</a></code></li>
@@ -4904,10 +6358,12 @@ from a different environment, just call without any argument.</p></div>
 <li><code><a title="synthprinter.SynthPrinter.previewLed5mm" href="#synthprinter.SynthPrinter.previewLed5mm">previewLed5mm</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.previewMiniJack" href="#synthprinter.SynthPrinter.previewMiniJack">previewMiniJack</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.previewMiniToggleSwitch" href="#synthprinter.SynthPrinter.previewMiniToggleSwitch">previewMiniToggleSwitch</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.previewPanel" href="#synthprinter.SynthPrinter.previewPanel">previewPanel</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.previewPotentiometer" href="#synthprinter.SynthPrinter.previewPotentiometer">previewPotentiometer</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.previewSlider" href="#synthprinter.SynthPrinter.previewSlider">previewSlider</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.render" href="#synthprinter.SynthPrinter.render">render</a></code></li>
 <li><code><a title="synthprinter.SynthPrinter.supportBar" href="#synthprinter.SynthPrinter.supportBar">supportBar</a></code></li>
+<li><code><a title="synthprinter.SynthPrinter.supportRail" href="#synthprinter.SynthPrinter.supportRail">supportRail</a></code></li>
 </ul>
 </li>
 </ul>
