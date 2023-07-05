@@ -97,7 +97,7 @@ class SynthPrinter:
         ###########################################################
         "panelEngravingDepth": lambda config: config["panelThickness"] / 3,
         ###########################################################
-        ### Rails
+        ### Rails & Cradles
         ###########################################################
         "railsFrontRecess": 1.6,  # PCB width
         "railsSupportDepthBack": 3.0,  # How much to protrude behind panel, not full depth
@@ -107,6 +107,7 @@ class SynthPrinter:
         ],  # Not adding the tolerance holds better
         "railsEurorackScrewVerticalDistance": lambda config: config["eurorackHeight"]
         - 6,
+        "cradleTolerance": lambda config: config["tolerance"],
         ###########################################################
         ### Buttons and switches
         ###########################################################
@@ -393,6 +394,7 @@ class SynthPrinter:
             .cut(cutout)
         )
 
+    # TODO: Top-left support!
     def previewCylinderOnBack(self, x: float, y: float, diameter: float, depth: float):
         """Adds a cylinder for preview on the back of the panel.
         It will be deeper by half the panel thickness.
@@ -765,11 +767,21 @@ class SynthPrinter:
         not the panel layer."""
         if not self.config["panelRender"]:
             return
-        width = hp(hpWidth)  # to mm
-        height = self.config["railsHeight"]
+        width = hp(hpWidth) + self.config["cradleTolerance"] * 2
+        height = self.config["railsHeight"] + self.config["cradleTolerance"] * 2
         if orientation == "vertical":
             width, height = height, width
-        self.cutRect(x, y, width, height, 0, centered)
+        if centered:
+            self.cutRect(x, y, width, height, 0, centered)
+        else:
+            self.cutRect(
+                x - self.config["cradleTolerance"],
+                y - self.config["cradleTolerance"],
+                width,
+                height,
+                0,
+                centered,
+            )
 
     def supportRail(
         self,
@@ -858,6 +870,61 @@ class SynthPrinter:
         self.cutRail(x, y, hpWidth, centered, orientation)
         self.supportRail(x, y, hpWidth, centered, orientation)
 
+    def previewEurorackPanel(
+        self,
+        x: float,
+        y: float,
+        hpWidth: int = 4,
+        centered: bool = True,
+        orientation: str = "horizontal",
+    ):
+        if not self.config["previewRender"]:
+            return
+        if orientation == "horizontal":
+            if centered:
+                self.previewBoxOnFront(
+                    x + self.config["cradleTolerance"],
+                    y
+                    + self.config["eurorackHeight"] / 2
+                    - self.config["railsHeight"] / 2
+                    + self.config["cradleTolerance"] * 2,
+                    hp(hpWidth),
+                    self.config["eurorackHeight"],
+                    1.6,
+                )
+            else:
+                self.previewBoxOnFront(
+                    x + hp(hpWidth) / 2 + self.config["cradleTolerance"],
+                    y
+                    + self.config["eurorackHeight"] / 2
+                    + self.config["cradleTolerance"] * 2,
+                    hp(hpWidth),
+                    self.config["eurorackHeight"],
+                    1.6,
+                )
+        else:  # vertical
+            if centered:
+                self.previewBoxOnFront(
+                    x
+                    + self.config["eurorackHeight"] / 2
+                    - self.config["railsHeight"] / 2
+                    + self.config["cradleTolerance"],
+                    y + self.config["cradleTolerance"],
+                    self.config["eurorackHeight"],
+                    hp(hpWidth),
+                    1.6,
+                )
+            else:
+                self.previewBoxOnFront(
+                    x
+                    + self.config["eurorackHeight"] / 2
+                    + self.config["cradleTolerance"],
+                    y + hp(hpWidth) / 2 + self.config["cradleTolerance"],
+                    self.config["eurorackHeight"],
+                    hp(hpWidth),
+                    1.6,
+                )
+
     def addEurorackCradle(
         self,
         x: float,
@@ -867,10 +934,6 @@ class SynthPrinter:
         orientation: str = "horizontal",
     ):
         # TODO: Make it generic
-        # TODO: Centered / not centered support
-        # TODO: Add some tolerance!!!
-        # FIXME: CURRENTLY ALL BROKEN!!
-        # FIXME: Centered is confused: center of top rails or center of footprint?
         """Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
         Screw holes are spaced 122.5mm for Eurorack.
@@ -882,6 +945,8 @@ class SynthPrinter:
         opening window.
 
         orientation is "horizontal" by default, otherwise "vertical"
+
+        Note: This footprint is currently untested.
         """
         # Add the two rails
         self.addRail(x, y, hpWidth, centered, orientation)
@@ -909,8 +974,8 @@ class SynthPrinter:
                     y
                     + self.config["eurorackHeight"] / 2
                     - self.config["railsHeight"] / 2,
-                    hp(hpWidth),
-                    self.config["eurorackHeight"],
+                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
+                    self.config["eurorackHeight"] + self.config["cradleTolerance"] * 2,
                     0,
                     centered,
                 )
@@ -921,10 +986,10 @@ class SynthPrinter:
                 y2 = y + self.config["eurorackHeight"] - 2
             else:
                 self.cutRect(
-                    x,
-                    y,
-                    hp(hpWidth),
-                    self.config["eurorackHeight"],
+                    x - self.config["cradleTolerance"],
+                    y - self.config["cradleTolerance"],
+                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
+                    self.config["eurorackHeight"] + self.config["cradleTolerance"] * 2,
                     0,
                     centered,
                 )
@@ -942,18 +1007,25 @@ class SynthPrinter:
                     + self.config["eurorackHeight"] / 2
                     - self.config["railsHeight"] / 2,
                     y,
-                    self.config["eurorackHeight"],
-                    hp(hpWidth),
+                    self.config["eurorackHeight"] + self.config["cradleTolerance"] * 2,
+                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
                     0,
                     centered,
                 )
-                x1 = x - 5
+                x1 = (
+                    x - self.config["railsHeight"] * 0.7
+                )  # FIXME: IDK why it needs this number. This prolly breaks alt values.
                 x2 = x + self.config["eurorackHeight"] - 2
                 y1 = y - hp(hpWidth) / 2 - 3
                 y2 = y + hp(hpWidth) / 2
             else:
                 self.cutRect(
-                    x, y, self.config["eurorackHeight"], hp(hpWidth), 0, centered
+                    x - self.config["cradleTolerance"],
+                    y - self.config["cradleTolerance"],
+                    self.config["eurorackHeight"] + self.config["cradleTolerance"] * 2,
+                    hp(hpWidth) + self.config["cradleTolerance"] * 2,
+                    0,
+                    centered,
                 )
                 x1 = x - 3
                 x2 = x + self.config["eurorackHeight"] + 2
@@ -966,6 +1038,8 @@ class SynthPrinter:
         self.supportBar(x1, y2, w, 3, self.config["railsSupportDepthBack"], False)
         self.supportBar(x1, y1, 3, h, self.config["railsSupportDepthBack"], False)
         self.supportBar(x2, y1, 3, h, self.config["railsSupportDepthBack"], False)
+
+        self.previewEurorackPanel(x, y, hpWidth, centered, orientation)
 
     #######################################################################
     ### Support structures
