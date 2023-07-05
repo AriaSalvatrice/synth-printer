@@ -5,28 +5,29 @@ class SynthPrinter:
     """Each SynthPrinter object corresponds to a panel. You must add one, and
     only one panel, before performing operations on it.
 
-    Once you're done placing elements, you must call render() before
+    Once you're done placing elements, you must call `render()` before
     exporting your work, to post-process things correctly.
     Elements will be aligned and oriented wrong if you skip this call.
 
     The naming convention of methods is as follows:
 
-    - `addX`: calls methods such as cutX, previewX, etc, operating on multiple
-    layers. Skips drawing to disabled layers for performance.
-    In most cases, you want to call that instead of making the individual calls
-    bundled in the `addX` methods.
-    - `cutX`: makes a hole for X on the **panel** layer
-    - `markX`: draws marks for X on the **drillTemplate** layer.
+    - `addX()`: calls methods such as `cutX()`, `previewX()`, etc, operating on multiple
+    layers. Skips drawing to disabled layers for performance, so disable unnecessary
+    layers in the constructor while making your layout.
+    In most cases, you want to call those methods instead of making the individual calls
+    bundled in the `addX()` methods.
+    - `cutX()`: makes a hole for X on the **panel** layer
+    - `markX()`: draws marks for X on the **drillTemplate** layer.
     _[Exporting a drill template is a WIP, it still takes a bit of tinkering to
     make the PDF the proper size]_
-    - `previewX`: draws boxes and cylinders to preview the size of footprints
+    - `previewX()`: draws boxes and cylinders to preview the size of footprints
     on the **preview** layer
-    - `embossX`: creates an element on the **emboss** layer. You can only 3D print
+    - `embossX()`: creates an element on the **emboss** layer. You can only 3D print
     embossings if you orient your panel with the back as the first layer.
     _[Not implemented yet]_
-    - `engraveX`: carves an engraving that does not cut all the way through the
+    - `engraveX()`: carves an engraving that does not cut all the way through the
     **panel** layer
-    - `supportX`: creates an element on the **supports** layer, used to strenghten
+    - `supportX()`: creates an element on the **supports** layer, used to strenghten
     panels and hold in place PCBs. You can only 3D print supports if you orient
     your panel with the front as the first layer.
 
@@ -198,9 +199,11 @@ class SynthPrinter:
     """
     You can override any of the defaultConfig settings by passing them as a
     parameter to the constructor. Look at the code for the full list of
-    settings. Some are dynamically calculated from other settings.
+    settings. Some are dynamically calculated from other settings, 
+    in particular, the tolerances of most elements are expressed as a
+    multiplier of the main tolerance value.
 
-    For example, to replace the default tolerance of 0.4mm, create a
+    For example, to replace the main tolerance value of 0.4mm, create a
     new object as follows:
 
         sp = SynthPrinter(
@@ -1036,7 +1039,7 @@ class SynthPrinter:
     ):
         """Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
-        Screw holes are spaced 122.5mm for Eurorack.
+        Screw holes are spaced vertically 122.5mm apart for Eurorack.
         There are supports around the cradle for increased strength.
 
         x, y define the center hole of the top rail if centered, that is,
@@ -1062,7 +1065,7 @@ class SynthPrinter:
     ):
         """Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
-        Screw holes are spaced 33.65mm apart for 1U (Intellijel).
+        Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
         There are supports around the cradle for increased strength.
 
         x, y define the center hole of the top rail if centered, that is,

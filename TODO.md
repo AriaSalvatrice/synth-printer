@@ -8,15 +8,17 @@ Most of this should be addressed before I can call it version 1.
 
 - Verify all the language is consistent
 - Every addXXX / rect type function should default to center of footprint and have an option to center on top-left instead
+  - Good progress on that
 
 ## Better code
 
 - Improve the dirty parts of the CadQuery code. It might be a mess but it works.
+  - I will never do ths lol
 - Figure out a less nasty way to chamfer the display window
 - Break the library into multiple files
+  - It's difficult, Python's import is asjkddfs;klgjsdf;klgjc
 - Reorganize the files better
 - Figure out if I can make this a better neighbor - behave more like a normal Python library does, not sure what it'd even entail.
-- Better way for user to declare layers to use, skip drawing those not requested for performance
 
 ## Footprints
 
@@ -27,6 +29,7 @@ Most of this should be addressed before I can call it version 1.
 - Previews of the rails clearance
 
 ## Eurorack-specific stuff
+
 - A grid system that makes sense for Eurorack
   
 ## Make new test prints

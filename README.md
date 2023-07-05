@@ -25,9 +25,13 @@ My goal is to provide default settings that fit in most cases. But if stuff won'
 
 Once you're ready to export your panel, select it in the viewport, and pick "Tools➔Export as STL". Make sure not to also export the preview layer!
 
+# Additional features
+- Cradles (Mount 1U tiles on Eurorack panels, or Eurorack modules on Kosmo panels)
+- SVG Drill templates (WIP, but serviceable)
+
+
 # API Reference
 [synthprinter.html](synthprinter.html) provides an auto-generated API reference, full of useful info: which hardware footprints fit, and why some values were chosen. 
-
 
 
 # Gallery
