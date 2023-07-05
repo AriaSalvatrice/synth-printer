@@ -825,8 +825,8 @@ class SynthPrinter:
         &#34;&#34;&#34;Adds a hp rail to the support layer. Requires a hole from cutRail().&#34;&#34;&#34;
         if not self.config[&#34;supportsRender&#34;]:
             return
-        width = hp(hpWidth)  # to mm
-        height = self.config[&#34;railsHeight&#34;]
+        width = hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2
+        height = self.config[&#34;railsHeight&#34;] + self.config[&#34;cradleTolerance&#34;] * 2
         if orientation != &#34;horizontal&#34;:
             width, height = height, width
 
@@ -834,8 +834,18 @@ class SynthPrinter:
             x = -self.config[&#34;panelWidth&#34;] / 2 + _x
             y = -self.config[&#34;panelHeight&#34;] / 2 + _y
         else:
-            x = -self.config[&#34;panelWidth&#34;] / 2 + _x + width / 2
-            y = -self.config[&#34;panelHeight&#34;] / 2 + _y + height / 2
+            x = (
+                -self.config[&#34;panelWidth&#34;] / 2
+                + _x
+                + width / 2
+                - self.config[&#34;cradleTolerance&#34;]
+            )
+            y = (
+                -self.config[&#34;panelHeight&#34;] / 2
+                + _y
+                + height / 2
+                - self.config[&#34;cradleTolerance&#34;]
+            )
 
         self.supports = (
             # Extrude on the inside
@@ -954,6 +964,7 @@ class SynthPrinter:
                     1.6,
                 )
 
+    # FIXME: Add the possibility to skip supports
     def addCradle(
         self,
         x: float,
@@ -962,6 +973,10 @@ class SynthPrinter:
         height: float,
         centered: bool = True,
         orientation: str = &#34;horizontal&#34;,
+        supportTop: bool = True,
+        supportRight: bool = True,
+        supportBottom: bool = True,
+        supportLeft: bool = True,
     ):
         &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
@@ -1049,11 +1064,42 @@ class SynthPrinter:
                 y2 = y + hp(hpWidth)
             w = height + 6
             h = hp(hpWidth) + 6
-
-        self.supportBar(x1, y1, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
-        self.supportBar(x1, y2, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
-        self.supportBar(x1, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
-        self.supportBar(x2, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+        if supportTop:
+            self.supportBar(
+                x1,
+                y1,
+                w,
+                3 + self.config[&#34;cradleTolerance&#34;] * 2,
+                self.config[&#34;railsSupportDepthBack&#34;],
+                False,
+            )
+        if supportBottom:
+            self.supportBar(
+                x1,
+                y2 - self.config[&#34;cradleTolerance&#34;] * 2,
+                w,
+                3 + self.config[&#34;cradleTolerance&#34;] * 2,
+                self.config[&#34;railsSupportDepthBack&#34;],
+                False,
+            )
+        if supportLeft:
+            self.supportBar(
+                x1,
+                y1,
+                3 + self.config[&#34;cradleTolerance&#34;] * 2,
+                h,
+                self.config[&#34;railsSupportDepthBack&#34;],
+                False,
+            )
+        if supportRight:
+            self.supportBar(
+                x2 - self.config[&#34;cradleTolerance&#34;] * 2,
+                y1,
+                3 + self.config[&#34;cradleTolerance&#34;] * 2,
+                h,
+                self.config[&#34;railsSupportDepthBack&#34;],
+                False,
+            )
 
         self.previewPanel(x, y, hpWidth, height, centered, orientation)
 
@@ -1064,11 +1110,18 @@ class SynthPrinter:
         hpWidth: int,
         centered: bool = True,
         orientation: str = &#34;horizontal&#34;,
+        supportTop: bool = True,
+        supportRight: bool = True,
+        supportBottom: bool = True,
+        supportLeft: bool = True,
     ):
         &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
         Screw holes are spaced vertically 122.5mm apart for Eurorack.
         There are supports around the cradle for increased strength.
+
+        This footprint will not work with custom values
+        without modifying the code.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -1077,10 +1130,22 @@ class SynthPrinter:
 
         orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
+        supportTop, supportRight, supportBottom, supportLeft can be set to False
+        to allow stacking rails next to each other.
+
         Note: This footprint is currently untested.
         &#34;&#34;&#34;
         self.addCradle(
-            x, y, hpWidth, self.config[&#34;eurorackHeight&#34;], centered, orientation
+            x,
+            y,
+            hpWidth,
+            self.config[&#34;eurorackHeight&#34;],
+            centered,
+            orientation,
+            supportTop,
+            supportRight,
+            supportBottom,
+            supportLeft,
         )
 
     def add1UIJCradle(
@@ -1090,11 +1155,18 @@ class SynthPrinter:
         hpWidth: int,
         centered: bool = True,
         orientation: str = &#34;horizontal&#34;,
+        supportTop: bool = True,
+        supportRight: bool = True,
+        supportBottom: bool = True,
+        supportLeft: bool = True,
     ):
         &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
         Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
         There are supports around the cradle for increased strength.
+
+        This footprint will not work with custom values
+        without modifying the code.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -1103,9 +1175,23 @@ class SynthPrinter:
 
         orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
+        supportTop, supportRight, supportBottom, supportLeft can be set to False
+        to allow stacking rails next to each other.
+
         Note: This footprint is currently untested.
         &#34;&#34;&#34;
-        self.addCradle(x, y, hpWidth, self.config[&#34;1UIJHeight&#34;], centered, orientation)
+        self.addCradle(
+            x,
+            y,
+            hpWidth,
+            self.config[&#34;1UIJHeight&#34;],
+            centered,
+            orientation,
+            supportTop,
+            supportRight,
+            supportBottom,
+            supportLeft,
+        )
 
     #######################################################################
     ### Support structures
@@ -2831,8 +2917,8 @@ your panel with the front as the first layer.</li>
         &#34;&#34;&#34;Adds a hp rail to the support layer. Requires a hole from cutRail().&#34;&#34;&#34;
         if not self.config[&#34;supportsRender&#34;]:
             return
-        width = hp(hpWidth)  # to mm
-        height = self.config[&#34;railsHeight&#34;]
+        width = hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2
+        height = self.config[&#34;railsHeight&#34;] + self.config[&#34;cradleTolerance&#34;] * 2
         if orientation != &#34;horizontal&#34;:
             width, height = height, width
 
@@ -2840,8 +2926,18 @@ your panel with the front as the first layer.</li>
             x = -self.config[&#34;panelWidth&#34;] / 2 + _x
             y = -self.config[&#34;panelHeight&#34;] / 2 + _y
         else:
-            x = -self.config[&#34;panelWidth&#34;] / 2 + _x + width / 2
-            y = -self.config[&#34;panelHeight&#34;] / 2 + _y + height / 2
+            x = (
+                -self.config[&#34;panelWidth&#34;] / 2
+                + _x
+                + width / 2
+                - self.config[&#34;cradleTolerance&#34;]
+            )
+            y = (
+                -self.config[&#34;panelHeight&#34;] / 2
+                + _y
+                + height / 2
+                - self.config[&#34;cradleTolerance&#34;]
+            )
 
         self.supports = (
             # Extrude on the inside
@@ -2960,6 +3056,7 @@ your panel with the front as the first layer.</li>
                     1.6,
                 )
 
+    # FIXME: Add the possibility to skip supports
     def addCradle(
         self,
         x: float,
@@ -2968,6 +3065,10 @@ your panel with the front as the first layer.</li>
         height: float,
         centered: bool = True,
         orientation: str = &#34;horizontal&#34;,
+        supportTop: bool = True,
+        supportRight: bool = True,
+        supportBottom: bool = True,
+        supportLeft: bool = True,
     ):
         &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
@@ -3055,11 +3156,42 @@ your panel with the front as the first layer.</li>
                 y2 = y + hp(hpWidth)
             w = height + 6
             h = hp(hpWidth) + 6
-
-        self.supportBar(x1, y1, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
-        self.supportBar(x1, y2, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
-        self.supportBar(x1, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
-        self.supportBar(x2, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+        if supportTop:
+            self.supportBar(
+                x1,
+                y1,
+                w,
+                3 + self.config[&#34;cradleTolerance&#34;] * 2,
+                self.config[&#34;railsSupportDepthBack&#34;],
+                False,
+            )
+        if supportBottom:
+            self.supportBar(
+                x1,
+                y2 - self.config[&#34;cradleTolerance&#34;] * 2,
+                w,
+                3 + self.config[&#34;cradleTolerance&#34;] * 2,
+                self.config[&#34;railsSupportDepthBack&#34;],
+                False,
+            )
+        if supportLeft:
+            self.supportBar(
+                x1,
+                y1,
+                3 + self.config[&#34;cradleTolerance&#34;] * 2,
+                h,
+                self.config[&#34;railsSupportDepthBack&#34;],
+                False,
+            )
+        if supportRight:
+            self.supportBar(
+                x2 - self.config[&#34;cradleTolerance&#34;] * 2,
+                y1,
+                3 + self.config[&#34;cradleTolerance&#34;] * 2,
+                h,
+                self.config[&#34;railsSupportDepthBack&#34;],
+                False,
+            )
 
         self.previewPanel(x, y, hpWidth, height, centered, orientation)
 
@@ -3070,11 +3202,18 @@ your panel with the front as the first layer.</li>
         hpWidth: int,
         centered: bool = True,
         orientation: str = &#34;horizontal&#34;,
+        supportTop: bool = True,
+        supportRight: bool = True,
+        supportBottom: bool = True,
+        supportLeft: bool = True,
     ):
         &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
         Screw holes are spaced vertically 122.5mm apart for Eurorack.
         There are supports around the cradle for increased strength.
+
+        This footprint will not work with custom values
+        without modifying the code.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -3083,10 +3222,22 @@ your panel with the front as the first layer.</li>
 
         orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
+        supportTop, supportRight, supportBottom, supportLeft can be set to False
+        to allow stacking rails next to each other.
+
         Note: This footprint is currently untested.
         &#34;&#34;&#34;
         self.addCradle(
-            x, y, hpWidth, self.config[&#34;eurorackHeight&#34;], centered, orientation
+            x,
+            y,
+            hpWidth,
+            self.config[&#34;eurorackHeight&#34;],
+            centered,
+            orientation,
+            supportTop,
+            supportRight,
+            supportBottom,
+            supportLeft,
         )
 
     def add1UIJCradle(
@@ -3096,11 +3247,18 @@ your panel with the front as the first layer.</li>
         hpWidth: int,
         centered: bool = True,
         orientation: str = &#34;horizontal&#34;,
+        supportTop: bool = True,
+        supportRight: bool = True,
+        supportBottom: bool = True,
+        supportLeft: bool = True,
     ):
         &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
         The rail is added to the supports layer, not the panel layer.
         Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
         There are supports around the cradle for increased strength.
+
+        This footprint will not work with custom values
+        without modifying the code.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -3109,9 +3267,23 @@ your panel with the front as the first layer.</li>
 
         orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
+        supportTop, supportRight, supportBottom, supportLeft can be set to False
+        to allow stacking rails next to each other.
+
         Note: This footprint is currently untested.
         &#34;&#34;&#34;
-        self.addCradle(x, y, hpWidth, self.config[&#34;1UIJHeight&#34;], centered, orientation)
+        self.addCradle(
+            x,
+            y,
+            hpWidth,
+            self.config[&#34;1UIJHeight&#34;],
+            centered,
+            orientation,
+            supportTop,
+            supportRight,
+            supportBottom,
+            supportLeft,
+        )
 
     #######################################################################
     ### Support structures
@@ -3925,18 +4097,22 @@ make your own configuration profile.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="synthprinter.SynthPrinter.add1UIJCradle"><code class="name flex">
-<span>def <span class="ident">add1UIJCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal')</span>
+<span>def <span class="ident">add1UIJCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal', supportTop: bool = True, supportRight: bool = True, supportBottom: bool = True, supportLeft: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds a pair of recessed hp rails and a hole for modules.
 The rail is added to the supports layer, not the panel layer.
 Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
 There are supports around the cradle for increased strength.</p>
+<p>This footprint will not work with custom values
+without modifying the code.</p>
 <p>x, y define the center hole of the top rail if centered, that is,
 if the rail is 3hp, the coordinates define the center of the 2nd hole.
 If not centered, the coordinates define the top-left of the
 opening window.</p>
 <p>orientation is "horizontal" by default, otherwise "vertical"</p>
+<p>supportTop, supportRight, supportBottom, supportLeft can be set to False
+to allow stacking rails next to each other.</p>
 <p>Note: This footprint is currently untested.</p></div>
 <details class="source">
 <summary>
@@ -3949,11 +4125,18 @@ opening window.</p>
     hpWidth: int,
     centered: bool = True,
     orientation: str = &#34;horizontal&#34;,
+    supportTop: bool = True,
+    supportRight: bool = True,
+    supportBottom: bool = True,
+    supportLeft: bool = True,
 ):
     &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
     The rail is added to the supports layer, not the panel layer.
     Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
     There are supports around the cradle for increased strength.
+
+    This footprint will not work with custom values
+    without modifying the code.
 
     x, y define the center hole of the top rail if centered, that is,
     if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -3962,9 +4145,23 @@ opening window.</p>
 
     orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
+    supportTop, supportRight, supportBottom, supportLeft can be set to False
+    to allow stacking rails next to each other.
+
     Note: This footprint is currently untested.
     &#34;&#34;&#34;
-    self.addCradle(x, y, hpWidth, self.config[&#34;1UIJHeight&#34;], centered, orientation)</code></pre>
+    self.addCradle(
+        x,
+        y,
+        hpWidth,
+        self.config[&#34;1UIJHeight&#34;],
+        centered,
+        orientation,
+        supportTop,
+        supportRight,
+        supportBottom,
+        supportLeft,
+    )</code></pre>
 </details>
 </dd>
 <dt id="synthprinter.SynthPrinter.add1UIJPanel"><code class="name flex">
@@ -4090,7 +4287,7 @@ in Kosmo builds.</p>
 </details>
 </dd>
 <dt id="synthprinter.SynthPrinter.addCradle"><code class="name flex">
-<span>def <span class="ident">addCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, height: float, centered: bool = True, orientation: str = 'horizontal')</span>
+<span>def <span class="ident">addCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, height: float, centered: bool = True, orientation: str = 'horizontal', supportTop: bool = True, supportRight: bool = True, supportBottom: bool = True, supportLeft: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds a pair of recessed hp rails and a hole for modules.
@@ -4109,6 +4306,10 @@ You probably want to use <code>addEurorackCradle()</code> or
     height: float,
     centered: bool = True,
     orientation: str = &#34;horizontal&#34;,
+    supportTop: bool = True,
+    supportRight: bool = True,
+    supportBottom: bool = True,
+    supportLeft: bool = True,
 ):
     &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
     The rail is added to the supports layer, not the panel layer.
@@ -4196,11 +4397,42 @@ You probably want to use <code>addEurorackCradle()</code> or
             y2 = y + hp(hpWidth)
         w = height + 6
         h = hp(hpWidth) + 6
-
-    self.supportBar(x1, y1, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
-    self.supportBar(x1, y2, w, 3, self.config[&#34;railsSupportDepthBack&#34;], False)
-    self.supportBar(x1, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
-    self.supportBar(x2, y1, 3, h, self.config[&#34;railsSupportDepthBack&#34;], False)
+    if supportTop:
+        self.supportBar(
+            x1,
+            y1,
+            w,
+            3 + self.config[&#34;cradleTolerance&#34;] * 2,
+            self.config[&#34;railsSupportDepthBack&#34;],
+            False,
+        )
+    if supportBottom:
+        self.supportBar(
+            x1,
+            y2 - self.config[&#34;cradleTolerance&#34;] * 2,
+            w,
+            3 + self.config[&#34;cradleTolerance&#34;] * 2,
+            self.config[&#34;railsSupportDepthBack&#34;],
+            False,
+        )
+    if supportLeft:
+        self.supportBar(
+            x1,
+            y1,
+            3 + self.config[&#34;cradleTolerance&#34;] * 2,
+            h,
+            self.config[&#34;railsSupportDepthBack&#34;],
+            False,
+        )
+    if supportRight:
+        self.supportBar(
+            x2 - self.config[&#34;cradleTolerance&#34;] * 2,
+            y1,
+            3 + self.config[&#34;cradleTolerance&#34;] * 2,
+            h,
+            self.config[&#34;railsSupportDepthBack&#34;],
+            False,
+        )
 
     self.previewPanel(x, y, hpWidth, height, centered, orientation)</code></pre>
 </details>
@@ -4269,18 +4501,22 @@ Provide your own measurements instead!</p>
 </details>
 </dd>
 <dt id="synthprinter.SynthPrinter.addEurorackCradle"><code class="name flex">
-<span>def <span class="ident">addEurorackCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal')</span>
+<span>def <span class="ident">addEurorackCradle</span></span>(<span>self, x: float, y: float, hpWidth: int, centered: bool = True, orientation: str = 'horizontal', supportTop: bool = True, supportRight: bool = True, supportBottom: bool = True, supportLeft: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds a pair of recessed hp rails and a hole for modules.
 The rail is added to the supports layer, not the panel layer.
 Screw holes are spaced vertically 122.5mm apart for Eurorack.
 There are supports around the cradle for increased strength.</p>
+<p>This footprint will not work with custom values
+without modifying the code.</p>
 <p>x, y define the center hole of the top rail if centered, that is,
 if the rail is 3hp, the coordinates define the center of the 2nd hole.
 If not centered, the coordinates define the top-left of the
 opening window.</p>
 <p>orientation is "horizontal" by default, otherwise "vertical"</p>
+<p>supportTop, supportRight, supportBottom, supportLeft can be set to False
+to allow stacking rails next to each other.</p>
 <p>Note: This footprint is currently untested.</p></div>
 <details class="source">
 <summary>
@@ -4293,11 +4529,18 @@ opening window.</p>
     hpWidth: int,
     centered: bool = True,
     orientation: str = &#34;horizontal&#34;,
+    supportTop: bool = True,
+    supportRight: bool = True,
+    supportBottom: bool = True,
+    supportLeft: bool = True,
 ):
     &#34;&#34;&#34;Adds a pair of recessed hp rails and a hole for modules.
     The rail is added to the supports layer, not the panel layer.
     Screw holes are spaced vertically 122.5mm apart for Eurorack.
     There are supports around the cradle for increased strength.
+
+    This footprint will not work with custom values
+    without modifying the code.
 
     x, y define the center hole of the top rail if centered, that is,
     if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -4306,10 +4549,22 @@ opening window.</p>
 
     orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
+    supportTop, supportRight, supportBottom, supportLeft can be set to False
+    to allow stacking rails next to each other.
+
     Note: This footprint is currently untested.
     &#34;&#34;&#34;
     self.addCradle(
-        x, y, hpWidth, self.config[&#34;eurorackHeight&#34;], centered, orientation
+        x,
+        y,
+        hpWidth,
+        self.config[&#34;eurorackHeight&#34;],
+        centered,
+        orientation,
+        supportTop,
+        supportRight,
+        supportBottom,
+        supportLeft,
     )</code></pre>
 </details>
 </dd>
@@ -6222,8 +6477,8 @@ from a different environment, just call without any argument.</p></div>
     &#34;&#34;&#34;Adds a hp rail to the support layer. Requires a hole from cutRail().&#34;&#34;&#34;
     if not self.config[&#34;supportsRender&#34;]:
         return
-    width = hp(hpWidth)  # to mm
-    height = self.config[&#34;railsHeight&#34;]
+    width = hp(hpWidth) + self.config[&#34;cradleTolerance&#34;] * 2
+    height = self.config[&#34;railsHeight&#34;] + self.config[&#34;cradleTolerance&#34;] * 2
     if orientation != &#34;horizontal&#34;:
         width, height = height, width
 
@@ -6231,8 +6486,18 @@ from a different environment, just call without any argument.</p></div>
         x = -self.config[&#34;panelWidth&#34;] / 2 + _x
         y = -self.config[&#34;panelHeight&#34;] / 2 + _y
     else:
-        x = -self.config[&#34;panelWidth&#34;] / 2 + _x + width / 2
-        y = -self.config[&#34;panelHeight&#34;] / 2 + _y + height / 2
+        x = (
+            -self.config[&#34;panelWidth&#34;] / 2
+            + _x
+            + width / 2
+            - self.config[&#34;cradleTolerance&#34;]
+        )
+        y = (
+            -self.config[&#34;panelHeight&#34;] / 2
+            + _y
+            + height / 2
+            - self.config[&#34;cradleTolerance&#34;]
+        )
 
     self.supports = (
         # Extrude on the inside
