@@ -130,8 +130,8 @@ class SynthPrinter:
         ###########################################################
         ### Rails &amp; Cradles
         ###########################################################
-        &#34;railsFrontRecess&#34;: 1.6,  # PCB width
-        &#34;railsSupportDepthBack&#34;: 3.0,  # How much to protrude behind panel, not full depth
+        &#34;railsFrontRecess&#34;: 2,  # 1.6 PCB + junk leftover from supports
+        &#34;railsSupportDepthBack&#34;: 4.0,  # How much to protrude behind panel, not full depth
         &#34;railsHeight&#34;: 8,
         &#34;railsScrewDiameter&#34;: lambda config: config[
             &#34;m3Diameter&#34;
@@ -202,11 +202,8 @@ class SynthPrinter:
         &#34;miniJackDiameter&#34;: 6,
         &#34;miniJackDiameterWithTolerance&#34;: lambda config: config[&#34;miniJackDiameter&#34;]
         + config[&#34;tolerance&#34;],
-        &#34;miniJackWidth&#34;: 9,
-        &#34;miniJackHeight&#34;: 9.5,
-        &#34;miniJackWidthWithTolerance&#34;: lambda config: config[&#34;miniJackWidth&#34;]
-        + config[&#34;tolerance&#34;] * 2,
-        &#34;miniJackHeightWithTolerance&#34;: lambda config: config[&#34;miniJackHeight&#34;]
+        &#34;miniJackSize&#34;: 9.5,
+        &#34;miniJackSizeWithTolerance&#34;: lambda config: config[&#34;miniJackSize&#34;]
         + config[&#34;tolerance&#34;] * 2,
         &#34;miniJackNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
         ###########################################################
@@ -964,7 +961,6 @@ class SynthPrinter:
                     1.6,
                 )
 
-    # FIXME: Add the possibility to skip supports
     def addCradle(
         self,
         x: float,
@@ -1120,8 +1116,10 @@ class SynthPrinter:
         Screw holes are spaced vertically 122.5mm apart for Eurorack.
         There are supports around the cradle for increased strength.
 
-        This footprint will not work with custom values
+        This footprint will probbly not work with custom values
         without modifying the code.
+
+        Strongly advised to print with supports.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -1131,10 +1129,7 @@ class SynthPrinter:
         orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
         supportTop, supportRight, supportBottom, supportLeft can be set to False
-        to allow stacking rails next to each other.
-
-        Note: This footprint is currently untested.
-        &#34;&#34;&#34;
+        to allow stacking rails next to each other.&#34;&#34;&#34;
         self.addCradle(
             x,
             y,
@@ -1165,8 +1160,10 @@ class SynthPrinter:
         Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
         There are supports around the cradle for increased strength.
 
-        This footprint will not work with custom values
+        This footprint will probbly not work with custom values
         without modifying the code.
+
+        Strongly advised to print with supports.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -1718,8 +1715,8 @@ class SynthPrinter:
             .workplane(centerOption=&#34;CenterOfMass&#34;)
             .center(x, y)
             .rect(
-                self.config[&#34;miniJackWidthWithTolerance&#34;],
-                self.config[&#34;miniJackHeightWithTolerance&#34;],
+                self.config[&#34;miniJackSizeWithTolerance&#34;],
+                self.config[&#34;miniJackSizeWithTolerance&#34;],
             )
             .cutBlind(-self.config[&#34;miniJackNotchDepth&#34;])
         )
@@ -2222,8 +2219,8 @@ your panel with the front as the first layer.</li>
         ###########################################################
         ### Rails &amp; Cradles
         ###########################################################
-        &#34;railsFrontRecess&#34;: 1.6,  # PCB width
-        &#34;railsSupportDepthBack&#34;: 3.0,  # How much to protrude behind panel, not full depth
+        &#34;railsFrontRecess&#34;: 2,  # 1.6 PCB + junk leftover from supports
+        &#34;railsSupportDepthBack&#34;: 4.0,  # How much to protrude behind panel, not full depth
         &#34;railsHeight&#34;: 8,
         &#34;railsScrewDiameter&#34;: lambda config: config[
             &#34;m3Diameter&#34;
@@ -2294,11 +2291,8 @@ your panel with the front as the first layer.</li>
         &#34;miniJackDiameter&#34;: 6,
         &#34;miniJackDiameterWithTolerance&#34;: lambda config: config[&#34;miniJackDiameter&#34;]
         + config[&#34;tolerance&#34;],
-        &#34;miniJackWidth&#34;: 9,
-        &#34;miniJackHeight&#34;: 9.5,
-        &#34;miniJackWidthWithTolerance&#34;: lambda config: config[&#34;miniJackWidth&#34;]
-        + config[&#34;tolerance&#34;] * 2,
-        &#34;miniJackHeightWithTolerance&#34;: lambda config: config[&#34;miniJackHeight&#34;]
+        &#34;miniJackSize&#34;: 9.5,
+        &#34;miniJackSizeWithTolerance&#34;: lambda config: config[&#34;miniJackSize&#34;]
         + config[&#34;tolerance&#34;] * 2,
         &#34;miniJackNotchDepth&#34;: lambda config: config[&#34;retainingNotchDepth&#34;],
         ###########################################################
@@ -3056,7 +3050,6 @@ your panel with the front as the first layer.</li>
                     1.6,
                 )
 
-    # FIXME: Add the possibility to skip supports
     def addCradle(
         self,
         x: float,
@@ -3212,8 +3205,10 @@ your panel with the front as the first layer.</li>
         Screw holes are spaced vertically 122.5mm apart for Eurorack.
         There are supports around the cradle for increased strength.
 
-        This footprint will not work with custom values
+        This footprint will probbly not work with custom values
         without modifying the code.
+
+        Strongly advised to print with supports.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -3223,10 +3218,7 @@ your panel with the front as the first layer.</li>
         orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
         supportTop, supportRight, supportBottom, supportLeft can be set to False
-        to allow stacking rails next to each other.
-
-        Note: This footprint is currently untested.
-        &#34;&#34;&#34;
+        to allow stacking rails next to each other.&#34;&#34;&#34;
         self.addCradle(
             x,
             y,
@@ -3257,8 +3249,10 @@ your panel with the front as the first layer.</li>
         Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
         There are supports around the cradle for increased strength.
 
-        This footprint will not work with custom values
+        This footprint will probbly not work with custom values
         without modifying the code.
+
+        Strongly advised to print with supports.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -3810,8 +3804,8 @@ your panel with the front as the first layer.</li>
             .workplane(centerOption=&#34;CenterOfMass&#34;)
             .center(x, y)
             .rect(
-                self.config[&#34;miniJackWidthWithTolerance&#34;],
-                self.config[&#34;miniJackHeightWithTolerance&#34;],
+                self.config[&#34;miniJackSizeWithTolerance&#34;],
+                self.config[&#34;miniJackSizeWithTolerance&#34;],
             )
             .cutBlind(-self.config[&#34;miniJackNotchDepth&#34;])
         )
@@ -4104,8 +4098,9 @@ make your own configuration profile.</p></div>
 The rail is added to the supports layer, not the panel layer.
 Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
 There are supports around the cradle for increased strength.</p>
-<p>This footprint will not work with custom values
+<p>This footprint will probbly not work with custom values
 without modifying the code.</p>
+<p>Strongly advised to print with supports.</p>
 <p>x, y define the center hole of the top rail if centered, that is,
 if the rail is 3hp, the coordinates define the center of the 2nd hole.
 If not centered, the coordinates define the top-left of the
@@ -4135,8 +4130,10 @@ to allow stacking rails next to each other.</p>
     Screw holes are spaced vertically 33.65mm apart for 1U (Intellijel).
     There are supports around the cradle for increased strength.
 
-    This footprint will not work with custom values
+    This footprint will probbly not work with custom values
     without modifying the code.
+
+    Strongly advised to print with supports.
 
     x, y define the center hole of the top rail if centered, that is,
     if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -4508,16 +4505,16 @@ Provide your own measurements instead!</p>
 The rail is added to the supports layer, not the panel layer.
 Screw holes are spaced vertically 122.5mm apart for Eurorack.
 There are supports around the cradle for increased strength.</p>
-<p>This footprint will not work with custom values
+<p>This footprint will probbly not work with custom values
 without modifying the code.</p>
+<p>Strongly advised to print with supports.</p>
 <p>x, y define the center hole of the top rail if centered, that is,
 if the rail is 3hp, the coordinates define the center of the 2nd hole.
 If not centered, the coordinates define the top-left of the
 opening window.</p>
 <p>orientation is "horizontal" by default, otherwise "vertical"</p>
 <p>supportTop, supportRight, supportBottom, supportLeft can be set to False
-to allow stacking rails next to each other.</p>
-<p>Note: This footprint is currently untested.</p></div>
+to allow stacking rails next to each other.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -4539,8 +4536,10 @@ to allow stacking rails next to each other.</p>
     Screw holes are spaced vertically 122.5mm apart for Eurorack.
     There are supports around the cradle for increased strength.
 
-    This footprint will not work with custom values
+    This footprint will probbly not work with custom values
     without modifying the code.
+
+    Strongly advised to print with supports.
 
     x, y define the center hole of the top rail if centered, that is,
     if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -4550,10 +4549,7 @@ to allow stacking rails next to each other.</p>
     orientation is &#34;horizontal&#34; by default, otherwise &#34;vertical&#34;
 
     supportTop, supportRight, supportBottom, supportLeft can be set to False
-    to allow stacking rails next to each other.
-
-    Note: This footprint is currently untested.
-    &#34;&#34;&#34;
+    to allow stacking rails next to each other.&#34;&#34;&#34;
     self.addCradle(
         x,
         y,
@@ -5248,8 +5244,8 @@ have a PCB or are will add some glue or something similarly nasty.</p>
         .workplane(centerOption=&#34;CenterOfMass&#34;)
         .center(x, y)
         .rect(
-            self.config[&#34;miniJackWidthWithTolerance&#34;],
-            self.config[&#34;miniJackHeightWithTolerance&#34;],
+            self.config[&#34;miniJackSizeWithTolerance&#34;],
+            self.config[&#34;miniJackSizeWithTolerance&#34;],
         )
         .cutBlind(-self.config[&#34;miniJackNotchDepth&#34;])
     )</code></pre>

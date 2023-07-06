@@ -14,8 +14,9 @@ sp.addKosmoPanel(3)
 #                                         |    |         |
 sp.addEurorackCradle(kcol(2), krow(0.7), 12, True, "horizontal")
 
-# Some passive mults converting between mini jacks and big jacks,
-# to make the available space useful.
+# Some passive mults converting between mini jacks and big jacks.
+# Another good way to make the leftover space useful would be
+# to add attenuators.
 sp.addMiniJack(kcol(1), krow(6.2))
 sp.addMiniJack(kcol(2), krow(6.2))
 sp.addMiniJack(kcol(3), krow(6.2))
