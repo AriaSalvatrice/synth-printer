@@ -85,3 +85,6 @@ Most of this should be addressed before I can call it version 1.
 - Record a demo video for version 1
 - Politely ask for monies why the hell not
 
+## Guitar pedals?
+
+- Would be a natural thing to do but not for V1

@@ -9,7 +9,7 @@ sp.addEurorackPanel(16)
 
 # To allow stacking two rails close to each other, skip overlapping supports
 sp.add1UIJCradle(hp(8), 14, 14, True, "horizontal", supportBottom=False)
-sp.add1UIJCradle(hp(8), 54, 14, True, "horizontal", supportTop=False)
+# sp.add1UIJCradle(hp(8), 54, 14, True, "horizontal", supportTop=False)
 
 sp.addMiniJack(hp(2), 104)
 sp.addMiniJack(hp(4), 104)

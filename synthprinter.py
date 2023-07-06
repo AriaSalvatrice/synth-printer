@@ -1091,7 +1091,11 @@ class SynthPrinter:
         This footprint will probbly not work with custom values
         without modifying the code.
 
-        Strongly advised to print with supports.
+        Printed rails hold modules satisfactorily using M3x8mm screws, and
+        the holes last a dozen screwing cycles before becoming too enlarged
+        to hold things well. For increased safety, use longer screws and nuts.
+
+        Strongly advised to print with supports, but will still print OK without.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.
@@ -1135,7 +1139,11 @@ class SynthPrinter:
         This footprint will probbly not work with custom values
         without modifying the code.
 
-        Strongly advised to print with supports.
+        Printed rails hold modules satisfactorily using M3x8mm screws, and
+        the holes last a dozen screwing cycles before becoming too enlarged
+        to hold things well. For increased safety, use longer screws and nuts.
+
+        Strongly advised to print with supports, but will still print OK without.
 
         x, y define the center hole of the top rail if centered, that is,
         if the rail is 3hp, the coordinates define the center of the 2nd hole.

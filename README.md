@@ -93,7 +93,13 @@ Let's review what goes into making a solid front plate:
 
 ### Printing vertically
 
-- No reason it can't be done with proper supports, but almost certainly a bad idea.
+- No reason it can't be done, but don't do it if you can avoid to.
+- If you have protrusions on both sides of the panel, compare how much material is used vs. printing horizontally with supports.
+- You will definitely want to use organic, tree-like supports. Both Prusa Slicer and Cura Slicer offer such options. 
+- If you have PCB holder supports in the back, they can participate in supporting the print.
+- Prints are weaker to shearing force across printing layers, so you definitely want some support bars in the back of the panels to strenghten it.
+- Don't expect to print quality embossed labels vertically.
+- Try out Prusa's Fuzzy Skin on the surface of a panel printed vertically, it's neato.
 
 
 ## Printing knobs
@@ -110,6 +116,10 @@ You can help by:
 - Reporting your successes and failures
 - Contributing footprints that worked out for you 
 - Making the code less bad (but let's keep it simple)
+
+# Disclaimer
+
+3D printing synth parts is a fantastic budget alternative to buying professionally milled aluminum pieces, but does not offer the same quality. It is the user's responsibility to assess for themself  the quality and safety of their printed parts before using them. I disclaim all liability for any damage arising from the use of Synth Printer. 
 
 # Contact
 
