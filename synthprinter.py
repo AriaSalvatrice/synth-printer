@@ -1518,13 +1518,13 @@ class SynthPrinter:
         self.previewCylinderOnFront(x, y, 9.6, 1.6)
         self.previewCylinderOnBack(x, y, 16, 8)
         if lugsOrientation == "all" or lugsOrientation == "bottom":
-            self.previewBoxOnBack(x, y + 10, 15, 18, 2.4)
+            self.previewBoxOnBack(x, y + 8, 15, 18, 2.4)
         if lugsOrientation == "top":
-            self.previewBoxOnBack(x, y - 10, 15, 18, 2.4)
+            self.previewBoxOnBack(x, y - 8, 15, 18, 2.4)
         if lugsOrientation == "left":
-            self.previewBoxOnBack(x - 10, y, 18, 15, 2.4)
+            self.previewBoxOnBack(x - 8, y, 18, 15, 2.4)
         if lugsOrientation == "right":
-            self.previewBoxOnBack(x + 10, y, 18, 15, 2.4)
+            self.previewBoxOnBack(x + 8, y, 18, 15, 2.4)
 
     def markPotentiometer(self, x: float, y: float):
         if not self.config["drillTemplateRender"]:
