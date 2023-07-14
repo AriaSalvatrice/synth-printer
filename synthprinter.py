@@ -155,9 +155,16 @@ class SynthPrinter:
         "potentiometerNotchDistanceFromCenter": 6.9,
         "potentiometerNotchDiameter": 3.9,
         "potentiometerNotchDepth": lambda config: config["panelThickness"] / 1.5,
+        "rotaryEncoderWidth": 14,
+        "rotaryEncoderWidthWithTolerance": lambda config: config["rotaryEncoderWidth"]
+        + config["tolerance"],
+        "rotaryEncoderHeight": 12,
+        "rotaryEncoderHeightWithTolerance": lambda config: config["rotaryEncoderHeight"]
+        + config["tolerance"],
+        "rotaryEncoderNotchDepth": lambda config: config["retainingNotchDepth"],
         "sliderNotchDepth": lambda config: config["retainingNotchDepth"],
         ###########################################################
-        ### Jacks
+        ### Jacks & Sockets
         ###########################################################
         ###### Big
         "bigJackDiameter": 9,
@@ -178,6 +185,14 @@ class SynthPrinter:
         "miniJackSizeWithTolerance": lambda config: config["miniJackSize"]
         + config["tolerance"] * 2,
         "miniJackNotchDepth": lambda config: config["retainingNotchDepth"],
+        ###### MIDI
+        "midiSocketDiameter": 15,
+        "midiSocketDiameterWithTolerance": lambda config: config["midiSocketDiameter"]
+        + config["tolerance"] * 2,
+        "midiSocketScrewDistance": 21.6,
+        "midiSocketScrewDiameterWithTolerance": lambda config: config[
+            "m3DiameterWithTolerance"
+        ],
         ###########################################################
         ### Blinkenlichten
         ###########################################################
@@ -1482,14 +1497,13 @@ class SynthPrinter:
         x: float,
         y: float,
         notchOrientation: str = "all",
+        rotaryEncoderNotch: bool = False,
     ):
         if not self.config["panelRender"]:
             return
         self.cutHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
-        # Add the notches
-
-        # default to "none" configuration
-        points = []
+        # List the notches
+        points = []  # default to "none" configuration
         if notchOrientation == "top" or notchOrientation == "all":
             points.append((0, -self.config["potentiometerNotchDistanceFromCenter"]))
         if notchOrientation == "right" or notchOrientation == "all":
@@ -1498,7 +1512,7 @@ class SynthPrinter:
             points.append((0, self.config["potentiometerNotchDistanceFromCenter"]))
         if notchOrientation == "left" or notchOrientation == "all":
             points.append((-self.config["potentiometerNotchDistanceFromCenter"], 0))
-
+        # Cut the notches
         self.panel = (
             self.panel.faces(">Z")
             .vertices("<XY")
@@ -1510,6 +1524,19 @@ class SynthPrinter:
                 self.config["potentiometerNotchDepth"],
             )
         )
+        # Notch for the encoder
+        if rotaryEncoderNotch:
+            self.panel = (
+                self.panel.faces(">Z")
+                .vertices("<XY")
+                .workplane(centerOption="CenterOfMass")
+                .center(x, y)
+                .rect(
+                    self.config["rotaryEncoderWidthWithTolerance"],
+                    self.config["rotaryEncoderHeightWithTolerance"],
+                )
+                .cutBlind(-self.config["rotaryEncoderNotchDepth"])
+            )
 
     def previewPotentiometer(self, x: float, y: float, lugsOrientation: str = "all"):
         if not self.config["previewRender"]:
@@ -1538,6 +1565,7 @@ class SynthPrinter:
         y: float,
         notchOrientation: str = "all",
         lugsOrientation: str = "all",
+        rotaryEncoderNotch: bool = False,
     ):
         """Fits most types of panel-mount potentiometers with a 6mm shaft.
 
@@ -1545,7 +1573,9 @@ class SynthPrinter:
         retaining tab of the potentiometer in the most convenient orientation
         possible.
 
-        This won't fit rotary encoders!
+        Common rotary encoders such as EC11 could use a thinner panel for the
+        shaft to protrude sufficiently, in which case, set `rotaryEncoderNotch`
+        to `True` to cut a rectangle in the back of the  panel.
 
         If you want a knob, add it separately with addKnob()
 
@@ -1558,7 +1588,7 @@ class SynthPrinter:
         The preview size for the lugs doesn't account for the possibility of bending them,
         so it might be safe to have this area overlap other stuff a little.
         """
-        self.cutPotentiometer(x, y, notchOrientation)
+        self.cutPotentiometer(x, y, notchOrientation, rotaryEncoderNotch)
         self.previewPotentiometer(x, y, lugsOrientation)
         self.markPotentiometer(x, y)
 
@@ -1643,7 +1673,7 @@ class SynthPrinter:
         self.markSlider(x, y, sliderWidth, sliderHeight, slotWidth, slotHeight)
 
     #######################################################################
-    ### Jacks
+    ### Jacks & Sockets
     #######################################################################
 
     def cutBigJack(self, x: float, y: float):
@@ -1722,6 +1752,85 @@ class SynthPrinter:
         self.cutMiniJack(x, y)
         self.previewMiniJack(x, y)
         self.markMiniJack(x, y)
+
+    def cutMidiSocket(self, x: float, y: float, screws: str = "horizontal"):
+        if not self.config["panelRender"]:
+            return
+        self.cutHole(x, y, self.config["midiSocketDiameterWithTolerance"])
+        if screws == "horizontal":
+            self.cutHole(
+                x - self.config["midiSocketScrewDistance"] / 2,
+                y,
+                self.config["midiSocketScrewDiameterWithTolerance"],
+            )
+            self.cutHole(
+                x + self.config["midiSocketScrewDistance"] / 2,
+                y,
+                self.config["midiSocketScrewDiameterWithTolerance"],
+            )
+        if screws == "vertical":
+            self.cutHole(
+                x,
+                y - self.config["midiSocketScrewDistance"] / 2,
+                self.config["midiSocketScrewDiameterWithTolerance"],
+            )
+            self.cutHole(
+                x,
+                y + self.config["midiSocketScrewDistance"] / 2,
+                self.config["midiSocketScrewDiameterWithTolerance"],
+            )
+
+    def previewMidiSocket(self, x: float, y: float, screws: str = "horizontal"):
+        if not self.config["previewRender"]:
+            return
+        self.previewCylinderOnBack(x, y, 14, 16)
+        if screws == "horizontal":
+            self.previewBoxOnFront(x, y, 28, 19, 1)
+        if screws == "vertical":
+            self.previewBoxOnFront(x, y, 19, 28, 1)
+
+    def markMidiSocket(self, x: float, y: float, screws: str = "horizontal"):
+        if not self.config["drillTemplateRender"]:
+            return
+        self.markHole(x, y, self.config["midiSocketDiameterWithTolerance"])
+        self.markCross(x, y)
+        if screws == "horizontal":
+            self.markHole(
+                x - self.config["midiSocketScrewDistance"] / 2,
+                y,
+                self.config["midiSocketScrewDiameterWithTolerance"],
+            )
+            self.markHole(
+                x + self.config["midiSocketScrewDistance"] / 2,
+                y,
+                self.config["midiSocketScrewDiameterWithTolerance"],
+            )
+            self.markCross(x - self.config["midiSocketScrewDistance"] / 2, y)
+            self.markCross(x + self.config["midiSocketScrewDistance"] / 2, y)
+        if screws == "vertical":
+            self.markHole(
+                x,
+                y - self.config["midiSocketScrewDistance"] / 2,
+                self.config["midiSocketScrewDiameterWithTolerance"],
+            )
+            self.markHole(
+                x,
+                y + self.config["midiSocketScrewDistance"] / 2,
+                self.config["midiSocketScrewDiameterWithTolerance"],
+            )
+            self.markCross(x, y - self.config["midiSocketScrewDistance"] / 2)
+            self.markCross(x, y + self.config["midiSocketScrewDistance"] / 2)
+
+    def addMidiSocket(self, x: float, y: float, screws: str = "horizontal"):
+        """Adds a panel mount female DIN socket.
+
+        It fits the aluminum sockets that have two M3 screws on each side.
+
+        screws: "horizontal", "vertical", or "none"
+        """
+        self.cutMidiSocket(x, y, screws)
+        self.previewMidiSocket(x, y, screws)
+        self.markMidiSocket(x, y, screws)
 
     #######################################################################
     ### Blinkenlichten
