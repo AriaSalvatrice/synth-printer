@@ -18,13 +18,13 @@ class SynthPrinter:
     bundled in the `addX()` methods.
     - `cutX()`: makes a hole for X on the **panel** layer
     - `markX()`: draws marks for X on the **drillTemplate** layer.
-    _[Exporting a drill template is a WIP, it still takes a bit of tinkering to
-    make the PDF the proper size]_
+    *Exporting a drill template is a WIP, it still takes a bit of tinkering to
+    make the PDF the proper size.*
     - `previewX()`: draws boxes and cylinders to preview the size of footprints
     on the **preview** layer
     - `embossX()`: creates an element on the **emboss** layer. You can only 3D print
-    embossings if you orient your panel with the back as the first layer.
-    _[Not implemented yet]_
+    quality embossings if you orient your panel with the back as the first layer.
+    *Not implemented yet*
     - `engraveX()`: carves an engraving that does not cut all the way through the
     **panel** layer
     - `supportX()`: creates an element on the **supports** layer, used to strenghten
@@ -201,6 +201,10 @@ class SynthPrinter:
         "3mmLed": 2.9,
         "3mmLedWithTolerance": lambda config: config["3mmLed"]
         + config["tolerance"] * 1.5,
+        "RectangularLedWidth": 2,
+        "RectangularLedWidthWithTolerance": lambda config: config["RectangularLedWidth"] + config["tolerance"],
+        "RectangularLedHeight": 5,
+        "RectangularLedHeightWithTolerance": lambda config: config["RectangularLedHeight"] + config["tolerance"],
         ###########################################################
         ### Drill Template
         ###########################################################
@@ -1169,8 +1173,6 @@ class SynthPrinter:
 
         supportTop, supportRight, supportBottom, supportLeft can be set to False
         to allow stacking rails next to each other.
-
-        Note: This footprint is currently untested.
         """
         self.addCradle(
             x,
@@ -1890,6 +1892,48 @@ class SynthPrinter:
         self.previewLed3mm(x, y)
         self.markLed3mm(x, y)
 
+
+    def cutLedRectangular(self, x: float, y: float, orientation: str = "vertical"):
+        if not self.config["panelRender"]:
+            return
+        if orientation == "vertical":
+            self.cutRect(x, y, self.config["RectangularLedWidthWithTolerance"], self.config["RectangularLedHeightWithTolerance"])
+        else: 
+            self.cutRect(x, y, self.config["RectangularLedHeightWithTolerance"], self.config["RectangularLedWidthWithTolerance"])
+
+    def previewLedRectangular(self, x: float, y: float, orientation: str = "vertical"):
+        if not self.config["previewRender"]:
+            return
+        # self.previewCylinderOnFront(x, y, 4.7, 3)
+        # self.previewBoxOnBack(x, y, 4, 1, 17)
+        if orientation == "vertical":
+            self.previewBoxOnBack(x, y, 1, 4, 17)
+            self.previewBoxOnFront(x, y, 2, 5, 2)
+        else: 
+            self.previewBoxOnBack(x, y, 4, 1, 17)
+            self.previewBoxOnFront(x, y, 5, 2, 2)
+
+
+    def markLedRectangular(self, x: float, y: float, orientation: str = "vertical"):
+        if not self.config["drillTemplateRender"]:
+            return
+        if orientation == "vertical":
+            self.markRect(x, y, self.config["RectangularLedWidthWithTolerance"], self.config["RectangularLedHeightWithTolerance"])
+        else: 
+            self.markRect(x, y, self.config["RectangularLedHeightWithTolerance"], self.config["RectangularLedWidthWithTolerance"])
+        self.markCross(x, y)
+
+    def addLedRectangular(self, x: float, y: float, orientation: str = "vertical"):
+        """Creates a slot for a rectangular 2×5mm LED.
+
+        FIXME: This footprint is currently untested.
+
+        There is no mechanism to hold it in place, but hot glue will do the trick.
+        """
+        self.cutLedRectangular(x, y, orientation)
+        self.previewLedRectangular(x, y, orientation)
+        self.markLedRectangular(x, y, orientation)
+
     def cutDisplayWindow(
         self,
         x: float,
@@ -2095,4 +2139,4 @@ def krow(krow: float):
     return (krow) * 25
 
 
-# To generate API reference: `pdoc --html --force synthprinter.py -o ./`
+# To generate API reference: ``pdoc synthprinter.py -o ./``
