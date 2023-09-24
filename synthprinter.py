@@ -80,7 +80,7 @@ class SynthPrinter:
         "m3screwSlotDistanceFromTop": 3.0,
         "m3screwSlotDistanceFromBottom": 3.0,
         "m3screwSlotDistanceFromSide": lambda config: config["m3DiameterWithTolerance"]
-        * 1.5,
+        * 2.5,
         ###### M2
         "m2Diameter": 2.0,
         "m2DiameterWithTolerance": lambda config: config["m2Diameter"]
