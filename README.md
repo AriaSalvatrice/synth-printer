@@ -31,7 +31,7 @@ Once you're ready to export your panel, select it in the viewport, and pick "Too
 
 
 # API Reference
-[synthprinter.html](synthprinter.html) provides an auto-generated API reference, full of useful info: which hardware footprints fit, and why some values were chosen. 
+`synthprinter.html`, included in the download, provides an auto-generated API reference, full of useful info: which hardware footprints fit, and why some values were chosen. 
 
 
 # Gallery

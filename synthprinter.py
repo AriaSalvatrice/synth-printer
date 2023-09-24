@@ -143,6 +143,18 @@ class SynthPrinter:
         ]
         + config["tolerance"],
         "miniToggleSwitchNotchDepth": lambda config: config["retainingNotchDepth"],
+        ###### PBS-110 7mm Momentary Pushbuttons
+        "momentaryPushbutton7mmDiameter": 7.2,
+        "momentaryPushbutton7mmDiameterWithTolerance": lambda config: config[
+            "momentaryPushbutton7mmDiameter"
+        ]
+        + config["tolerance"],
+        "momentaryPushbutton7mmNotchDiameter": 9.5,
+        "momentaryPushbutton7mmNotchDiameterWithTolerance": lambda config: config[
+            "momentaryPushbutton7mmNotchDiameter"
+        ]
+        + config["tolerance"],
+        "momentaryPushbutton7mmNotchDepth": lambda config: config["panelThickness"] / 2,
         ###########################################################
         ### Potentiometers and rotary encoders
         ###########################################################
@@ -202,9 +214,13 @@ class SynthPrinter:
         "3mmLedWithTolerance": lambda config: config["3mmLed"]
         + config["tolerance"] * 1.5,
         "RectangularLedWidth": 2,
-        "RectangularLedWidthWithTolerance": lambda config: config["RectangularLedWidth"] + config["tolerance"],
+        "RectangularLedWidthWithTolerance": lambda config: config["RectangularLedWidth"]
+        + config["tolerance"],
         "RectangularLedHeight": 5,
-        "RectangularLedHeightWithTolerance": lambda config: config["RectangularLedHeight"] + config["tolerance"],
+        "RectangularLedHeightWithTolerance": lambda config: config[
+            "RectangularLedHeight"
+        ]
+        + config["tolerance"],
         ###########################################################
         ### Drill Template
         ###########################################################
@@ -1359,6 +1375,8 @@ class SynthPrinter:
     ### Buttons and switches
     #######################################################################
 
+    ### 30mm Arcade Buttons
+
     def cutArcadeButton30mm(self, x: float, y: float):
         if not self.config["panelRender"]:
             return
@@ -1396,6 +1414,8 @@ class SynthPrinter:
         self.cutArcadeButton30mm(x, y)
         self.previewArcadeButton30mm(x, y)
         self.markArcadeButton30mm(x, y)
+
+    ### 24mm Arcade Buttons
 
     def cutArcadeButton24mm(self, x: float, y: float):
         if not self.config["panelRender"]:
@@ -1436,6 +1456,8 @@ class SynthPrinter:
         self.cutArcadeButton24mm(x, y)
         self.previewArcadeButton24mm(x, y)
         self.markArcadeButton24mm(x, y)
+
+    ### Mini Toggle Switches
 
     def cutMiniToggleSwitch(self, x: float, y: float, orientation: str = "horizontal"):
         if not self.config["panelRender"]:
@@ -1489,6 +1511,42 @@ class SynthPrinter:
         self.cutMiniToggleSwitch(x, y, orientation)
         self.previewMiniToggleSwitch(x, y, orientation)
         self.markMiniToggleSwitch(x, y)
+
+    ### PBS-110 7mm Momentary Pushbutton
+
+    def cutMomentaryPushbutton7mm(self, x: float, y: float):
+        if not self.config["panelRender"]:
+            return
+        self.cutHole(x, y, self.config["momentaryPushbutton7mmDiameterWithTolerance"])
+        self.cutHole(
+            x,
+            y,
+            self.config["momentaryPushbutton7mmNotchDiameterWithTolerance"],
+            self.config["momentaryPushbutton7mmNotchDepth"],
+        )
+
+    def previewMomentaryPushbutton7mm(self, x: float, y: float):
+        if not self.config["previewRender"]:
+            return
+        self.previewCylinderOnFront(x, y, 7.5, 12)
+        self.previewCylinderOnBack(x, y, 9.5, 13)
+
+    def markMomentaryPushbutton7mm(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
+        self.markHole(x, y, self.config["momentaryPushbutton7mmDiameterWithTolerance"])
+        self.markCross(x, y)
+
+    # TODO: Recess?
+    def addMomentaryPushbutton7mm(self, x: float, y: float):
+        """PBS-110 momentary pushbuttons are commonly used and easy to find in many colors.
+
+        As the screw thread can be rather short, the retaining notch isn't just for alignment
+        but also ensures enough of the thread is exposed for a strong grip.
+        """
+        self.cutMomentaryPushbutton7mm(x, y)
+        self.previewMomentaryPushbutton7mm(x, y)
+        self.markMomentaryPushbutton7mm(x, y)
 
     #######################################################################
     ### Potentiometers, rotary encoders, sliders
@@ -1892,14 +1950,23 @@ class SynthPrinter:
         self.previewLed3mm(x, y)
         self.markLed3mm(x, y)
 
-
     def cutLedRectangular(self, x: float, y: float, orientation: str = "vertical"):
         if not self.config["panelRender"]:
             return
         if orientation == "vertical":
-            self.cutRect(x, y, self.config["RectangularLedWidthWithTolerance"], self.config["RectangularLedHeightWithTolerance"])
-        else: 
-            self.cutRect(x, y, self.config["RectangularLedHeightWithTolerance"], self.config["RectangularLedWidthWithTolerance"])
+            self.cutRect(
+                x,
+                y,
+                self.config["RectangularLedWidthWithTolerance"],
+                self.config["RectangularLedHeightWithTolerance"],
+            )
+        else:
+            self.cutRect(
+                x,
+                y,
+                self.config["RectangularLedHeightWithTolerance"],
+                self.config["RectangularLedWidthWithTolerance"],
+            )
 
     def previewLedRectangular(self, x: float, y: float, orientation: str = "vertical"):
         if not self.config["previewRender"]:
@@ -1909,18 +1976,27 @@ class SynthPrinter:
         if orientation == "vertical":
             self.previewBoxOnBack(x, y, 1, 4, 17)
             self.previewBoxOnFront(x, y, 2, 5, 2)
-        else: 
+        else:
             self.previewBoxOnBack(x, y, 4, 1, 17)
             self.previewBoxOnFront(x, y, 5, 2, 2)
-
 
     def markLedRectangular(self, x: float, y: float, orientation: str = "vertical"):
         if not self.config["drillTemplateRender"]:
             return
         if orientation == "vertical":
-            self.markRect(x, y, self.config["RectangularLedWidthWithTolerance"], self.config["RectangularLedHeightWithTolerance"])
-        else: 
-            self.markRect(x, y, self.config["RectangularLedHeightWithTolerance"], self.config["RectangularLedWidthWithTolerance"])
+            self.markRect(
+                x,
+                y,
+                self.config["RectangularLedWidthWithTolerance"],
+                self.config["RectangularLedHeightWithTolerance"],
+            )
+        else:
+            self.markRect(
+                x,
+                y,
+                self.config["RectangularLedHeightWithTolerance"],
+                self.config["RectangularLedWidthWithTolerance"],
+            )
         self.markCross(x, y)
 
     def addLedRectangular(self, x: float, y: float, orientation: str = "vertical"):
@@ -2137,6 +2213,17 @@ def kcol(kcol: float):
 def krow(krow: float):
     """Custom Kosmo grid system: each krow is 25mm, first starts 25mm from top"""
     return (krow) * 25
+
+
+def hcol(hcol: float):
+    """Custom Eurorack grid system: each hcol is at the center of a 1hp section"""
+    return (hcol - 1) * hp(1) + hp(0.5)
+
+
+def hrow(hrow: float):
+    """Custom Eurorack grid system: each hrow is 1hp but vertically,
+    first starts 1hp from top"""
+    return (hrow) * hp(1)
 
 
 # To generate API reference: ``pdoc synthprinter.py -o ./``
