@@ -34,9 +34,7 @@ Most of this should be addressed before I can call it version 1.
 
 ## Eurorack-specific stuff
 
-- A grid system that makes sense for Eurorack
 - Remove more from the side of Eurorack panels (cf. Doepfer specs)
-- Move screw notches on Eurorack and 1U
 
 ## Engraving
 

@@ -158,7 +158,7 @@ class SynthPrinter:
         ###########################################################
         ### Potentiometers and rotary encoders
         ###########################################################
-        ###### Pots
+        ###### Big panel-mounted pots
         "potentiometerHoleDiameter": 7,
         "potentiometerHoleDiameterWithTolerance": lambda config: config[
             "potentiometerHoleDiameter"
@@ -167,6 +167,13 @@ class SynthPrinter:
         "potentiometerNotchDistanceFromCenter": 6.9,
         "potentiometerNotchDiameter": 3.9,
         "potentiometerNotchDepth": lambda config: config["panelThickness"] / 1.5,
+        ###### PCB-mounted pots
+        "pcbPotentiometerHoleDiameter": 7,
+        "pcbPotentiometerHoleDiameterWithTolerance": lambda config: config[
+            "pcbPotentiometerHoleDiameter"
+        ]
+        + config["tolerance"],
+        ###### Rotary encoders (without a breakout board)
         "rotaryEncoderWidth": 14,
         "rotaryEncoderWidthWithTolerance": lambda config: config["rotaryEncoderWidth"]
         + config["tolerance"],
@@ -1216,7 +1223,7 @@ class SynthPrinter:
         y: float,
         width: float,
         height: float,
-        depth: float,
+        depth: float = 6,
         centered: bool = False,
     ):
         """Adds a box on the supports layer.
@@ -1651,6 +1658,52 @@ class SynthPrinter:
         self.cutPotentiometer(x, y, notchOrientation, rotaryEncoderNotch)
         self.previewPotentiometer(x, y, lugsOrientation)
         self.markPotentiometer(x, y)
+
+        ## TODO: addRotaryEncoder helper
+
+    def cutPcbPotentiometer(
+        self,
+        x: float,
+        y: float,
+        notchOrientation: str = "all",
+        rotaryEncoderNotch: bool = False,
+    ):
+        if not self.config["panelRender"]:
+            return
+        self.cutHole(x, y, self.config["pcbPotentiometerHoleDiameterWithTolerance"])
+
+    def previewPcbPotentiometer(self, x: float, y: float, lugsOrientation: str = "all"):
+        if not self.config["previewRender"]:
+            return
+        self.previewCylinderOnFront(x, y, 6, 12)
+        self.previewBoxOnBack(x, y, 9.8, 9.8, 6.8)
+
+    def markPcbPotentiometer(self, x: float, y: float):
+        if not self.config["drillTemplateRender"]:
+            return
+        self.markHole(x, y, self.config["potentiometerHoleDiameterWithTolerance"])
+        self.markCross(x, y)
+
+    def addPcbPotentiometer(
+        self,
+        x: float,
+        y: float,
+        notchOrientation: str = "all",
+        lugsOrientation: str = "all",
+        rotaryEncoderNotch: bool = False,
+    ):
+        """Fits most types of PCB-mount potentiometers with a 6mm shaft.
+        They are not fastened to the panel in any way.
+
+        When adapting a blueprint design to Synth-Printer, when taking
+        measurements, keep in mind that in your EDA software the footprint
+        of your potentiometer might not be centered on the shaft.
+
+        If you want a knob, add it separately with addKnob()
+        """
+        self.cutPcbPotentiometer(x, y, notchOrientation, rotaryEncoderNotch)
+        self.previewPcbPotentiometer(x, y, lugsOrientation)
+        self.markPcbPotentiometer(x, y)
 
     def previewKnob(self, x: float, y: float, diameter: float, depth: float):
         if not self.config["previewRender"]:
@@ -2216,14 +2269,24 @@ def krow(krow: float):
 
 
 def hcol(hcol: float):
-    """Custom Eurorack grid system: each hcol is at the center of a 1hp section"""
-    return (hcol - 1) * hp(1) + hp(0.5)
+    """Custom Eurorack grid system: each hcol is at the center of a 1hp section.
+    Column 1 is offset 2hp from the left."""
+    return (hcol - 1) * hp(1) + hp(2)
 
 
 def hrow(hrow: float):
-    """Custom Eurorack grid system: each hrow is 1hp but vertically,
+    """Simple Eurorack grid system: each hrow is 1hp but vertically,
     first starts 1hp from top"""
     return (hrow) * hp(1)
+
+
+def erow(hrow: float):
+    """Custom Eurorack grid system: each erow is 3.4hp (17.272mm) vertically.
+    6 usable rows in total.
+    Yes, that number make no immediate sense.
+    But it lets you fit 6 columns of jacks and pots on a 10cm PCB."""
+    offset = (128.5 - 5 * 5.08 * 3.4) / 2 - 5.08 * 3.4
+    return (hrow) * hp(3.4) + offset
 
 
 # To generate API reference: ``pdoc synthprinter.py -o ./``
